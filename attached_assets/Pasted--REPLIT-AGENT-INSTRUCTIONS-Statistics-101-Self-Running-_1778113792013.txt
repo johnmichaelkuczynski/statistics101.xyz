@@ -1,0 +1,296 @@
+# REPLIT AGENT INSTRUCTIONS — Statistics 101 (Self-Running App)
+
+You are building a self-running, AI-powered course app for **Statistics 101**, intended for community college and freshman-level audiences. The app must mirror the architecture of the existing Phil 101, Psych 101, Algebra 101, and Systems Science 101 apps in the same product line, with one notable difference: this is a stats course, so the app must support **rendering statistical formulas and notation** (means, standard deviations, z-scores, confidence intervals, summation notation, etc.).
+
+The full course content (all assignments and model responses) is in the attached file: `Clean_Statistics_101_Course_Book.docx`. This is the canonical content source. Do not paraphrase or rewrite it — ingest it verbatim.
+
+---
+
+## 1. WHAT THE APP DOES (functional spec)
+
+The app delivers a 13-item course (6 Discussions + 5 Essays + Term Paper Outline + Term Paper). The student progresses through the items in order. For each item, the app:
+
+1. Displays the **Background** section.
+2. Displays the **Assignment** prompt.
+3. Provides a **textarea** where the student writes a response. (See Section 3 — student input is plain text; no in-line equation editor needed.)
+4. On submit, sends the student's answer to an LLM for **grading**, returning a numerical score (out of the item's point total) plus written feedback.
+5. After grading, reveals the **Model Response** and **Why This Is a Model Response** sections so the student can compare.
+6. Persists the score, the student's submission, the AI feedback, and the timestamp to the database.
+7. Displays a running gradebook showing all completed items, scores, and total points earned out of the maximum possible.
+
+Total points possible across the course: 50×6 + 50×5 + 100×2 = **800 points**.
+
+---
+
+## 2. CONTENT INGESTION
+
+The course book follows a strict repeating structure. Each of the 13 items contains these sections in this order:
+
+- `H1` heading naming the item (e.g., "Discussion 1: Types of Data (50 points)")
+- `H2 Background`
+- `H2 Assignment` (sometimes with `H3` subsections like "Section 1", "Section 2", "Section 3")
+- `H2 Model Response`
+- `H2 Why This Is a Model Response` (or "Why This Is a Model Essay" / "Why This Is a Model Term Paper" — they all serve the same role)
+
+Write a parser that reads the .docx (using `python-docx` or `mammoth.js`), splits it into 13 items, and for each item extracts and stores: title, point value, background text, assignment text, model response text, model rationale text. Store these in the database (Postgres on Neon, or SQLite for development) in a `course_items` table.
+
+**Math content in the source document is written in plain Unicode** (μ, σ, x̄, Σ, ≤, ≥, ±, etc.) along with display formulas using the same conventions as Algebra 101. The display layer must convert these to LaTeX so KaTeX can render them properly (see next section).
+
+---
+
+## 3. STATISTICAL NOTATION — THE IMPLEMENTATION DETAILS
+
+This course needs less notation infrastructure than Algebra 101, because students mostly write **prose with numbers** rather than typeset formulas. Here is the minimal setup:
+
+### 3a. NO MathLive needed for student input
+
+Unlike Algebra 101, students in Stats 101 do not need a WYSIWYG math editor. Their answers are essentially:
+- Computed values: "The mean is 47.3, SD is 8.2"
+- Conclusions: "We reject the null hypothesis because p = 0.03 < α = 0.05"
+- Intervals: "95% CI: (12.4, 18.7)"
+- Correlations: "r = 0.62, indicating a moderate positive linear relationship"
+- Verbal explanations of statistical reasoning
+
+A regular `<textarea>` is sufficient. Do NOT install MathLive for this app.
+
+### 3b. KaTeX for displaying formulas in the course content
+
+Install KaTeX (https://katex.org/) with the `auto-render` extension. This handles rendering of formulas in the Background, Assignment, Model Response, and Model Rationale sections, plus any LaTeX in AI-generated feedback.
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$',  right: '$',  display: false}
+          ]
+        });"></script>
+```
+
+After any DOM update that adds new math content, call `renderMathInElement()` on the updated container.
+
+### 3c. Symbol palette for student input (SMALL but important)
+
+Add a "Symbol palette" button above the textarea. When clicked, it expands a small toolbar of buttons that insert common statistical symbols at the cursor position. The symbols students will need:
+
+- μ (mu, population mean)
+- σ (sigma, population standard deviation)
+- x̄ (x-bar, sample mean)
+- s (sample standard deviation — already a regular letter, but include for completeness)
+- Σ (capital sigma, summation)
+- α (alpha, significance level)
+- β (beta, type II error rate)
+- π (pi, population proportion)
+- ± (plus-or-minus)
+- ≤ (less than or equal)
+- ≥ (greater than or equal)
+- ≠ (not equal)
+- √ (square root)
+- ² (superscript 2, for squared values and variance)
+
+These are awkward to type on a U.S. keyboard, and a community-college audience should not be expected to know how to enter them. The palette is a small concession that significantly improves the user experience.
+
+Implementation: a simple JavaScript handler that inserts the chosen character at the textarea cursor position:
+
+```javascript
+function insertSymbol(textareaId, symbol) {
+  const textarea = document.getElementById(textareaId);
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  textarea.value = textarea.value.slice(0, start) + symbol + textarea.value.slice(end);
+  textarea.selectionStart = textarea.selectionEnd = start + symbol.length;
+  textarea.focus();
+}
+
+// Each palette button:
+// <button onclick="insertSymbol('answer', 'μ')">μ</button>
+```
+
+### 3d. Ingestion-time conversion: Unicode to LaTeX
+
+The course book uses Unicode math symbols. At ingestion time, run a conversion pass that transforms them into LaTeX so KaTeX can render them. At minimum, convert:
+
+- `x̄` → `\bar{x}`
+- `μ` → `\mu`, `σ` → `\sigma`, `π` → `\pi`, `α` → `\alpha`, `β` → `\beta`
+- `Σ` → `\sum`
+- `√(...)` → `\sqrt{...}`
+- `²` → `^2`, `³` → `^3`, etc. (superscripts 0–9)
+- `₁`, `₂` → `_1`, `_2` (subscripts 0–9)
+- `≤` → `\leq`, `≥` → `\geq`, `≠` → `\neq`, `±` → `\pm`, `·` → `\cdot`, `÷` → `\div`
+- Wrap each converted expression in `$...$` for inline or `$$...$$` for the indented "MATH" display lines
+
+Special cases for Stats 101:
+- `Σ(xᵢ − x̄)² / (n − 1)` should become `\frac{\sum(x_i - \bar{x})^2}{n-1}` for proper rendering
+- `s = √[ Σ(xᵢ − x̄)² / (n − 1) ]` should become `s = \sqrt{\frac{\sum(x_i - \bar{x})^2}{n-1}}`
+- `z = (x − μ) / σ` should become `z = \frac{x - \mu}{\sigma}`
+- `x̄ ± z* · (s / √n)` should become `\bar{x} \pm z^* \cdot \frac{s}{\sqrt{n}}`
+
+The conversion does not need to be perfect — fall back to plain text rendering if the regex cannot identify a clean structure. KaTeX gracefully ignores text that is not wrapped in delimiters, so partial conversion still works.
+
+Store the LaTeX-converted version in the database alongside the raw Unicode version.
+
+---
+
+## 4. THE GRADER (LLM PROMPT)
+
+Use Claude via the Anthropic API (`claude-sonnet-4-20250514` is fine, or upgrade to Opus for the term paper). The grader prompt must include:
+
+1. The full assignment text
+2. The model response (as the gold standard)
+3. The "Why This Is a Model Response" rationale
+4. The student's submission (plain text from the textarea)
+
+Grading prompt template:
+
+```
+You are grading a student's response to a Statistics 101 assignment, intended for a community-college or first-year college audience.
+
+ASSIGNMENT:
+{assignment_text}
+
+MODEL RESPONSE (gold standard):
+{model_response_text}
+
+WHAT MAKES THE MODEL RESPONSE EXCELLENT:
+{model_rationale_text}
+
+STUDENT'S SUBMISSION:
+{student_submission}
+
+The maximum score for this assignment is {point_value} points.
+
+Grade the student's submission on:
+- Statistical correctness (are the computations right? are the concepts applied correctly?)
+- Completeness (are all required parts of the assignment addressed?)
+- Conceptual understanding (does the student explain WHY, not just WHAT?)
+- Clarity of communication (would a non-statistician understand the conclusion?)
+
+CRITICAL RULES FOR THIS COURSE:
+- This is a 101-level course. Do NOT penalize students for using informal but correct reasoning instead of formal mathematical notation.
+- Mathematically equivalent computations are equivalent. A student who computes a standard deviation by listing deviations, squaring them, summing, dividing by n−1, and taking the square root is doing it correctly even if they do not write the formula in symbols.
+- Students may write "x-bar" instead of x̄, "mu" instead of μ, "alpha" instead of α, etc. Accept verbal substitutions for symbols.
+- For p-values and probabilities, accept any reasonable rounding. p = 0.04 and p = 0.038 both communicate the same statistical conclusion at α = 0.05.
+- For confidence intervals, do not penalize off-by-one in significant figures.
+- The most important thing in Stats 101 is statistical reasoning, not arithmetic perfection. A student who correctly identifies that "this is a confounded observational study and cannot establish causation" should score well, even if they make a minor computational error elsewhere.
+- Award partial credit generously for partially correct work. Identify exactly what is missing or wrong.
+- Do not require the student to match the model response word-for-word. Original correct work is just as valid.
+
+Respond in this JSON format:
+{
+  "score": <integer between 0 and {point_value}>,
+  "feedback": "<2-4 paragraphs of specific, actionable feedback. Cite specific parts of the student's work. Use $...$ for any math you reference.>",
+  "strengths": ["<bullet>", "<bullet>"],
+  "areas_for_improvement": ["<bullet>", "<bullet>"]
+}
+```
+
+Display the parsed score, feedback, strengths, and areas-for-improvement in the UI after grading completes. Run the feedback through KaTeX rendering so any LaTeX in it displays properly.
+
+---
+
+## 5. DATABASE SCHEMA
+
+Identical to the Algebra 101 schema (no math-specific columns are needed for stats; the schema is the same):
+
+```sql
+CREATE TABLE course_items (
+  id SERIAL PRIMARY KEY,
+  sequence INT NOT NULL,                  -- 1 through 13
+  item_type TEXT NOT NULL,                -- 'discussion', 'essay', 'term_paper_outline', 'term_paper'
+  title TEXT NOT NULL,
+  point_value INT NOT NULL,
+  background_text TEXT NOT NULL,
+  background_latex TEXT NOT NULL,
+  assignment_text TEXT NOT NULL,
+  assignment_latex TEXT NOT NULL,
+  model_response_text TEXT NOT NULL,
+  model_response_latex TEXT NOT NULL,
+  model_rationale_text TEXT NOT NULL,
+  model_rationale_latex TEXT NOT NULL
+);
+
+CREATE TABLE submissions (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  item_id INT REFERENCES course_items(id),
+  submitted_at TIMESTAMPTZ DEFAULT NOW(),
+  submission_text TEXT NOT NULL,
+  score INT,
+  feedback TEXT,
+  strengths JSONB,
+  areas_for_improvement JSONB
+);
+
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  display_name TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## 6. UI / FLOW
+
+Match the visual style of the other courses in the product line:
+
+- **Course home** lists all 13 items in order, showing for each: title, point value, status (locked / available / submitted with score).
+- **Item view** shows Background → Assignment → answer-entry textarea (with the symbol palette button above it). The Model Response and Model Rationale are HIDDEN until after submission.
+- **After submission**, the page shows: AI feedback at the top → student's own submission → revealed Model Response → revealed Model Rationale. All math sections rendered with KaTeX.
+- **Gradebook** view shows running total of points earned, plus a per-item breakdown.
+- **Sequential unlocking**: item N+1 unlocks after item N is submitted (allow re-ordering for testing via an admin flag).
+
+---
+
+## 7. STACK
+
+Match what is already in use across the product line:
+
+- **Frontend**: React (Vite), Tailwind for styling, KaTeX for display. (NO MathLive — different from Algebra 101.)
+- **Backend**: Node/Express or Python/FastAPI — match existing courses.
+- **Database**: Neon Postgres (production) / SQLite (local dev).
+- **LLM**: Anthropic API (`@anthropic-ai/sdk`). API key from `ANTHROPIC_API_KEY` environment variable.
+- **Hosting**: Replit for development, Render for production. DNS via Cloudflare.
+
+---
+
+## 8. BUILD ORDER
+
+1. Set up the Replit project, install dependencies (`react`, `vite`, `tailwindcss`, `katex`, `@anthropic-ai/sdk`, etc.), configure environment variables.
+2. Build the docx ingestion script. Run it once on `Clean_Statistics_101_Course_Book.docx` to populate the database. Verify all 13 items parsed correctly.
+3. Build the Unicode-to-LaTeX conversion pass. Spot-check several MATH lines in the database to confirm clean conversion (especially the standard deviation formula, the z-score formula, and the confidence interval formula).
+4. Build the static display side first: render Background and Assignment for any item, with KaTeX rendering the math.
+5. Add the answer-entry textarea with the symbol palette. Verify all 14 symbols insert correctly at cursor position.
+6. Wire up the grader endpoint. Test with a deliberately wrong submission and a correct submission; verify the LLM returns plausible scores and feedback. Pay special attention to the "verbal substitutions" rule — make sure the grader accepts "mu" for μ, "x-bar" for x̄, etc.
+7. Build the gradebook and sequential unlocking.
+8. Polish styling to match the other courses.
+9. Deploy.
+
+---
+
+## 9. TESTING CHECKLIST
+
+Before declaring done, manually verify:
+
+- [ ] All 13 items load with their content rendered correctly. Statistical formulas (means, standard deviations, z-scores, confidence intervals) display as proper math, not raw LaTeX.
+- [ ] The symbol palette button expands the toolbar, and clicking each symbol inserts the right character at the textarea cursor.
+- [ ] On submit, the textarea content is captured and sent to the grader.
+- [ ] Grading returns a score within the allowed range and feedback that references the student's actual work.
+- [ ] Feedback containing math (e.g., "your computation of $\bar{x} = 30.9$ is correct") renders properly.
+- [ ] After submission, Model Response and Model Rationale reveal correctly, with all formulas rendered.
+- [ ] Gradebook totals are accurate.
+- [ ] The course can be completed end-to-end without crashes or stuck states.
+
+---
+
+## 10. NOTES ON THE STATS-SPECIFIC PARTS
+
+**Why no MathLive.** Statistics 101 student answers are mostly prose with numbers and conclusions. Forcing students into a math editor would slow them down for no benefit, and the audience (community college, freshmen) is the wrong audience for tooling that requires LaTeX literacy. The symbol palette is a 30-minute build that solves the only real problem (typing μ, σ, etc. on a U.S. keyboard).
+
+**Why the grader needs the "verbal substitutions" rule.** Without explicit instruction, the LLM grader will sometimes mark a perfectly correct answer wrong because the student wrote "mean" instead of "μ" or "standard deviation" instead of "σ." For a remedial-friendly course, this is exactly the wrong failure mode. The rule in the grading prompt is essential.
+
+**Why generous partial credit matters here more than in Algebra.** In algebra, problems generally have a single correct numerical answer, and the student's job is to produce it. In statistics, problems usually have a correct REASONING PROCESS, and many slightly different computational paths can all be correct. A grader that punishes minor computational errors when the reasoning is right will give wrong feedback and discourage students. The grader prompt's emphasis on "statistical reasoning, not arithmetic perfection" is correct for this course.
+
+**On the question of "compliance with norms."** This course is intentionally compliant with what community colleges and first-year college statistics courses actually teach. The vocabulary (mean, median, mode, standard deviation, normal distribution, z-scores, confidence intervals, hypothesis testing, p-values, correlation vs. causation) is exactly what appears on standardized syllabi. The treatment is conceptual, not derivational — the course book does not derive the central limit theorem, prove unbiasedness, or use calculus. This matches the OpenStax Introductory Statistics textbook, the most widely-adopted free statistics text in U.S. community colleges, in scope and treatment.
