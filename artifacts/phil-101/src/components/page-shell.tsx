@@ -30,7 +30,7 @@ export function Footer() {
     <footer className="mt-16 border-t border-stone-200 bg-stone-50">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-4 py-6 text-xs text-stone-600 md:flex-row md:items-center">
         <div>
-          © {new Date().getFullYear()} Systems Science 101 — Course shell built to
+          © {new Date().getFullYear()} Statistics 101 — Course shell built to
           Quality Matters Higher Ed Rubric (7th ed.).
         </div>
         <div className="flex gap-4">
