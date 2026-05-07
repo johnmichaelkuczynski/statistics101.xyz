@@ -1,4 +1,4 @@
-// AUTO-GENERATED from attached_assets/Clean_Systems_Science_101_Course_Book.docx — verbatim curriculum content.
+// AUTO-GENERATED from attached_assets/Clean_Statistics_101_Course_Book.docx — verbatim curriculum content.
 
 export interface Module {
   id: string;
@@ -9,1012 +9,1453 @@ export interface Module {
   objectives: string[];
   reading: string;
   assignment: string;
-  modelResponse: string;
+  modelResponse?: string;
 }
 
 export const modules: Module[] = [
   {
     id: "d1",
     number: 1,
-    title: "Discussion 1: What Is a System?",
+    title: "Discussion 1: Types of Data",
     points: 50,
     type: "discussion",
     objectives: [
-      "Identify the four defining features of a system: elements, interconnections, boundary, and purpose.",
-      "Apply Donella Meadows' heap test to distinguish a real system from a mere collection of parts.",
+      "Distinguish the four levels of measurement: categorical (nominal), ordinal, interval, and ratio.",
+      "Identify which summary statistics are meaningful for each data type and recognize common type-mismatch errors.",
     ],
-    reading: `Systems science is the study of systems — collections of interacting parts that together exhibit behavior the parts alone do not. The field emerged in the mid-twentieth century from three converging traditions: Ludwig von Bertalanffy's General Systems Theory, Norbert Wiener's cybernetics, and the operations-research and complexity work that followed.
+    reading: `Background
 
-A system, in the technical sense used in this course, has four defining features:
+Before you can analyze data, you have to know what kind of data you have. The same number — say, the number 3 — can mean very different things, and the statistical operations that make sense depend entirely on the type of data.
 
-Elements — the parts of the system. Cells in a body. Employees in a company. Predators and prey in an ecosystem.
+There are four standard types of data, often called the four levels of measurement:
 
-Interconnections — the relationships among the elements. Hormonal signals between organs. Reporting lines and information flows in the company. Predation, competition, and symbiosis in the ecosystem.
+CATEGORICAL (also called NOMINAL) data places observations into named categories with no inherent order. Examples: eye color (blue, brown, green), blood type (A, B, AB, O), the political party someone is registered with. You can count how many observations fall in each category, but you cannot meaningfully average them. The "average eye color" of a class is not a meaningful number.
 
-Boundary — the line, sometimes sharp, sometimes fuzzy, that separates the system from its environment. The skin of a body. The legal entity of the company. The watershed of the ecosystem.
+ORDINAL data places observations in categories that have a natural order, but the spacing between categories is not necessarily equal. Examples: education level (high school, bachelor's, master's, doctorate), satisfaction ratings on a survey (very dissatisfied, dissatisfied, neutral, satisfied, very satisfied), military ranks. You can say one observation is "higher" than another, but you cannot say it is "twice as high" — the gap between "satisfied" and "very satisfied" is not necessarily the same as the gap between "neutral" and "satisfied."
 
-Purpose or function — what the system does, the behavior it exhibits over time. Living. Generating revenue. Cycling energy and matter.
+INTERVAL data is numerical, with equal spacing between values, but no meaningful zero point. The classic example is temperature in Fahrenheit or Celsius: 80°F is not "twice as hot" as 40°F because zero degrees does not mean "no temperature." Differences are meaningful (the gap from 30°F to 40°F is the same as 70°F to 80°F), but ratios are not.
 
-A common beginner's mistake is to confuse a system with a heap. A pile of car parts is not a car: it has all the elements but not the interconnections, boundary, or function. Donella Meadows' famous test is to ask whether the parts affect each other and whether the whole produces a behavior that the parts in isolation would not. If yes, it is a system; if no, it is just a heap.`,
-    assignment: `Assignment (50 points):
-Choose ONE everyday phenomenon that you would like to analyze as a system. It should be something concrete — a household, a coffee shop, a soccer team, a thermostat-and-room pair, a freeway during rush hour. Then:
-1. State your chosen phenomenon
-2. Identify at least three of its elements
-3. Identify at least three of its interconnections (relationships among those elements)
-4. Describe its boundary — what counts as inside the system, what counts as environment, and where the boundary is fuzzy
-5. State the system's purpose or function — the behavior it produces over time
-6. Apply the heap test: explain in 2–3 sentences why this is a system rather than a mere heap of parts`,
-    modelResponse: `Model Response:
-Phenomenon chosen: a small independent coffee shop during a typical morning shift.
+RATIO data is numerical, with equal spacing AND a true zero. Examples: height, weight, age, income, time elapsed, count of anything. Zero income really does mean no income; 80 kg is genuinely twice as much as 40 kg. All arithmetic operations make sense.
 
-Elements:
-- The baristas working the bar
-- The customers in line and at tables
-- The espresso machine and grinders
-- The inventory of beans, milk, syrups, and pastries
-- The point-of-sale system and the cash drawer
+Why this matters: the type of data determines which summary statistics and which statistical tests are appropriate. You can compute the mean of ratio data; you cannot meaningfully compute the mean of categorical data. You can rank-order ordinal data but not compute its standard deviation in a meaningful way. Beginning statistics students who skip this classification step often end up performing computations that produce numbers but no useful information.`,
+    assignment: `Assignment (50 points)
 
-Interconnections:
-- Customer orders flow through the cashier to the barista, who pulls shots and steams milk to fulfill them. This is the central information-and-work flow.
-- Inventory depletes as drinks are made, which feeds back to the manager's ordering decisions for the next day. The rate of depletion is coupled to the rate of customer arrivals.
-- Wait time increases when the line grows faster than the baristas can clear it. Long waits cause some customers to leave (balking), which in turn shortens the line — a balancing relationship.
-- Tips left on the counter signal customer satisfaction and indirectly affect barista mood and pace.
+Choose ONE study or dataset you can describe — it can be a real one (a survey you took, a study you read about) or a hypothetical one you make up. Then:
 
-Boundary: the inside of the system includes the physical space of the shop, the staff on shift, the equipment, and the inventory currently in the building. The environment includes the wholesale coffee supplier, the landlord, the weather (which affects foot traffic), and the customers who have not yet decided to walk in. The boundary is fuzziest at the door — a customer standing on the sidewalk reading the menu is partly in the system (about to order) and partly in the environment.
+1. Describe the study briefly
+2. Identify at least FOUR variables collected in the study
+3. For each variable, classify it as categorical, ordinal, interval, or ratio
+4. For each variable, give one example of a meaningful summary you could compute, and one example of a summary that would NOT be meaningful given the variable's type
+5. Identify ONE pitfall that might arise if someone mishandled the type of one of these variables`,
+    modelResponse: `Model Response
 
-Purpose or function: the coffee shop's function is to convert raw inputs (beans, milk, customer money, labor hours) into finished outputs (coffee drinks, food, customer satisfaction, profit) at a sustainable rate over time. From the owner's perspective the purpose is profit; from the customer's perspective it is caffeine and a place to sit; from a sociological perspective it may be community gathering. A single system can have multiple purposes depending on whose viewpoint we adopt.
+Study chosen: a customer satisfaction survey conducted by a regional coffee chain at 40 of its locations. Each customer who completes the survey provides several pieces of information.
 
-Heap test: this is a system rather than a heap because the elements actively affect one another. Remove the baristas and the espresso machine sits idle. Remove the customers and the inventory stops depleting. Remove the espresso machine and the baristas can do nothing useful. The behavior of the whole — the steady output of drinks throughout the morning — emerges from the coordinated interactions of the parts and would not exist in any single element on its own.
+Four variables:
 
-Why This Is a Model Response:
-- The chosen phenomenon is concrete and bounded enough to analyze.
-- Elements are specific and named — not "people and equipment" but which people and which equipment.
-- Interconnections are described as relationships, not just lists, and one balancing relationship (long waits → balking → shorter waits) previews later course material.
-- The boundary discussion acknowledges fuzziness; good systems analysis is explicit about that choice.
-- The purpose discussion notes that purpose is observer-dependent — owner, customer, and sociologist see different functions in the same system.
-- The heap test is applied substantively: removing any single element disables the system, demonstrating that the parts genuinely interact.`,
+STORE_ID — the identifier of the store where the customer was surveyed (e.g., "Store 17," "Store 32"). Categorical (nominal). Even though the IDs are numbers, they are just labels — Store 17 is not "more than" Store 16 in any meaningful sense.
+
+SATISFACTION — the customer's rating of their visit on a 5-point scale (1 = very dissatisfied, 5 = very satisfied). Ordinal. The categories are ordered, but the gap between rating 1 and rating 2 is not necessarily the same as the gap between 4 and 5.
+
+TEMPERATURE_F — the temperature outside in Fahrenheit at the time of the visit. Interval. Equal spacing between values, but 0°F does not mean "no temperature," so ratios are not meaningful.
+
+AMOUNT_SPENT — how many dollars the customer spent on the visit. Ratio. Zero dollars means zero spending, and $20 spent is genuinely twice as much as $10 spent.
+
+Meaningful and non-meaningful summaries for each:
+
+STORE_ID: meaningful — count how many customers were surveyed at each store, find the mode (most-surveyed store). Not meaningful — compute the average store ID. "The average store is 24.5" is nonsense.
+
+SATISFACTION: meaningful — find the median rating, count how many customers rated 4 or above. Not meaningful, strictly speaking — compute the mean rating, although in practice this is done all the time and treated as approximately interval. (We will discuss this practice and its risks below.)
+
+TEMPERATURE_F: meaningful — compute the mean temperature, the range, the standard deviation. Not meaningful — say "today was twice as warm as yesterday" because 80°F is twice the NUMBER of 40°F, but not twice the heat in any physical sense.
+
+AMOUNT_SPENT: meaningful — every standard summary statistic (mean, median, standard deviation, total revenue, ratios between groups). Not meaningful — there is no operation on ratio data that lacks a defensible interpretation.
+
+A pitfall: the temptation to compute means of ordinal data is widespread and risky. Many businesses report "average customer satisfaction" by averaging the 1–5 ratings, even though this is technically inappropriate. The danger is that the mean is sensitive to the assumption that the gap from 1 to 2 equals the gap from 4 to 5 — and customer-satisfaction researchers have shown that respondents often use the extreme categories asymmetrically. A score of 4 ("satisfied") might be very common among neutral customers who are reluctant to say something negative, while a score of 1 might be reserved for genuinely furious customers. Treating these as equally-spaced numbers can hide important information. The safer summary is the percentage of customers giving a rating of 4 or 5, or the median, or the full distribution. When we see "average satisfaction = 3.8" in a company report, we should remember it is built on an assumption that may not hold.
+
+Why This Is a Model Response
+
+All four classifications are correct, including the subtle case of STORE_ID looking numerical but being categorical. Numeric labels are not the same as numeric measurements.
+
+The student gives both a meaningful and a non-meaningful summary for each variable, demonstrating understanding rather than just labeling.
+
+The pitfall discussion is real and current. Treating Likert scales as interval data is the single most common type-mismatch error in applied statistics, and the model response identifies the specific failure mode (asymmetric use of extreme categories).
+
+The reflection notes a defensive practice — reporting the percentage of top-box ratings or the median — that the student would actually use in real analysis. The student is not just identifying the problem but proposing the standard fix.
+
+The example is concrete and bounded. A customer satisfaction survey at 40 stores is small enough to think about, large enough to have meaningful variation.`,
   },
   {
     id: "e1",
     number: 2,
-    title: "Essay 1: Open vs. Closed Systems",
+    title: "Essay 1: Measures of Central Tendency",
     points: 50,
     type: "essay",
     objectives: [
-      "Distinguish open from closed systems and explain how the Second Law of Thermodynamics applies to each.",
-      "Argue why treating an open system as closed produces predictable analytic failures.",
+      "Define and compute the mean, median, and mode and identify the strengths and weaknesses of each.",
+      "Choose the appropriate measure of center for a given data type and distribution shape, and defend the choice.",
     ],
-    reading: `In 1950 the biologist Ludwig von Bertalanffy published a paper that helped found modern systems science. His central observation: classical physics had spent two hundred years studying CLOSED systems — systems that exchange neither matter nor energy with their environment — but the systems that actually matter in biology, sociology, and economics are OPEN systems, exchanging both with their surroundings.
+    reading: `Background
 
-A CLOSED system is isolated from its environment. Energy and matter cannot cross its boundary. Over time, a closed system tends toward thermodynamic equilibrium — maximum entropy, minimum useful work. A sealed thermos slowly equilibrates to room temperature; a bottled chemical reaction reaches stable concentrations and stops. The trajectory is monotonic decay toward sameness.
+Once you have data, the first question is usually: where is the center? Three different statistics answer "center" in three different ways, and the difference matters.
 
-An OPEN system exchanges matter, energy, or both with its environment. Living organisms ingest food and excrete waste. Cities import electricity and export carbon dioxide. Companies hire labor and ship products. Open systems can sustain organized states far from equilibrium because the inflows replenish what entropy depletes. Bertalanffy called this property a "steady state" — not equilibrium in the closed-system sense, but a dynamic balance maintained by ongoing flows.
+The MEAN is what most people call "the average." Add up all the values, divide by the number of values:
 
-The distinction matters because it explains how living things and other organized systems persist and even grow in complexity, despite the universal tendency toward disorder. They do not violate the Second Law; they are open, and they import order (in the form of low-entropy energy and matter) from their environment, exporting disorder back out.`,
-    assignment: `Write your essay for someone unfamiliar with this class. Clearly label each section.
+mean = (sum of all values) / n
+
+In symbols, the population mean is μ (mu) and the sample mean is x̄ (x-bar). The mean uses every value in the dataset and is sensitive to outliers — one extreme value can pull it noticeably.
+
+$$\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$$
+
+The MEDIAN is the middle value when you sort the data from smallest to largest. If there is an odd number of values, the median is the single middle one. If there is an even number, it is the average of the two middle ones. The median uses position rather than magnitude, so it is resistant to outliers — extreme values do not pull it.
+
+The MODE is the value that occurs most frequently. There can be one mode, several modes (multimodal data), or no mode if every value occurs equally often. The mode is the only measure of center that works for categorical data — you can speak of "the most common eye color" but not "the average eye color."
+
+Which measure to use depends on three things: the type of data, the shape of the distribution, and what you are trying to communicate.
+
+For symmetric, well-behaved numerical data without strong outliers: the mean is fine, and is preferred because it uses all the information.
+
+For skewed numerical data, or data with outliers: the median is usually better, because it is not pulled by the long tail.
+
+For categorical data: only the mode applies.
+
+For ordinal data: the median is the safest choice; the mode is sometimes useful; the mean is technically inappropriate.
+
+A famous illustration: imagine a small town where ten people each earn $40,000 per year, and one person — the wealthy retiree on the hill — earns $4,000,000. The mean income is around $400,000. The median income is $40,000. Which number better represents "what people in this town make"? Almost certainly the median. The mean is mathematically correct but practically misleading. This is why income statistics in journalism are usually reported as medians, not means.`,
+    assignment: `Assignment (50 points)
 
 Section 1 (10 points) — Definitions
-- Define open and closed systems in your own words.
-- Explain the role of the Second Law of Thermodynamics in this distinction.
+In your own words, define mean, median, and mode. State at least one strength and one weakness of each as a measure of center.
 
-Section 2 (20 points) — Two Worked Examples
-Choose ONE example of a closed (or near-closed) system and ONE example of an open system. For each:
-- Identify the inputs, outputs, and boundary
-- Describe what would happen if the system's flows with its environment were cut off
-- Describe how its behavior over time differs from the other case
+Section 2 (20 points) — Computation
+You are given the following dataset of 11 values, representing the ages of customers at a coffee shop on a given afternoon:
 
-Section 3 (20 points) — Application
-Apply this distinction to a contemporary issue: a city, a forest ecosystem, a corporation, or a national economy. Argue why treating it as a closed system would lead to bad analysis. Cite at least one specific way the analysis would go wrong.`,
-    modelResponse: `Model Response:
+   23, 19, 28, 35, 41, 22, 24, 67, 26, 30, 25
+
+Compute, showing your work:
+- The mean
+- The median (sort the data first; show the sorted list)
+- The mode, if any
+
+Then describe in 2–3 sentences what each statistic tells you about this group of customers, and which one you would report if a journalist asked "what's the typical age of customers at this shop?" — and why.
+
+Section 3 (20 points) — Choosing a Measure
+Construct an original example (real or hypothetical) of a dataset where the MEAN and the MEDIAN differ meaningfully. Compute both. Argue which one is the better summary of the dataset and explain why. Discuss what kind of misleading impression a reader could get if the wrong measure were chosen.`,
+    modelResponse: `Model Response
 
 Section 1: Definitions
-A closed system is one whose boundary is impermeable to matter and energy: nothing crosses in either direction. Such systems are governed by classical thermodynamics; they tend over time toward thermodynamic equilibrium, the state in which no further useful work can be extracted, no temperature gradients persist, and entropy is maximized.
 
-An open system is one whose boundary admits flows of matter, energy, or both. Living cells, ecosystems, cities, businesses, and most physical systems we encounter in daily life are open. The key consequence: open systems can maintain organized, low-entropy structure indefinitely, provided the inflowing energy and matter are sufficient to offset the entropy that internal processes generate.
+The MEAN is the arithmetic average — sum of all values divided by the number of values. Strength: uses every data point and is the foundation of most further statistical methods (variance, standard deviation, regression). Weakness: a few outliers or a long tail can pull it far from where most data live.
 
-The Second Law of Thermodynamics states that the entropy of an isolated system never decreases. Inside a closed system, this means inevitable progression toward disorder. Inside an open system, the local system can become more organized, paid for by greater disorder dumped into the environment. Bertalanffy's insight was that biology and the social sciences had been studying open systems with mathematical tools designed for closed ones — and getting predictably wrong answers.
+The MEDIAN is the middle value of the sorted dataset. Strength: resistant to outliers; gives a central location even when the distribution is skewed. Weakness: ignores the magnitude of values away from the middle, so it does not summarize spread or carry forward into many further computations.
 
-Section 2: Two Worked Examples
-Closed (near-closed) example: a sealed laboratory calorimeter containing a small amount of hot water inside an insulated jacket.
-- Inputs: none, by design.
-- Outputs: none, by design.
-- Boundary: the insulated jacket.
-- If flows were cut off (already the case): over hours, the water cools as heat slowly escapes through imperfect insulation, approaching equilibrium with the surrounding bath. With perfect insulation, the water and jacket equilibrate to a single uniform temperature and stay there forever.
-- Behavior over time: monotonic decay toward a single stable state.
+The MODE is the most frequent value. Strength: the only measure of center that applies to categorical data (most common color, most common word, most common diagnosis). Weakness: may not exist (no value repeats), may be non-unique (multiple modes), and even when it does exist may not lie near the bulk of the data.
 
-Open example: a tropical rainforest.
-- Inputs: solar radiation, atmospheric CO₂, rain, nitrogen and phosphorus from weathering, animals and seeds drifting in.
-- Outputs: water vapor (transpiration), oxygen, organic litter washed out by rivers, animals leaving, heat radiated to the upper atmosphere.
-- Boundary: roughly the watershed and canopy of the forest.
-- If flows were cut off: cut off the sunlight and within weeks the forest dies; primary production collapses, the food chain unravels, and the forest decays.
-- Behavior over time: the forest never approaches equilibrium; it maintains a complex, organized, far-from-equilibrium structure for as long as the flows continue.
+Section 2: Computation
 
-Section 3: Application — A City as an Open System
-Consider Atlanta. Treating it as a closed system produces catastrophically wrong predictions.
+Dataset: 23, 19, 28, 35, 41, 22, 24, 67, 26, 30, 25.
 
-First, a closed-system analysis would predict that the city must eventually run out of resources. If no food, water, or energy can enter, Atlanta has perhaps a week of supplies before mass starvation. Yet Atlanta has existed for over a century and shows no sign of resource exhaustion, because food trucks roll in daily, the Chattahoochee River and reservoirs supply water, and the electrical grid imports energy from generating stations across the Southeast.
+Sort the data first:
 
-Second, a closed-system analysis would predict that waste accumulates without limit. But Atlanta's sewers carry waste out, garbage trucks haul refuse to landfills outside the city limits, and exhaust gases disperse into the atmosphere.
+   19, 22, 23, 24, 25, 26, 28, 30, 35, 41, 67
 
-Third — and this is the deepest error — a closed-system analysis would treat Atlanta's growth and persistence as anomalous, since closed systems by the Second Law cannot increase in complexity. From the open-system perspective, Atlanta's growth is unremarkable: it is a far-from-equilibrium dissipative structure, paid for by the entropy it exports through its outflows.
+Mean: add the values and divide by 11.
 
-A specific way the analysis would go wrong: an urban planner using closed-system assumptions might focus exclusively on internal efficiency — recycling rates, internal energy use, congestion — and miss the much larger leverage point of supply-chain resilience. When Hurricane Katrina disrupted Gulf Coast fuel pipelines in 2005, Atlanta experienced gasoline shortages within days, despite its own internal infrastructure being undamaged. The vulnerability lived in the inflows, which closed-system thinking renders invisible.
+19 + 22 + 23 + 24 + 25 + 26 + 28 + 30 + 35 + 41 + 67 = 340
 
-Why This Is a Model Essay:
-- Section 1 explains the Second Law in a way that resolves the apparent paradox of life and organization.
-- The closed and open examples are matched in structure (inputs, outputs, boundary, what happens when flows stop), making the contrast precise.
-- The forest example correctly identifies sunlight and rain as inflows, which is easy to miss.
-- The Atlanta application names three specific failures of closed-system thinking and grounds them in a real event (Katrina).
-- The closing draws a strategic implication: closed-system thinking renders supply-chain risk invisible.`,
+mean = 340 / 11 ≈ 30.9
+
+Median: there are 11 values (odd count), so the median is the 6th value of the sorted list, which is 26.
+
+Mode: every value appears exactly once, so there is no mode for this dataset.
+
+Interpretation: the mean of about 30.9 is pulled upward by the 67-year-old outlier. The median of 26 better represents where most customers actually fall — the middle person, with five customers on either side. If a journalist asked for "the typical age of customers," I would report the median of 26 rather than the mean of about 31. The reason: the dataset has an outlier (67 is well above the rest of the values, which cluster in the 19–41 range), and the median is more resistant to that distortion. Reporting the mean would give the impression that the typical customer is in their early thirties, which overstates the age of the population by about five years.
+
+Section 3: A Dataset Where Mean and Median Differ
+
+Example: a small business — say, an architecture firm — has 9 employees. Their annual salaries are:
+
+   $52,000, $58,000, $61,000, $63,000, $65,000, $68,000, $72,000, $80,000, $450,000
+
+The first eight employees are designers, project managers, and admin staff. The ninth is the owner.
+
+Mean salary: sum = $52,000 + $58,000 + $61,000 + $63,000 + $65,000 + $68,000 + $72,000 + $80,000 + $450,000 = $969,000. Divided by 9 = approximately $107,667.
+
+Median salary: with 9 values, the median is the 5th value of the sorted list, which is $65,000.
+
+Which is the better summary: the median ($65,000) is far more informative about what employees at this firm actually earn. The mean ($107,667) is technically the arithmetic average, but it is not earned by anyone — eight of the nine employees earn substantially less, and one earns substantially more. The mean is being driven by a single extreme value (the owner's $450,000), and reporting it as if it represents typical compensation is misleading.
+
+What goes wrong with the wrong measure: suppose the firm advertises "average salary at our company is over $100,000!" to attract job candidates. A candidate reading that figure would reasonably expect their own salary to be in that neighborhood. They would not realize the figure is built on the inclusion of one outlier and that the actual position they are interviewing for likely pays in the $60,000s or $70,000s. The choice between mean and median can be the difference between a transparent statement and a recruitment lie. This is why thoughtful organizations report MEDIAN salary alongside or instead of mean — and why federal agencies typically report MEDIAN household income rather than mean. The mean is mathematically correct; the median is honest about what most people actually experience.
+
+Why This Is a Model Essay
+
+Section 1 connects each measure of center to specific strengths and weaknesses, not just definitions. The student knows what each one is FOR.
+
+In Section 2, the dataset is sorted before any computation. This is the right habit for any median or quartile calculation and prevents off-by-one errors.
+
+The interpretation step in Section 2 connects the numbers to the question a journalist might ask. The model response does not just compute; it argues for which number to communicate.
+
+The Section 3 example uses concrete dollar amounts and a realistic scenario. The student does NOT use the cliched "Bill Gates walks into a bar" example, which would be technically correct but pedagogically tired.
+
+The closing observation about job advertisements — that mean vs. median can be the difference between transparency and deception — gives the technical lesson real-world stakes. This is exactly the kind of statistical literacy a 101 course is supposed to instill.`,
   },
   {
     id: "d2",
     number: 3,
-    title: "Discussion 2: Stocks, Flows, and Accumulation",
+    title: "Discussion 2: Measures of Spread",
     points: 50,
     type: "discussion",
     objectives: [
-      "Distinguish stocks from flows and identify the units of each.",
-      "Explain why confusing stock targets with flow targets produces predictable policy errors.",
+      "Compute and interpret range, variance, standard deviation, and IQR as measures of spread.",
+      "Choose the appropriate measure of spread to pair with the appropriate measure of center for a given distribution.",
     ],
-    reading: `Donella Meadows, in her widely-read primer Thinking in Systems, opens her first chapter not with abstract theory but with the simple distinction between stocks and flows.
+    reading: `Background
 
-A STOCK is an accumulation — the amount of something present in the system at a given moment. The water in a bathtub. The money in a bank account. The carbon in the atmosphere. The number of fish in a lake. Stocks are nouns. They have units of "stuff" — gallons, dollars, gigatons, individuals.
+Two datasets can have the same mean and still be very different. Consider these:
 
-A FLOW is a rate of change of a stock — the speed at which stuff is added to or removed from the stock. Water entering through the tap and water leaving through the drain. Income (a flow into the bank account) and expenses (a flow out). Births and deaths. Flows are verbs. Their units are "stuff per unit time."
+   Dataset A: 49, 50, 50, 50, 51 — mean = 50
+   Dataset B: 10, 30, 50, 70, 90 — mean = 50
 
-The fundamental equation of stock-and-flow dynamics:
-   Stock at time t = Stock at time 0 + (sum of inflows from 0 to t) − (sum of outflows from 0 to t)
+Both have a mean of 50, but Dataset A is tightly bunched and Dataset B is widely spread. Reporting only the mean would hide this completely. To understand a dataset, you need a measure of spread — how far the values typically are from the center.
 
-Three implications follow that trip up policymakers and ordinary citizens alike:
-- A stock can be increasing even if the inflow is decreasing, as long as the inflow still exceeds the outflow.
-- A stock can be drained quickly only by increasing outflows — and outflows are often slow to change.
-- Stocks act as buffers, smoothing out shocks.`,
-    assignment: `Assignment (50 points):
-Choose ONE real-world stock that matters to you. It can be physical, financial, social, or informational. Then:
-1. Name the stock and state its units
-2. Identify at least one inflow and at least one outflow, with their units
-3. Describe the equilibrium condition — under what circumstances would the stock stay constant
-4. Describe what would happen if the inflow doubled while the outflow stayed the same
-5. Describe what would happen if the outflow doubled while the inflow stayed the same
-6. Identify one common policy mistake that arises from confusing the stock with the flow`,
-    modelResponse: `Model Response:
-Stock chosen: atmospheric carbon dioxide.
+Four standard measures of spread:
 
-Stock and units: the total mass of CO₂ in Earth's atmosphere, conventionally expressed as parts per million (ppm) by volume, or in gigatons of carbon (GtC).
+RANGE: the difference between the maximum and minimum values. Simple but crude — uses only two values out of the entire dataset.
 
-Inflows (units: GtCO₂ per year):
-- Fossil-fuel combustion: roughly 36 GtCO₂ per year
-- Land-use change (deforestation, soil disturbance): roughly 4 GtCO₂ per year
-- Volcanic outgassing: roughly 0.3 GtCO₂ per year on average
+range = max − min
 
-Outflows (units: GtCO₂ per year):
-- Ocean uptake: roughly 10 GtCO₂ per year
-- Terrestrial uptake (net photosynthesis exceeding respiration): roughly 12 GtCO₂ per year
-- Mineralization (silicate weathering): effectively zero on the decadal scale
+VARIANCE: the average of the squared deviations from the mean. Uses every data point. The squaring ensures that values above and below the mean both contribute positively (otherwise positive and negative deviations would cancel). Variance is in squared units, which makes it hard to interpret directly — if your data are in inches, your variance is in square inches.
 
-Equilibrium condition: atmospheric CO₂ would stay constant if total inflows exactly equaled total outflows. Current inflows total roughly 40 GtCO₂ per year and outflows total roughly 22 GtCO₂ per year, so we are running a net surplus of about 18 GtCO₂ per year. This is why the stock is rising rather than holding steady.
+variance = Σ(xᵢ − x̄)² / (n − 1)     for a sample
 
-If inflow doubled while outflow stayed the same: total inflow would jump to about 80 GtCO₂ per year against 22 GtCO₂ per year of outflow, a net accumulation of about 58 GtCO₂ per year — roughly three times the current rate of accumulation.
+STANDARD DEVIATION: the square root of the variance. Same units as the original data, which makes it interpretable. The standard deviation is the most commonly reported measure of spread in published research.
 
-If outflow doubled while inflow stayed the same: total outflow would jump to about 44 GtCO₂ per year against 40 GtCO₂ per year of inflow, a net DRAW-DOWN of about 4 GtCO₂ per year. The stock would slowly decline.
+s = √[ Σ(xᵢ − x̄)² / (n − 1) ]     for a sample
 
-Common policy mistake: confusing flow targets with stock targets. When governments commit to "cut emissions in half by 2050," they are reducing the inflow. But reducing the inflow does not reduce the stock — it only slows the rate at which the stock continues to rise. Even with halved emissions, atmospheric CO₂ would keep climbing as long as inflows exceeded outflows. Stabilizing the climate requires stabilizing the stock, which requires net-zero or net-negative flows. Policymakers and journalists routinely conflate the two, treating "emission cuts" as if they were "concentration cuts." The bathtub keeps filling even when you turn the tap down — what matters is whether the tap rate is still higher than the drain rate.
+$$s = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}(x_i - \\bar{x})^2}$$
 
-Why This Is a Model Response:
-- Units are correct, including the GtCO₂ vs. GtC convention.
-- Inflows and outflows are itemized rather than lumped (ocean vs. terrestrial uptake matter differently).
-- The equilibrium condition is computed from the listed numbers, not asserted abstractly.
-- The two scenarios are computed quantitatively, not just described directionally.
-- The closing policy reflection is the heart of stock-and-flow thinking: a flow target is not a stock target.`,
+(Note on the n − 1: when computing from a sample to estimate the population standard deviation, we divide by n − 1 rather than n. This is called Bessel's correction. The intuition is that the sample mean is closer to the sample data than the true population mean would be, so deviations are slightly underestimated; dividing by n − 1 instead of n compensates. For now, just remember: SAMPLE standard deviation uses n − 1.)
+
+INTERQUARTILE RANGE (IQR): the spread of the middle 50% of the data. The first quartile (Q1) is the value below which 25% of the data lies; the third quartile (Q3) is the value below which 75% lies; the IQR is Q3 − Q1. Like the median, the IQR is resistant to outliers.
+
+IQR = Q3 − Q1
+
+Which measure to use:
+- Range: a quick first look, but rarely the best summary
+- Standard deviation: the standard for symmetric distributions and most published research
+- IQR: better for skewed data or data with outliers, paired with the median`,
+    assignment: `Assignment (50 points)
+
+You are given the following two datasets, both representing test scores for two sections of the same college class:
+
+   Section A: 72, 75, 78, 80, 82, 84, 88, 91, 95, 98
+   Section B: 50, 60, 75, 80, 80, 80, 80, 95, 100, 100
+
+Compute, showing your work for each section:
+- Mean
+- Range
+- Standard deviation (you may show the calculation step by step OR briefly describe how you would compute it; what matters is showing you understand the formula)
+- Median
+- IQR
+
+Then:
+- Compare the two sections. Do they have similar centers? Similar spreads?
+- Recommend which measure of spread you would report if you had to summarize the two sections to a department chair, and why`,
+    modelResponse: `Model Response
+
+Section A: 72, 75, 78, 80, 82, 84, 88, 91, 95, 98 (already sorted)
+Section B: 50, 60, 75, 80, 80, 80, 80, 95, 100, 100 (already sorted)
+
+SECTION A computations.
+
+Mean A: sum = 72 + 75 + 78 + 80 + 82 + 84 + 88 + 91 + 95 + 98 = 843. Divide by 10:
+x̄_A = 843 / 10 = 84.3
+
+Range A: max − min = 98 − 72 = 26.
+
+Standard deviation A: subtract the mean from each value, square the deviations, sum them, divide by n − 1 = 9, take the square root.
+
+Deviations from 84.3: −12.3, −9.3, −6.3, −4.3, −2.3, −0.3, 3.7, 6.7, 10.7, 13.7
+Squared deviations: 151.29, 86.49, 39.69, 18.49, 5.29, 0.09, 13.69, 44.89, 114.49, 187.69
+Sum of squared deviations ≈ 662.10
+Variance ≈ 662.10 / 9 ≈ 73.57
+Standard deviation s_A ≈ √73.57 ≈ 8.58
+
+Median A: with 10 values (even count), the median is the average of the 5th and 6th values: (82 + 84) / 2 = 83.
+
+IQR A: Q1 is the median of the lower half (72, 75, 78, 80, 82), which is 78. Q3 is the median of the upper half (84, 88, 91, 95, 98), which is 91. IQR = 91 − 78 = 13.
+
+SECTION B computations.
+
+Mean B: sum = 50 + 60 + 75 + 80 + 80 + 80 + 80 + 95 + 100 + 100 = 800. Divide by 10:
+x̄_B = 800 / 10 = 80.0
+
+Range B: 100 − 50 = 50.
+
+Standard deviation B:
+Deviations from 80.0: −30, −20, −5, 0, 0, 0, 0, 15, 20, 20
+Squared deviations: 900, 400, 25, 0, 0, 0, 0, 225, 400, 400
+Sum ≈ 2350
+Variance ≈ 2350 / 9 ≈ 261.11
+Standard deviation s_B ≈ √261.11 ≈ 16.16
+
+Median B: average of 5th and 6th values: (80 + 80) / 2 = 80.
+
+IQR B: Q1 is the median of the lower half (50, 60, 75, 80, 80), which is 75. Q3 is the median of the upper half (80, 80, 95, 100, 100), which is 95. IQR = 95 − 75 = 20.
+
+Comparison:
+
+The means are similar (84.3 vs. 80.0) — within about four points. The medians are even closer (83 vs. 80). So the two sections have approximately the same CENTER.
+
+The spreads are dramatically different. Section A has a standard deviation of about 8.6 and an IQR of 13; Section B has a standard deviation of about 16.2 and an IQR of 20. Section B is roughly twice as spread out as Section A. A glance at the raw data confirms this — Section A clusters in the high 70s and 80s, while Section B contains both very low scores (50, 60) and several perfect 100s.
+
+Recommendation for the department chair: I would report the standard deviation, paired with the mean. The standard deviation is the standard summary in academic reporting, and the chair will be familiar with comparing standard deviations across sections. Saying "Section A: mean 84.3, SD 8.6; Section B: mean 80.0, SD 16.2" makes it immediately clear that Section B has much more variability — some students are doing very well, others are struggling badly. The standard deviation surfaces the issue more visibly than the mean alone, which would have made the sections look almost identical. If the chair asks follow-up questions about which students need help, I would then look at the actual distribution, perhaps using the median and IQR as a robustness check. But for a one-line summary, mean ± SD is the right call.
+
+Why This Is a Model Response
+
+The student computes both standard deviation and IQR, and shows the computational steps for SD (deviations, squared deviations, sum, divide by n−1, square root). This is the procedure students need to internalize.
+
+The student correctly uses n−1 (Bessel's correction) for the sample standard deviation. This is a small detail with a big effect on the answer at small sample sizes.
+
+The comparison correctly observes that the centers are similar but the spreads differ dramatically. The same mean masking very different distributions is the entire reason measures of spread exist.
+
+The recommendation is reasoned. The student does not just say "report the standard deviation" but explains why it is appropriate (familiar to the audience, surfaces the key difference between sections) and what they would do as a follow-up.
+
+The pairing of mean with SD, and the implicit pairing of median with IQR, follows standard reporting conventions in published research. The student is learning the conventions, not just the computations.`,
   },
   {
     id: "e2",
     number: 4,
-    title: "Essay 2: Feedback Loops — Reinforcing and Balancing",
+    title: "Essay 2: Visualizing Data",
     points: 50,
     type: "essay",
     objectives: [
-      "Define reinforcing and balancing feedback loops and read causal-loop diagrams.",
-      "Analyze a coupled system in which interacting reinforcing and balancing loops produce characteristic dynamics.",
+      "Match histogram, boxplot, scatterplot, and bar chart to the data type and analytic question they best serve.",
+      "Recognize and remediate common misleading visualization tricks (truncated axes, cherry-picked windows, etc.).",
     ],
-    reading: `A feedback loop occurs when the output of a system's process loops back to influence its own input. Two basic types account for most dynamic behavior in real systems.
+    reading: `Background
 
-A REINFORCING (positive) feedback loop amplifies change in the same direction. More leads to more; less leads to less. Compound interest is the textbook example. Reinforcing loops produce exponential growth or exponential collapse. Other examples: a viral epidemic in its early stage; a bank run; the spread of rumors.
+Numbers in a table can hide structure that becomes obvious in a picture. The right visualization can reveal patterns, outliers, and relationships that no summary statistic captures. The wrong visualization — or no visualization at all — can mislead even careful analysts.
 
-A BALANCING (negative) feedback loop counteracts change. The further the system departs from some target, the harder it is pushed back. A thermostat is the canonical example. Other examples: predator-prey dynamics; market price equilibration; body temperature regulation.
+Four visualization types cover most of what a Statistics 101 student needs.
 
-Real systems almost always contain BOTH kinds of loops, often many of each. The interesting behavior — oscillations, overshoots, sudden collapses, S-shaped growth — comes from the interplay. Understanding which loop is dominant at a given moment, and how the dominance shifts over time, is the central skill of dynamic systems analysis.`,
-    assignment: `Section 1 (10 points) — Definitions and Diagrams
-Define reinforcing and balancing feedback loops in your own words. For each, describe in words a simple causal-loop diagram (using + for "more of A causes more of B" and − for "more of A causes less of B").
+A HISTOGRAM displays the distribution of a single numerical variable. Values are sorted into bins (intervals), and the height of each bar shows how many observations fall in that bin. A histogram reveals the shape of the distribution: is it symmetric? Skewed? Bimodal? Are there outliers? Most importantly, it shows whether the data look approximately bell-shaped (normal) or some other shape, which determines what statistical methods are appropriate.
 
-Section 2 (20 points) — One of Each
-Construct ONE original example of a reinforcing loop and ONE original example of a balancing loop, drawn from real life (NOT thermostats or compound interest). For each:
-- Identify the variables involved
-- Describe the causal chain step by step, indicating + or − links
-- Describe the behavior over time the loop produces
-- Describe what eventually limits or modifies the loop's behavior in the real world
+A BOXPLOT (also called a box-and-whisker plot) shows a five-number summary: minimum, first quartile, median, third quartile, and maximum. The box spans Q1 to Q3 (the IQR), with a line at the median. The "whiskers" extend to the smallest and largest values not classified as outliers. Outliers — typically defined as values more than 1.5 × IQR beyond the box — are plotted as individual points. Boxplots are excellent for comparing several groups side by side, because each group becomes a single compact figure.
 
-Section 3 (20 points) — A Coupled System
-Identify a real-world system that contains BOTH a reinforcing loop and a balancing loop interacting with each other. Describe both loops, explain how they interact, and describe the resulting dynamics.`,
-    modelResponse: `Model Response:
+A SCATTERPLOT displays the relationship between two numerical variables. Each observation is a point at coordinates (x, y). Scatterplots reveal whether two variables are correlated, whether the relationship is linear or curved, and whether outliers exist that distort overall patterns. Almost any analysis of "how does X relate to Y?" should start with a scatterplot.
 
-Section 1: Definitions and Diagrams
-A reinforcing feedback loop is a closed chain of causal links in which a change in any variable comes back, after going around the loop, to amplify that same change. In causal-loop notation, a reinforcing loop has an even number of negative links (zero is even); the signs around the loop multiply to +1.
+A BAR CHART displays counts or summary statistics across categories. The horizontal axis lists categories (eye colors, treatment groups, countries); the vertical axis shows the count or value. Bar charts are the right choice for categorical data; histograms are the right choice for numerical data. Confusing the two is a common error — a histogram has touching bars (because the underlying variable is continuous), while a bar chart has gaps between bars (because the categories are distinct).
 
-A balancing feedback loop is a closed chain whose net effect is to OPPOSE change. A rise in any variable triggers effects that push it back down. A balancing loop has an odd number of negative links; the signs multiply to −1.
+What each visualization reveals — and hides:
+- A histogram reveals shape but hides individual values
+- A boxplot reveals position and outliers but hides the shape between the quartiles (a uniform distribution and a bimodal distribution can produce similar boxplots)
+- A scatterplot reveals relationships but, with very large datasets, points can overplot and hide local density
+- A bar chart reveals counts but cannot show within-category variation
 
-Reinforcing example in words: "Population" → (+) → "Births" → (+) → "Population". Two positive links; product +1.
+Best practice: when first encountering a dataset, plot it before computing anything. Statisticians sometimes call this "looking at the data," and it is the single most reliable way to avoid embarrassing analytic errors.`,
+    assignment: `Assignment (50 points)
 
-Balancing example in words: "Population" → (+) → "Crowding" → (+) → "Death rate" → (−) → "Population". Two positive and one negative link; product −1.
+Section 1 (10 points) — Definitions
+In your own words, describe what each of the four visualization types (histogram, boxplot, scatterplot, bar chart) shows and what kind of data each is appropriate for. Give one strength and one limitation of each.
 
-Section 2: Original Examples
+Section 2 (20 points) — Choosing the Right Visualization
+For each of the following situations, name the visualization you would use and explain why. Be specific: if there are multiple reasonable choices, argue for the one you think is best.
 
-Reinforcing loop — the rich-get-richer dynamic of social media follower counts.
-Variables: a user's follower count, the algorithmic visibility of the user's posts, the rate at which strangers discover and follow the user.
-Causal chain:
-- "Follower count" → (+) → "Algorithmic visibility": platforms surface content from accounts with more followers more often.
-- "Algorithmic visibility" → (+) → "New strangers seeing the account"
-- "New strangers seeing the account" → (+) → "Rate of new follows"
-- "Rate of new follows" → (+) → "Follower count"
-All four links positive; product +1; reinforcing.
-Behavior over time: an account that crosses some threshold of visibility experiences accelerating growth — exponential or super-exponential during the takeoff phase. Below that threshold, the same loop runs in reverse.
-What eventually limits this loop: market saturation, platform-level rate caps, attention fatigue, and the entry of competing platforms.
+1. You have the heights, in inches, of 500 incoming college freshmen, and you want to know whether the distribution is approximately bell-shaped.
+2. You have the SAT scores of students from 6 different high schools (about 100 students per school), and you want to compare the schools.
+3. You have, for each of 80 cities, the population and the number of public libraries. You want to know whether bigger cities tend to have more libraries.
+4. You have a survey of 1,000 voters, each of whom identified their preferred candidate (out of 5 candidates). You want to summarize voter preferences.
 
-Balancing loop — muscle fatigue during exercise.
-Variables: rate of muscular work, accumulation of metabolic byproducts, perceived exertion, voluntary effort.
-Causal chain:
-- "Rate of muscular work" → (+) → "Accumulation of metabolic byproducts"
-- "Accumulation of metabolic byproducts" → (+) → "Perceived exertion (pain, burning)"
-- "Perceived exertion" → (−) → "Voluntary effort"
-- "Voluntary effort" → (+) → "Rate of muscular work"
-Three positive and one negative; product −1; balancing.
-Behavior over time: when exercise begins, work rises; byproducts accumulate; pain increases; the person reduces effort; the work rate falls back toward a sustainable level.
-What modifies the loop: training raises the body's capacity to clear byproducts, shifting the setpoint upward — an adaptive balancing loop.
+Section 3 (20 points) — Misleading Visualizations
+Visualization can mislead as well as inform. Describe TWO specific tricks or mistakes that produce misleading visualizations. (Examples: truncated y-axes, inappropriate scale, choice of histogram bin width, cherry-picked time windows, 3D pie charts, dual y-axes, etc.) For each:
+- Describe the trick or mistake
+- Give a concrete example of where you have seen it (real or hypothetical)
+- Explain what false impression the reader takes away
+- Describe how you would redraw the visualization to be honest`,
+    modelResponse: `Model Response
 
-Section 3: A Coupled System — Predator-Prey Dynamics
-Consider rabbits and foxes in a closed habitat.
+Section 1: Definitions
 
-Reinforcing loop (rabbit growth without foxes):
-- "Rabbit population" → (+) → "Rabbit births" → (+) → "Rabbit population"
-In isolation, this produces exponential rabbit growth.
+A HISTOGRAM displays the distribution of a single numerical variable by binning values into intervals and drawing a bar for each bin whose height shows the count or proportion. Strength: shows the SHAPE of the distribution clearly — symmetric, skewed, bimodal, etc. Limitation: the apparent shape depends on bin width; too few bins hide structure, too many bins obscure it with noise.
 
-Balancing loop (predation):
-- "Rabbit population" → (+) → "Food available to foxes"
-- "Food available to foxes" → (+) → "Fox population"
-- "Fox population" → (+) → "Predation rate on rabbits"
-- "Predation rate on rabbits" → (−) → "Rabbit population"
-Three positive and one negative; balancing.
+A BOXPLOT shows the five-number summary (min, Q1, median, Q3, max) plus outliers, in a compact format. Strength: ideal for side-by-side comparison of several groups; surfaces outliers automatically. Limitation: hides the shape of the distribution between the quartiles — a bimodal distribution with a gap at its median looks the same as a smooth distribution.
 
-How they interact: when rabbits are abundant, the reinforcing loop dominates and the rabbit population swells. The growing rabbit population feeds the foxes, whose numbers rise too — but more slowly. As foxes grow, predation pressure mounts, the balancing loop takes over, and rabbits crash. Now there is too little food for foxes, and the fox population crashes too — at which point predation pressure relaxes and the cycle repeats.
+A SCATTERPLOT displays the relationship between two numerical variables, with each observation as a point. Strength: reveals correlation, linearity, and outliers in two-variable relationships. Limitation: overplotting in large datasets — thousands of points can pile on top of each other, hiding local density (countermeasures include transparency, jitter, or hexbin plots).
 
-Resulting dynamics: oscillation, fox peaks lagging rabbit peaks by a quarter-cycle. In a simple Lotka-Volterra model the oscillations are perfectly periodic; in real ecosystems they are perturbed by weather, disease, and habitat change, but the basic alternation produces the wave-like structure observed in the Hudson's Bay Company's lynx-and-snowshoe-hare fur records, which oscillate on a roughly ten-year cycle.
+A BAR CHART shows counts or summary values across discrete categories. Strength: the natural choice for categorical data — clear, easy to read, hard to misinterpret when done well. Limitation: cannot show variation WITHIN categories; a bar showing "average revenue per region" hides whether some stores in that region wildly outperformed others.
 
-Why This Is a Model Essay:
-- Section 1 includes the technical rule about counting negative links to classify a loop.
-- The social-media example identifies a contemporary algorithmic mechanism, not a textbook cliché.
-- The muscle-fatigue example identifies a balancing loop that ADAPTS over time (training shifts the setpoint).
-- Section 3 explains predator-prey dynamics as the consequence of two loops with shifting dominance.
-- The Hudson's Bay reference anchors abstract theory in real data.`,
+Section 2: Choosing the Right Visualization
+
+1. Heights of 500 freshmen, distribution shape: HISTOGRAM. Heights are a continuous numerical variable, the dataset is large, and the question is specifically about distribution shape. A histogram with an appropriate bin width (say, 1-inch bins) would show whether the data are approximately bell-shaped, skewed, or contain unexpected features. A boxplot would also work but would miss the sub-shape detail.
+
+2. SAT scores at 6 high schools, comparing schools: BOXPLOTS, side by side. With 6 groups of 100 students each, side-by-side boxplots are the standard choice — one boxplot per school, arranged horizontally for direct visual comparison of medians, IQRs, and outliers. Six histograms would also work but would require six separate panels and make comparison harder. A bar chart of mean scores would hide the variation within each school, which is exactly what the comparison is about.
+
+3. City population vs. number of libraries: SCATTERPLOT. Two numerical variables, one observation per city — that is the textbook scatterplot situation. With 80 points, overplotting is not a concern. The plot would reveal whether the relationship is linear, curved, or absent. As a follow-up, log-transforming both axes might be sensible if city populations span several orders of magnitude.
+
+4. Voter preferences across 5 candidates from 1,000 voters: BAR CHART. Categorical data (which candidate), so a bar chart is the natural choice. Each candidate gets a bar showing how many voters chose them. A pie chart would technically work but is harder to compare than a bar chart, especially when several values are similar in magnitude.
+
+Section 3: Misleading Visualizations
+
+TRICK 1: Truncated y-axis.
+
+Description: a bar chart whose y-axis does not start at zero. Small differences between bars are visually exaggerated because the visible portion of each bar is a small fraction of the total height, but the truncation makes them look proportionally large.
+
+Concrete example: a chart of unemployment rates over four quarters showing values of 5.1%, 5.2%, 5.3%, 5.4%. The y-axis runs from 5.0% to 5.5%. Each bar is a different visible height, with the last bar appearing roughly four times as tall as the first.
+
+False impression: unemployment has roughly quadrupled, when in fact it has risen by 0.3 percentage points (a 6% relative increase, but a tiny absolute change).
+
+How to redraw honestly: y-axis starting at zero. The four bars would look essentially identical, accurately conveying that the change is small. If the small change really is the story, an annotation noting the absolute and relative size of the change would be more honest than visual exaggeration.
+
+TRICK 2: Cherry-picked time window.
+
+Description: showing data from a deliberately chosen short time period that supports a desired narrative, while ignoring the longer-term context that would tell a different story.
+
+Concrete example: a stock chart showing a company's share price over the past three months, during which it has risen 30%. The chart's caption is "Strong growth!" Hidden from view: the previous nine months, during which the share price fell 50%. The three months shown are simply a partial recovery.
+
+False impression: the stock is performing strongly, when in fact over a full-year period it is still well below where it started.
+
+How to redraw honestly: show at least one full year of data, with a clear time axis. If the recent rebound really is the story, the longer timeframe should make that more impressive (or less, depending on context), and the reader can interpret it themselves rather than being shown only the part that supports a predetermined narrative.
+
+Why This Is a Model Essay
+
+Section 1 distinguishes a histogram from a bar chart correctly. This is a foundational distinction that beginning students often miss, and the model response notes the visual difference (touching bars vs. gapped bars).
+
+Section 2 reasons through each choice rather than just naming a chart type. The student explains why a boxplot is better than a bar chart of means for school comparison: bars hide within-school variation, which is the whole point.
+
+In Section 3, both tricks are described with specific scenarios (unemployment chart, stock chart) that match the kind of misleading visualizations students will actually encounter in journalism and advertising.
+
+The "how to redraw honestly" step turns critique into prescription. It is not enough to recognize that something is misleading; the student should know how to present the same data in a defensible way.
+
+The closing observation — that the reader should interpret the data themselves — captures the ethical core of data visualization. The job of a chart is to help understanding, not to enforce a conclusion.`,
   },
   {
     id: "d3",
     number: 5,
-    title: "Discussion 3: Cybernetics and Requisite Variety",
+    title: "Discussion 3: Probability Basics",
     points: 50,
     type: "discussion",
     objectives: [
-      "State Ashby's Law of Requisite Variety and apply it to a controller-and-system scenario.",
-      "Distinguish the two strategies for satisfying Ashby's Law: amplifying controller variety and reducing environmental variety.",
+      "Apply independence, conditional probability, and base-rate reasoning to construct and solve probability problems.",
+      "Recognize base-rate neglect and explain its consequences in real-world contexts such as medical testing.",
     ],
-    reading: `Cybernetics was founded in the 1940s, principally by Norbert Wiener and a circle including Warren McCulloch, John von Neumann, and Margaret Mead. The word comes from the Greek kybernētēs, "steersman" — the person who guides a ship by continuously correcting course. Cybernetics is the study of control and communication in any system.
+    reading: `Background
 
-The British cybernetician W. Ross Ashby formulated the LAW OF REQUISITE VARIETY: only variety can absorb variety. Formally, for a control system to be capable of regulating a target system, the controller's repertoire of responses must be at least as large as the repertoire of disturbances the target system can present.
+Probability is the language for talking about uncertain events. A probability is a number between 0 and 1: 0 means the event cannot happen, 1 means it certainly will, 0.5 means it is as likely to happen as not. Probabilities are often expressed as percentages (0.25 = 25%) or as fractions (1/4).
 
-Imagine you are a goalkeeper. The shooter has, say, ten places they can aim. If you can only move to five places, the shooter has a guaranteed strategy: aim at one of the five places you cannot defend. To regulate the situation, your variety of responses must equal or exceed the shooter's variety of attacks.
+Three concepts cover most of what a Statistics 101 student needs to navigate.
 
-Ashby's Law explains why simple regulations cannot govern complex industries, why a manager with one style cannot lead a diverse team, and why organisms with richer behavioral repertoires outcompete simpler ones in fluctuating environments. Organizations facing high-variety environments must either match that variety internally or actively reduce the variety of their environment.`,
-    assignment: `Assignment (50 points):
-Construct an original scenario involving a controller and a system to be controlled. Then:
-1. Identify the controller and the system being controlled
-2. Enumerate the variety of disturbances or states the controlled system can present (be specific — give a count or clear description of the range)
-3. Enumerate the variety of responses the controller has available
-4. Determine whether the controller has requisite variety. If not, identify which disturbances will defeat it
-5. Propose ONE concrete way the controller could acquire more variety, and ONE concrete way the situation could be arranged so the controlled system has less variety to begin with`,
-    modelResponse: `Model Response:
-Scenario: a customer service representative at an insurance call center is the controller; the population of incoming customer calls is the system being controlled.
+INDEPENDENCE: two events are independent if the occurrence of one does not change the probability of the other. Successive coin flips are independent — getting heads on the first flip tells you nothing about the second. Drawing two cards from a deck WITHOUT replacement is NOT independent — once the first card is drawn, the deck has changed, so the probabilities for the second draw are different.
 
-Variety of disturbances:
-- Routine policy questions: ~50 distinct sub-types
-- Claims initiation across all product lines: ~40 distinct scenarios
-- Billing disputes and payment issues: ~20 sub-types
-- Policy cancellations and renewals: ~15 sub-types
-- Complaints about prior service: ~30 sub-types
-- Fraud investigations and unusual claim circumstances: ~25 sub-types
-- Multi-issue calls combining several of the above
-Total distinct call types: comfortably over 200, plus combinations.
+When two events A and B are independent:
 
-Variety of controller responses: a typical newly-trained rep, after a four-week training program, can handle confidently:
-- Routine policy questions — mostly yes
-- Standard billing questions — yes
-- Common claims — partially, with help from the intake script
-- Cancellations and renewals — yes for simple cases
-- Complex claims, fraud cases, escalations — no, must transfer
-Effective variety: ~80 of the 200+ call types, with passable handling of another 40.
+P(A and B) = P(A) × P(B)
 
-Does the controller have requisite variety: clearly not. Disturbance variety exceeds controller variety by a factor of roughly two. Specific failures: any call combining a complex claim with billing and coverage issues, any escalation from a previous unresolved issue, and any unusual circumstance not covered in training will defeat the rep.
+When they are not independent, the multiplication rule still holds but the second probability must be the conditional probability of B given that A has happened.
 
-Strategy A — increase the controller's variety. Provide an AI-assisted knowledge base that surfaces relevant policy details, prior call notes, and suggested scripts in real time. Add a "specialist on demand" line so the rep can conference in a claims expert without putting the customer on hold. Lengthen training. Each expands the rep's effective response repertoire — they can deploy the variety of an entire support infrastructure during a single call. This is the variety-amplification strategy.
+CONDITIONAL PROBABILITY: P(B | A) is read "the probability of B given A." It answers: "if A has happened, how likely is B?" This is the core concept for understanding many real-world questions. The probability of a randomly chosen American owning a car is high; the probability of a randomly chosen American who lives in Manhattan owning a car is much lower. The conditioning on Manhattan changes the population we are looking at.
 
-Strategy B — decrease the controlled system's variety. Restructure the front of the call flow so customers are routed by issue type to specialists: a billing-only line, a claims-only line, a cancellations-only line. Use an IVR system that asks customers to categorize their issue before reaching a human. Use online self-service for simple queries so only complex issues reach a human at all. Each reduces the variety of disturbances any single rep must handle. This is the variety-reduction strategy.
+P(B | A) = P(A and B) / P(A)
 
-In practice, mature call centers use both strategies simultaneously: specialization (variety reduction) plus knowledge tools (variety amplification). Ashby's Law explains why the alternative — generalist reps with no tools — produces predictably bad results regardless of how hard the reps work.
+$$P(B \\mid A) = \\frac{P(A \\text{ and } B)}{P(A)}$$
 
-Why This Is a Model Response:
-- Variety is enumerated with actual numbers — Ashby's Law is fundamentally a counting argument.
-- Both kinds of variety are characterized: disturbances AND responses.
-- The diagnosis is supported with specific failure modes, not just asserted.
-- Both Ashby strategies are illustrated; many students miss variety reduction entirely.
-- The closing observation that real call centers use BOTH connects theory to organizational design.`,
+BASE RATES: the prevalence of an event in the underlying population. If only 1% of people in a population have a disease, then "1%" is the base rate. Many famous probability puzzles arise from people ignoring base rates. If a test for the disease is 99% accurate but only 1% of people have the disease, what fraction of positive test results are actually correct? The intuitive answer (99%) is wildly wrong — see the model response below for the correct reasoning.
+
+A note on language: probability has two interpretations that mostly agree but sometimes diverge.
+
+Frequentist: a probability is the long-run frequency of an event in repeated trials. The probability of heads on a fair coin is 0.5 because, in many flips, half come up heads.
+
+Bayesian: a probability is a degree of belief that can be updated as evidence accumulates. The probability that a particular suspect committed a crime is the strength of one's rational belief, given the evidence.
+
+For most introductory purposes the two views give the same answers. For some applications — notably medical diagnostics and AI — the Bayesian view is essential.`,
+    assignment: `Assignment (50 points)
+
+Construct an original probability problem involving conditional probability or base-rate reasoning. The problem should involve at least two events whose probabilities you specify. Then:
+
+1. State the problem clearly
+2. Give the relevant probabilities
+3. Compute the conditional probability or other quantity of interest, showing your steps
+4. Explain in 2–3 sentences what your result means in plain language — what the answer reveals about the situation
+5. Identify ONE common reasoning mistake that someone might make on this kind of problem`,
+    modelResponse: `Model Response
+
+Problem: a hypothetical city of 100,000 people is screening residents for a rare disease. The disease affects 1% of the population. The screening test is 95% accurate in two senses: 95% of people who have the disease test positive (sensitivity); 95% of people who do not have the disease test negative (specificity). A randomly chosen resident takes the test and tests positive. What is the probability that they actually have the disease?
+
+Probabilities given:
+- P(disease) = 0.01 (the base rate — 1% of the population has the disease)
+- P(positive | disease) = 0.95 (sensitivity)
+- P(negative | no disease) = 0.95 (specificity), which means P(positive | no disease) = 0.05 (the false positive rate)
+
+Quantity of interest: P(disease | positive) — given that the test came back positive, what is the probability the person actually has the disease?
+
+Reasoning by counting (often clearer than formula manipulation): imagine the entire population of 100,000 people. The expected counts are:
+- 1,000 people have the disease (1% of 100,000)
+- 99,000 people do not have the disease
+
+Among the 1,000 with the disease, 95% will test positive: that is 950 true positives.
+Among the 99,000 without the disease, 5% will test positive: that is 4,950 false positives.
+Total positives expected: 950 + 4,950 = 5,900.
+
+Of these 5,900 positives, 950 are actually sick and 4,950 are not. The probability that a positive test result corresponds to actual disease is:
+
+P(disease | positive) = 950 / 5,900 ≈ 0.161
+
+That is about 16.1%.
+
+Plain-language interpretation: even though the test is 95% accurate, a positive result means the person is only about 16% likely to actually have the disease. The reason is the rarity of the disease itself: because so few people in the population have it, even a small false-positive rate generates more false positives than there are true positives. The test is helpful — it raises the probability from 1% (the base rate) to 16% — but a positive result is not by itself a diagnosis. This is why screening tests are typically followed by more specific confirmatory tests before any treatment is started.
+
+Common reasoning mistake: many people see "95% accurate" and intuitively conclude that a positive test means a 95% chance of having the disease. This is base-rate neglect — ignoring how rare the disease is in the underlying population. The error has serious real-world consequences. Patients and even some physicians overestimate the meaning of positive screening results, leading to anxiety, unnecessary follow-up procedures, and sometimes treatment of people who are not actually sick. The correct reasoning has been called "Bayesian thinking": always start from the base rate, then update based on the evidence. The base rate is the anchor; the evidence shifts you, but it does not replace the anchor.
+
+Why This Is a Model Response
+
+The student uses the "imagine the whole population" reasoning method, which is more intuitive than algebraic manipulation of P(B|A) formulas and produces the same answer. This is the method recommended by Gerd Gigerenzer and others who study how people actually understand probability.
+
+The student keeps track of both true positives and false positives separately. The key insight — that false positives can outnumber true positives when the base rate is low — is made visible in the counts.
+
+The plain-language interpretation gives the result its real meaning. "About 16%" is the technical answer; "even though the test is 95% accurate, a positive result is not a diagnosis" is the takeaway that matters in practice.
+
+The reasoning mistake (base-rate neglect) is named and tied to a real-world consequence. Real medical practice has had to develop confirmatory testing protocols precisely because base-rate neglect is so common.
+
+The framing of "the base rate is the anchor" gives the student a heuristic they can carry into other problems: always ask what the prevalence is before interpreting test accuracy.`,
   },
   {
     id: "e3",
     number: 6,
-    title: "Essay 3: Homeostasis, Equilibrium, and Dynamic Stability",
+    title: "Essay 3: The Normal Distribution and Z-Scores",
     points: 50,
     type: "essay",
     objectives: [
-      "Distinguish static equilibrium, dynamic equilibrium, and homeostasis.",
-      "Distinguish three senses of stability — resistance, resilience, robustness — and apply them as competing design objectives.",
+      "Apply the 68-95-99.7 empirical rule and z-score formula to a normally distributed variable.",
+      "Use z-scores to compare values from different distributions and recognize when the normal-distribution assumption fails.",
     ],
-    reading: `"Stability" sounds like one concept, but systems science distinguishes several meanings, and confusing them produces confused analysis.
+    reading: `Background
 
-STATIC EQUILIBRIUM is the state of a closed system that has run down. A pile of sand at the bottom of a hill is in static equilibrium — nothing is happening, no work is being done.
+Of all the probability distributions, the NORMAL DISTRIBUTION (sometimes called the bell curve or Gaussian distribution) is the most important. Three reasons:
 
-DYNAMIC EQUILIBRIUM is the state of an open system whose flows balance. The water level in a sink with the tap and drain both running, where inflow equals outflow, is in dynamic equilibrium. The level holds steady not because nothing is happening, but because the inflows and outflows happen at matched rates.
+1. Many natural quantities are approximately normally distributed: heights, weights, errors in measurement, IQ scores, blood pressure, exam scores in large classes.
+2. The Central Limit Theorem (covered in Discussion 4) guarantees that even when the underlying data are NOT normal, sums and averages of large samples often are.
+3. It has well-understood mathematical properties that make many statistical techniques straightforward.
 
-HOMEOSTASIS is dynamic equilibrium achieved through active regulation by balancing feedback loops. The body's temperature near 37 °C is homeostatic: when temperature drifts up, sweating and vasodilation cool it; when it drifts down, shivering and vasoconstriction warm it.
+A normal distribution is fully described by two numbers: its mean (μ) and its standard deviation (σ). The bell curve is centered at μ; its width is determined by σ. Larger σ means a wider, flatter bell; smaller σ means a narrower, taller bell. The total area under the curve always equals 1, since it represents 100% of the probability.
 
-STABILITY can mean three different things:
-- Resistance: the system resists being moved by disturbances.
-- Resilience: the system absorbs disturbances and returns to its normal state.
-- Robustness: the system maintains its function across a wide range of conditions.
+THE 68-95-99.7 RULE (also called the empirical rule). For any normal distribution:
+- About 68% of the data falls within 1 standard deviation of the mean (μ ± σ)
+- About 95% falls within 2 standard deviations (μ ± 2σ)
+- About 99.7% falls within 3 standard deviations (μ ± 3σ)
 
-A system can be highly resistant but brittle, resilient but slow, robust but inefficient. Good systems analysis names which kind of stability is at issue.`,
-    assignment: `Section 1 (10 points) — Definitions
-Distinguish: static equilibrium, dynamic equilibrium, and homeostasis. Then explain the three senses of stability — resistance, resilience, robustness — and give a simple example of each.
+This rule is worth memorizing. It lets you quickly judge whether a value is unusual: a measurement more than 2 standard deviations from the mean has only a 5% chance of occurring by chance alone if the data are normal; more than 3 standard deviations is very unusual indeed.
 
-Section 2 (20 points) — A Homeostatic System Analyzed
-Choose ONE concrete homeostatic system (NOT body temperature). Describe:
-- What variable is being regulated, and what its setpoint is
-- The sensors, the controller, and the actuators of the regulating loop
-- At least one disturbance that the system resists
-- At least one disturbance large enough to break the regulation, and what happens then
+Z-SCORES standardize a value by expressing how many standard deviations it lies above or below the mean:
 
-Section 3 (20 points) — Stability Trade-offs
-Identify ONE real-world system whose designers face a trade-off among the three kinds of stability. Describe the trade-off, explain which choice the designers have made, and explain the cost of that choice.`,
-    modelResponse: `Model Response:
+z = (x − μ) / σ
 
-Section 1: Definitions
-Static equilibrium is the unmoving state of a system in which no flows are occurring — a closed system that has reached its endpoint. There is no activity sustaining the state; the system simply sits.
+$$z = \\frac{x - \\mu}{\\sigma}$$
 
-Dynamic equilibrium is the macroscopically still state of an open system whose inflows and outflows are matched. Activity continues, but the relevant stocks remain approximately constant because the rates balance. A river's flow rate may be in dynamic equilibrium without being homeostatic — there is no regulator.
+A z-score of 0 means the value equals the mean. A z-score of +1 means it is one standard deviation above the mean; −1 means one standard deviation below. Z-scores let you compare values from different distributions on the same scale: you can directly compare an SAT score (mean 1050, SD 200) to an ACT score (mean 21, SD 5) by converting both to z-scores.
 
-Homeostasis is dynamic equilibrium achieved by active regulation. A balancing feedback loop senses departures from a setpoint and acts to bring the system back. The defining feature is the regulator.
+Z-scores also let you look up probabilities in a standard normal table or with software: for any z-score, you can ask "what fraction of the data lies below this value?" or "what fraction lies above?" This is how percentiles are computed.`,
+    assignment: `Assignment (50 points)
 
-Three senses of stability:
-- Resistance: how much disturbance the system can absorb before changing at all. A reinforced concrete wall has high resistance to wind. A soap bubble has very little.
-- Resilience: how well the system returns to its original state after being disturbed. A grass lawn that recovers from being trampled is resilient.
-- Robustness: how well the system maintains its FUNCTION across a wide range of conditions. A car that drives well on dry pavement, wet pavement, gravel, and snow is robust.
+Section 1 (10 points) — The Empirical Rule
+Suppose adult heights in a population are approximately normally distributed with mean μ = 68 inches and standard deviation σ = 3 inches. Using the 68-95-99.7 rule (no calculator needed):
+1. What range of heights covers about 68% of adults?
+2. What range covers about 95%?
+3. Approximately what fraction of adults are taller than 74 inches?
+4. Approximately what fraction are shorter than 62 inches?
 
-Section 2: A Homeostatic System — Blood Glucose Regulation
-Variable regulated and setpoint: the concentration of glucose in the blood, regulated to roughly 70–110 mg/dL in fasting humans and not allowed to exceed about 140 mg/dL even after a meal.
+Section 2 (20 points) — Z-Scores
+Three students compare scores across different exams. Compute each student's z-score, and rank them by relative performance:
+1. Alice scored 92 on a math final where the class mean was 78 and the class standard deviation was 8.
+2. Bob scored 85 on a chemistry final where the class mean was 70 and the class standard deviation was 10.
+3. Carmen scored 70 on a Spanish final where the class mean was 60 and the class standard deviation was 4.
 
-Sensors: pancreatic islet cells. Beta cells sense rising blood glucose and respond by secreting insulin; alpha cells sense falling glucose and respond by secreting glucagon. The sensors are themselves the controllers.
+Show your computation for each. Then explain in 2–3 sentences which student performed best relative to their class, and why z-scores are the right comparison metric here.
 
-Actuators: the liver (which can store glucose as glycogen under insulin or release it under glucagon); skeletal muscle and adipose tissue (which take up glucose under insulin); and various tissues whose metabolic preferences shift with hormone levels.
+Section 3 (20 points) — A Real Application
+Choose ONE real-world quantity that is approximately normally distributed. Describe:
+- The variable and a plausible mean and standard deviation
+- What a value at z = +2 would mean in concrete terms (a height? a test score? a wait time?)
+- How an analyst could use the empirical rule to answer a practical question about this variable
+- One way the normal-distribution assumption could be wrong, and what would happen if you used normal-based reasoning when the assumption fails`,
+    modelResponse: `Model Response
 
-A disturbance the system resists: eating a meal containing 50 grams of carbohydrate. Without regulation this would push blood glucose well over 200 mg/dL. With regulation, insulin clears glucose into the liver and muscles and blood glucose typically peaks below 140 mg/dL and returns to fasting levels within two hours.
+Section 1: The Empirical Rule
 
-A disturbance large enough to break the regulation: type 1 diabetes, in which an autoimmune process destroys the beta cells. The sensor-and-effector for the glucose-lowering arm is removed. Blood glucose climbs unchecked after meals, can exceed 400 mg/dL, and over time produces kidney, nerve, and retinal damage. Until exogenous insulin replacement was developed in 1921, this disturbance was uniformly fatal within months.
+Heights are normally distributed with μ = 68 inches, σ = 3 inches.
 
-Section 3: Stability Trade-offs — Modern Power Grids
-Resistance is the grid's ability to absorb sudden load changes or generation losses without frequency or voltage excursions. Engineers historically built resistance into grids by maintaining "spinning reserve" — large rotating turbines whose mechanical inertia damps out short-term imbalances.
+1. About 68% of adults fall within 1 SD of the mean: 68 − 3 = 65 to 68 + 3 = 71 inches. So about 68% of adults are between 65 and 71 inches tall.
 
-Resilience is the grid's ability to recover from disturbances that DO knock it off — outages, storms, cyberattacks. Resilience is built through redundancy, islanding capability, and black-start capacity.
+2. About 95% fall within 2 SDs: 68 − 6 = 62 to 68 + 6 = 74 inches. So about 95% of adults are between 62 and 74 inches tall.
 
-Robustness is the grid's ability to deliver power across a wide range of demand and supply conditions — peak summer cooling load, deep winter heating, sunny midday solar surges, calm windless nights.
+3. Heights above 74 inches are more than 2 SDs above the mean. By the empirical rule, about 95% are within 2 SDs, so about 5% are outside that range — split roughly equally between the two tails. About 2.5% of adults are taller than 74 inches.
 
-The trade-off: increasing the share of renewables reduces resistance, because solar panels and wind turbines have no rotational inertia. The grid responds faster to disturbances and is more prone to frequency excursions. Engineers can compensate by adding battery storage, synthetic-inertia controls, and demand-response programs — at substantial cost.
+4. Heights below 62 inches are more than 2 SDs below the mean. By the same reasoning, about 2.5% of adults are shorter than 62 inches.
 
-The choice grids are making: most jurisdictions are moving toward renewables-plus-storage, accepting somewhat lower mechanical resistance in exchange for greatly improved long-run robustness against climate change. The cost is short-term fragility during the transition: renewable-heavy grids without sufficient storage have been the proximate cause of several major outages in the last decade (Texas 2021, South Australia 2016).
+Section 2: Z-Scores
 
-Why This Is a Model Essay:
-- Section 1 nails the distinction that confuses beginners: dynamic equilibrium and homeostasis both look "still" but only the latter has a regulator.
-- The blood-glucose example identifies sensors, controllers, and actuators separately — the standard cybernetic decomposition.
-- The disturbance-that-breaks-the-loop discussion (type 1 diabetes) illustrates that a homeostatic system without its regulator is no longer homeostatic.
-- Section 3 distinguishes the three stabilities concretely as competing design objectives with measurable trade-offs.
-- The closing observation links short-term fragility to long-term robustness — multi-timescale reasoning.`,
+Alice: z = (92 − 78) / 8 = 14 / 8 = 1.75. Alice is 1.75 SDs above her class mean.
+Bob: z = (85 − 70) / 10 = 15 / 10 = 1.50. Bob is 1.5 SDs above his class mean.
+Carmen: z = (70 − 60) / 4 = 10 / 4 = 2.50. Carmen is 2.5 SDs above her class mean.
+
+Ranking by z-score (best relative performance first): Carmen (z = 2.50), Alice (z = 1.75), Bob (z = 1.50).
+
+Carmen performed best relative to her class — even though her raw score (70) was lower than Alice's or Bob's, her score was farther above her class mean in standard deviations. Z-scores are the right metric here because the three exams have different means and different spreads. Comparing raw scores directly would be misleading: a 70 in a class with mean 60 and tight SD 4 represents much stronger relative performance than a 92 in a class with mean 78 and looser SD 8. Standardizing puts all three students on the same scale and lets us answer "how unusual is this score within its own class?" directly.
+
+Section 3: A Real Application
+
+Variable: SAT total scores in a recent national administration. Plausible mean μ ≈ 1050, plausible SD σ ≈ 200 (these are rough national averages; the exact numbers vary by year).
+
+A z = +2 score means: 2 SDs above the mean, or 1050 + 2(200) = 1450. In concrete terms, an SAT score of 1450 would put a student at roughly the 97.5th percentile of test-takers — only about 2.5% of students nationally would score higher. This is the level commonly considered competitive for selective universities.
+
+Practical use of the empirical rule: a college admissions officer reviewing a candidate with an SAT score of 1250 could quickly note that 1250 is one SD above the mean (1050 + 200 = 1250), placing the candidate at roughly the 84th percentile — top sixth of test-takers but not exceptional. Similarly, a 850 score is one SD below the mean, putting the candidate at roughly the 16th percentile. The empirical rule lets the officer make fast, calibrated comparisons across applicants without consulting percentile tables for every score.
+
+How the assumption could fail: SAT scores are not perfectly normal. They are often slightly bimodal (because there are concentrations of well-prepared and less-prepared test-takers) and have a hard ceiling at 1600, which truncates the upper tail. If a score is very high (say, 1550), normal-distribution reasoning would estimate the percentile by looking at the corresponding z-score (z = (1550 − 1050)/200 = 2.5, or about 99.4th percentile). But because the actual distribution piles up at the ceiling — many students earn 1500–1600 — the true percentile of 1550 might be lower than 99.4% (perhaps 98% or 99%). The estimate is in the right ballpark but slightly inflated. For most analytic purposes the difference does not matter, but for very high scores or very low ones, the normal approximation can mislead.
+
+Why This Is a Model Essay
+
+The empirical rule is applied directly. The student does not detour through tables or software; the 68-95-99.7 numbers and a single subtraction give the answer. This shows the student understands the rule's purpose: fast, calibrated estimation.
+
+The z-score interpretation in Section 2 explicitly addresses why standardization is needed when comparing across different distributions. The student sees that raw scores are misleading and z-scores fix the issue.
+
+The Section 3 example uses real-ish SAT numbers, and the student notes both the strength of normal-based reasoning (quick percentile estimation) and its limits (truncation at the ceiling distorts very high scores).
+
+The closing point — that even an imperfect normal approximation gives "right ballpark" estimates — is honest. Many real datasets are approximately, not exactly, normal, and a student who can name when the approximation is good and when it is not has internalized the right level of caution.
+
+The student ranks the three students correctly and explains the ranking, rather than just listing the z-scores. The interpretation step is what separates a memorized formula from genuine understanding.`,
   },
   {
     id: "d4",
     number: 7,
-    title: "Discussion 4: Emergence and the Limits of Reductionism",
+    title: "Discussion 4: Sampling and the Central Limit Theorem",
     points: 50,
     type: "discussion",
     objectives: [
-      "State three working criteria for calling a property emergent.",
-      "Distinguish weak and strong emergence with reasoned examples.",
+      "Distinguish representative from biased sampling strategies and identify common sampling pitfalls.",
+      "Explain the Central Limit Theorem and why it permits inference from a sample even when the underlying data are not normally distributed.",
     ],
-    reading: `Reductionism is the methodology of explaining a system by breaking it into parts and studying the parts in isolation. It has been the most successful research strategy in the history of science.
+    reading: `Background
 
-But reductionism has limits. Some properties of systems are EMERGENT: they exist at the level of the whole and are not present in any of the parts taken alone. Wetness is a property of liquid water, not of any individual H₂O molecule. Consciousness is a property of certain brains, not of any neuron. A traffic jam is a property of a population of cars.
+In real-world research we almost never have access to the entire POPULATION we want to study. We cannot poll every voter, weigh every fish in the lake, or measure every component coming off the assembly line. Instead, we collect a SAMPLE — a manageable subset — and use it to learn about the population.
 
-Three working criteria for calling a property emergent:
-- It belongs to the whole, not to any part.
-- It depends on the interactions, not just the existence, of the parts.
-- It is hard or impossible to predict from knowledge of the parts alone.
+Sampling raises two questions: how should we draw the sample so it represents the population, and how confident can we be in conclusions drawn from a sample?
 
-David Chalmers distinguishes WEAK emergence (the higher-scale property is in principle derivable from the lower-scale facts but practically very hard to predict) from STRONG emergence (the higher-scale property is in principle not derivable). Most scientifically interesting cases are weak emergence.
+REPRESENTATIVE SAMPLING means the sample resembles the population in the relevant respects. The gold standard is the SIMPLE RANDOM SAMPLE: every individual in the population has an equal chance of being selected. Random sampling does not guarantee a representative sample — by chance any single sample might miss certain groups — but in expectation, random samples are representative, and the deviations from representativeness are predictable and quantifiable.
 
-The systems-science significance: to understand traffic, you must study traffic, not just cars. To understand inflation, you must study economies, not just transactions. The parts matter, but they are not enough.`,
-    assignment: `Assignment (50 points):
-Identify TWO emergent phenomena from different domains. For each:
-1. Name the phenomenon and the parts whose interaction produces it
-2. Explain why the property does not exist at the level of any single part
-3. Explain why the property could not have been predicted just by studying the parts in isolation
-4. Argue whether it is a case of weak or strong emergence, and why`,
-    modelResponse: `Model Response:
-Two emergent phenomena: a flock of starlings forming a murmuration (biology), and a stock-market price bubble (social science / economics).
+Several common sampling errors produce non-representative samples:
 
-Phenomenon 1: Starling Murmuration
-At dusk in autumn, flocks of starlings — sometimes tens of thousands strong — fly in coordinated, rapidly-shifting clouds. The shapes change continuously, ripple from one end to another in waves, split and rejoin, all without any apparent leader.
+Convenience sampling: surveying whoever happens to be available. Mall surveys reach the kind of people who go to malls during the times surveyors are there.
 
-Parts: individual starlings. Each bird tracks roughly its seven nearest neighbors and adjusts its velocity to match theirs while avoiding collisions. That is essentially the whole behavioral rule.
+Self-selection bias: surveys posted online answered only by people who choose to respond. The 1936 Literary Digest poll famously predicted Alf Landon would beat Franklin Roosevelt by 57% to 43%; Roosevelt won 62% to 38%. The poll surveyed Literary Digest subscribers, telephone owners, and registered car owners — a wealthier slice of America than the actual electorate.
 
-Why the property does not exist at the level of a single part: a single starling cannot form a murmuration. There is nothing for one bird to do that resembles "flock-shape." The shape requires a population.
+Voluntary response bias: studies that depend on people choosing to participate (online reviews, hotline call-ins) over-represent the highly motivated — usually people with strong negative or strong positive opinions.
 
-Why it cannot be predicted just from the parts: even given a complete description of one starling's rule, a researcher would not have predicted that twenty thousand such birds would produce coherent traveling waves of motion. The pattern is a property of the COLLECTIVE dynamics and appears only when many individuals interact for many time steps. Computer simulations using the seven-neighbor rule reproduce the murmuration patterns; verbal analysis of the rule does not.
+Undercoverage: failing to reach segments of the population at all. Phone polls miss people without phones, online polls miss people without internet, daytime polls miss people who work during the day.
 
-Weak or strong: weak. Once we run agent-based simulations with the local rule, the global pattern appears reliably and is — in retrospect — derivable from it. Nothing more is needed than the seven-neighbor matching dynamics.
+THE CENTRAL LIMIT THEOREM (CLT) is one of the most important results in statistics. It says, roughly:
 
-Phenomenon 2: Stock-Market Price Bubbles
-The price of an asset rises far above any reasonable estimate of its underlying value, sustains the elevated price for weeks or months, and then collapses. Recent examples: the dot-com bubble of 1999–2000 and the cryptocurrency bubble that peaked in late 2021.
+Even if the underlying population is NOT normally distributed, the distribution of SAMPLE MEANS — across many samples of the same size — IS approximately normal, provided the sample size is large enough (typically n ≥ 30 is the rule of thumb, though some distributions need more).
 
-Parts: individual investors and traders, plus the institutional infrastructure (exchanges, brokers, news media, social media) that connects them.
+Three implications follow:
+- We can make inferences about the population mean using normal-distribution methods (z-scores, confidence intervals, hypothesis tests) even when the underlying data are skewed or have heavy tails
+- Larger samples give more precise estimates of the population mean — the standard deviation of the sample mean is σ/√n, which shrinks as n grows
+- The sample size matters more than the population size. A random sample of 1,000 voters gives roughly the same precision whether the population is 100,000 or 100,000,000
 
-Why the property does not exist at the level of a single part: no individual investor "bubbles." A single investor can buy an overvalued asset, sell it, hold it, but cannot inflate or burst a bubble alone.
+The CLT is why polls of just 1,000 to 2,000 people can predict national election results to within a few percentage points.`,
+    assignment: `Assignment (50 points)
 
-Why it cannot be predicted just from the parts: knowing the decision rules used by typical investors (buy when prices rise, sell when they fall, follow trends, anchor on recent news) does not let you predict that markets will sometimes — but not always — generate self-reinforcing price runs. Bubbles depend on the COUPLING between investors: when many traders are individually using trend-following rules, their actions become each other's signals, generating a reinforcing feedback loop. The bubble is the loop; no individual trader is the loop.
+Choose ONE real or hypothetical research situation that requires sampling. (Examples: surveying student satisfaction at a university; estimating the mean weight of fish in a lake; testing average product defect rates from a factory; estimating average household water use in a city.) Then:
 
-Weak or strong: weak, but in a more subtle sense than the murmuration. Agent-based simulations DO generate bubbles. But there is a wrinkle: real markets respond to news, regulation, and reflexive awareness of being analyzed. As George Soros has argued, market participants update their behavior based on theories about market behavior, complicating any attempt to derive market dynamics from a fixed set of agent rules. The emergence is "weak in principle, harder than usual in practice."
+1. State the population you want to learn about and the variable you want to measure
+2. Describe a sampling strategy you would use, and explain why it would tend to produce a representative sample
+3. Identify TWO specific sampling pitfalls — concrete ways your strategy could go wrong — and what you would do to mitigate each
+4. Explain in plain language why the Central Limit Theorem matters for your study, and how it would let you make inferences about the population mean even if the underlying data are not normally distributed`,
+    modelResponse: `Model Response
 
-Why This Is a Model Response:
-- Both examples meet the three criteria for emergence; the student walks through each criterion explicitly.
-- The starling example uses the seven-neighbor rule (a real result from Cavagna, Giardina, and colleagues) rather than a hand-wavy "they flock together."
-- The bubble example correctly identifies the feedback loop — trend-following traders use each other's actions as signals — as the engine of emergence.
-- Both phenomena are correctly classified as weak emergence, with reasons explained.
-- The wrinkle in the bubble case (reflexive awareness) shows the student understands the limits of agent-based modeling.`,
+Research situation: a regional health department wants to estimate the mean systolic blood pressure of adults in a county of 200,000 residents.
+
+Population and variable: the population is all adults age 18 or older living in the county. The variable is systolic blood pressure (in mmHg) measured under standardized conditions.
+
+Sampling strategy: a STRATIFIED RANDOM SAMPLE of 1,000 residents. The strata would be defined by age range (18–34, 35–54, 55–74, 75+) and by census tract, to ensure representation across the relevant subpopulations. Within each stratum, residents would be selected randomly from county records (voter rolls combined with utility billing addresses, which together cover essentially all adults). Selected individuals would be invited by mail and phone for a free blood pressure measurement at one of several mobile clinics rotating through neighborhoods.
+
+Why this tends to be representative: stratification ensures the sample matches the population's composition by age and geography. Within strata, random selection avoids systematic biases. Because the population is finite (200,000) and sample size is reasonable (1,000), the central limit theorem applies and the estimated mean should be a precise estimate of the true county-wide mean.
+
+Two specific pitfalls and mitigations:
+
+Pitfall 1 — non-response bias. Some selected residents will decline to participate. If they decline at different rates than they would benefit from participating, the sample becomes unrepresentative. For example, people with high blood pressure might be more likely to decline if they fear what the measurement will reveal, or less likely to decline if they value the free screening. Either way, the sample mean would be biased relative to the true population mean.
+
+Mitigation: track the response rate and the demographic composition of responders vs. non-responders. Follow up with non-responders through additional outreach (a second mailing, evening phone calls, in-home visits for selected non-responders). Compare the demographics of the actual responders to the population on observable characteristics (age, sex, geography); if they differ substantially, weight the responses to correct, or report results stratified by relevant variables.
+
+Pitfall 2 — coverage bias. The combined frame of voter rolls plus utility billing might still miss certain populations: people who recently moved, undocumented immigrants, people in institutions (prisons, nursing homes), people experiencing homelessness. If health outcomes for these groups differ from the rest, the sample misses them.
+
+Mitigation: identify the most likely under-covered groups in advance and add targeted outreach. For homeless populations, partner with shelters and street outreach workers; for institutional populations, work with the institutions to include their residents; for recent movers, supplement with newer address databases. Document explicitly which groups are excluded so the inferences from the data are properly scoped — a study that excludes prisoners should be reported as a study of community-dwelling adults, not all adults.
+
+Why the Central Limit Theorem matters: blood pressure in the population is not normally distributed. The distribution is skewed — there is a long right tail of people with hypertension, and certain medical conditions or medications produce heavier-than-normal tails. If we needed the underlying data to be normal in order to apply standard statistical methods, we would be in trouble. But the CLT tells us that even with a skewed underlying distribution, the SAMPLE MEAN of n = 1,000 will itself be approximately normally distributed across many hypothetical samples of size 1,000 from this population. That means we can build a confidence interval around our estimate using normal-distribution methods, even though the raw blood pressure values are skewed. The CLT is what makes the inference work despite the messiness of the underlying data. Without it, we would either have to assume normality (badly wrong here) or use more complicated nonparametric methods. With it, a sample of 1,000 gives a precise, well-justified estimate of the county mean.
+
+Why This Is a Model Response
+
+The student chooses STRATIFIED random sampling, not just simple random sampling. For populations with meaningful subgroups (age, geography), stratification produces more precise estimates and protects against accidentally missing a group. The student understands when to choose which method.
+
+The two pitfalls (non-response, undercoverage) are the two most common sources of bias in survey research, and they are addressed with concrete mitigations rather than vague "be careful" advice.
+
+The mitigation for non-response includes weighting — a real statistical technique used in actual surveys. The student is not making up methods; they are using methods statistical agencies actually use.
+
+The CLT explanation correctly identifies that the underlying blood pressure data are skewed and explains that the CLT is about the distribution of the SAMPLE MEAN, not the raw data. This distinction is critical and frequently confused.
+
+The closing observation that the CLT is "what makes the inference work despite the messiness of the underlying data" gets at the deep importance of the theorem. Without the CLT, applied statistics would look very different — and much more limited.`,
   },
   {
     id: "e4",
     number: 8,
-    title: "Essay 4: Networks — Small-World, Scale-Free, and Topology",
+    title: "Essay 4: Confidence Intervals",
     points: 50,
     type: "essay",
     objectives: [
-      "Define small-world and scale-free networks and read a degree distribution.",
-      "Explain the robust-yet-fragile paradox of scale-free networks and apply it to defensive design.",
+      "Compute a confidence interval for a population mean and describe how sample size and confidence level affect its width.",
+      "Identify and correct common misinterpretations of confidence intervals.",
     ],
-    reading: `A NETWORK (or graph) is a set of nodes connected by links. Many real-world systems are usefully described as networks: social acquaintances connected by friendships, web pages connected by hyperlinks, neurons connected by synapses, airports connected by flights.
+    reading: `Background
 
-In the late 1990s, two findings transformed the field. First, Duncan Watts and Steven Strogatz showed that many real-world networks have a SMALL-WORLD property: even very large networks have surprisingly short average path lengths between any two nodes, often combined with high local clustering. The "six degrees of separation" idea captures this.
+A SAMPLE STATISTIC (the sample mean, the sample proportion) is a single number — a POINT ESTIMATE of an unknown population parameter. But a single number does not convey how precise the estimate is. If two pollsters each estimate that 52% of voters favor Candidate A, but one polled 100 people and the other polled 10,000, their estimates have very different precision. We need a way to communicate that.
 
-Second, Albert-László Barabási and Réka Albert showed that many real-world networks are SCALE-FREE: the distribution of how many links each node has follows a power law rather than a normal distribution. A few nodes (called hubs) have an enormous number of links; most nodes have few. The web, the airline network, and many biological and technological networks are all scale-free.
+A CONFIDENCE INTERVAL is a range of plausible values for the population parameter, calculated from the sample. A typical 95% confidence interval might be reported as:
 
-Three implications:
-- Small-world networks spread information, disease, and ideas rapidly because the path length is short.
-- Scale-free networks are robust against random failures (most nodes are unimportant) but fragile against targeted attacks (remove the hubs and the network shatters).
-- Network growth via preferential attachment naturally produces scale-free structure. The rich get richer.`,
-    assignment: `Section 1 (10 points) — Definitions
-Define network, node, link, average path length, clustering coefficient, hub, and degree distribution. Then describe what makes a network small-world and what makes it scale-free.
+   "Mean household income: $58,000 (95% CI: $55,200 to $60,800)"
 
-Section 2 (20 points) — A Real Network Analyzed
-Choose ONE real-world network and describe:
-- What the nodes and links are
-- Whether it is approximately small-world (short paths, high clustering)
-- Whether it is approximately scale-free (a few hubs and many low-degree nodes)
-- ONE practical consequence the topology has for how the network behaves
+The interpretation is more subtle than students often realize, and getting it exactly right is one of the most common Statistics 101 stumbles.
 
-Section 3 (20 points) — Robustness and Targeted Attack
-Explain in detail why scale-free networks are robust against random failures but fragile against targeted attacks on hubs. Give a concrete example of a network where this matters in practice — and discuss what designers or defenders should do as a result.`,
-    modelResponse: `Model Response:
+STRUCTURE OF A CONFIDENCE INTERVAL. For estimating a population mean using a large sample:
 
-Section 1: Definitions
-A network (graph) is a structure consisting of NODES (vertices) and LINKS (edges) that connect pairs of nodes.
+CI = x̄ ± z* · (s / √n)
 
-Average path length is the average number of links one must traverse to get from any node to any other.
+$$\\text{CI} = \\bar{x} \\pm z^{*} \\cdot \\frac{s}{\\sqrt{n}}$$
 
-Clustering coefficient measures how interconnected a node's neighbors are. If your friends are mostly friends with each other, you have high local clustering.
+Here:
+- x̄ is the sample mean
+- s is the sample standard deviation
+- n is the sample size
+- z* is the critical value from the normal distribution corresponding to the desired confidence level (about 1.96 for 95%, about 2.58 for 99%)
+- The quantity s / √n is called the standard error — the typical "noise" in the sample mean
+- The interval gets WIDER when you increase confidence (95% to 99%), and NARROWER when you increase sample size. Larger samples give more precise estimates.
 
-A HUB is a node with an unusually high number of links.
+CORRECT INTERPRETATION. A 95% confidence interval means: if we repeated the sampling procedure many times and constructed an interval each time, about 95% of those intervals would contain the true population parameter. The "95%" describes the long-run reliability of the PROCEDURE, not the probability that any particular interval is correct.
 
-The DEGREE DISTRIBUTION is the function showing how many nodes have exactly k links, for each value of k. In a random network, this distribution is roughly Gaussian. In a scale-free network, the distribution follows a power law: P(k) ~ k^(−γ), with γ typically between 2 and 3.
+A subtle but important point: once we have computed a specific interval, the population parameter either is or is not inside it. The 95% does not mean "there is a 95% chance the true mean is between $55,200 and $60,800." Frequentist statisticians insist on this distinction. (Bayesian credible intervals can be interpreted that way, but they are computed differently.)
 
-A network is SMALL-WORLD if it has SHORT average path length AND HIGH clustering.
+In practice, working scientists often DO speak loosely as if "95% chance the true value is in the interval," and for most purposes this loose interpretation is harmless. But for a Statistics 101 student, the technically correct interpretation is what gets credit on exams.
 
-A network is SCALE-FREE if its degree distribution follows a power law.
+COMMON ERRORS in interpreting confidence intervals:
 
-Section 2: A Real Network — The Global Airline Network
-Nodes: airports — roughly 4,000 commercial airports worldwide handle scheduled passenger service.
+"The confidence interval contains 95% of the data." Wrong. It contains plausible values for the parameter, not a fraction of the data points.
 
-Links: direct flight routes (a link exists between two airports if at least one airline operates a non-stop flight between them).
+"There is a 95% probability the true mean is in this interval." Technically wrong (frequentist), although harmless in practice.
 
-Is it small-world: yes, dramatically. The diameter is around 5 to 7 hops; average path length is around 4. Clustering is moderately high since airports serving the same region tend to be linked through regional carriers.
+"If I take another sample, 95% of the new sample data will fall in this interval." Wrong. The interval is about the PARAMETER, not future data.
 
-Is it scale-free: yes. A handful of mega-hubs — Atlanta, Beijing, Dubai, London Heathrow, Tokyo Haneda — handle hundreds of direct routes each. Major hubs handle 100–300 routes; mid-size airports 20–50; the vast majority handle fewer than 10. Plotting the degree distribution on log-log axes produces a roughly straight line.
+"Wider intervals are better because they include more possibilities." Wrong. Wider intervals reflect MORE uncertainty, not better inference. We want intervals that are as narrow as possible at the desired confidence level.`,
+    assignment: `Assignment (50 points)
 
-Practical consequence: the topology determines how disturbances propagate. When weather closes Atlanta or London, delays cascade through the entire network within hours. When Iceland's Eyjafjallajökull volcano erupted in 2010 and grounded European air traffic for a week, the global network experienced cascading delays for a month afterward. The same hub structure that makes air travel efficient also concentrates risk.
+Section 1 (10 points) — Computing a Confidence Interval
+A random sample of 100 students at a university yields a mean GPA of 3.1 with sample standard deviation 0.5. Compute the 95% confidence interval for the mean GPA of all students at the university. Show your work step by step. Then state what your interval tells you, in plain language.
 
-Section 3: Robustness and Targeted Attack
-Why scale-free networks are robust to RANDOM failures: most nodes have very few links — the degree distribution is dominated by low-degree nodes. If you randomly remove a node, you almost certainly remove a low-degree node, because there are far more of them. Removing a low-degree node disconnects only a few links and barely affects the global connectivity. Even removing 5% or 10% of nodes randomly leaves the giant connected component largely intact.
+Section 2 (20 points) — Effect of Sample Size and Confidence Level
+Using the same data (sample mean 3.1, sample SD 0.5):
+1. Recompute the confidence interval at the 99% level. Compare it to the 95% interval. Which is wider, and why?
+2. Recompute the 95% interval if the sample had been n = 25 instead of n = 100. Compare to the original. Which is wider, and why?
+3. Recompute the 95% interval if the sample had been n = 400. Compare to the original. Which is narrower, and how does the relationship between sample size and interval width work?
 
-Why scale-free networks are fragile against TARGETED attacks on hubs: by definition, the hubs concentrate the network's connectivity. Removing the top 1% of hub nodes can shatter the network into many small disconnected components.
+Section 3 (20 points) — Interpretation Errors
+Identify TWO common errors in interpreting confidence intervals (you may use any two, including but not limited to those listed in the background). For each:
+- State the incorrect interpretation
+- Explain why it is wrong
+- State the correct interpretation
+- Give a concrete situation where the wrong interpretation would lead someone to a bad decision`,
+    modelResponse: `Model Response
 
-A concrete example: the Internet itself, at the level of autonomous systems, is approximately scale-free. A few major backbone providers and content delivery networks act as hubs through which most traffic flows. When Cloudflare experienced a configuration error in October 2025, a substantial fraction of the global web went unreachable not because the websites themselves had failed but because traffic to them all routed through the same hub.
+Section 1: Computing a 95% Confidence Interval
 
-What defenders should do:
-- Identify the hubs explicitly. You cannot defend what you have not measured.
-- Provide alternative paths around hubs.
-- Replicate hub function: use multiple CDN providers, multiple DNS resolvers, multiple cloud regions.
-- Where targeted attack is the threat, invest disproportionately in defending the few critical nodes.
+Given: x̄ = 3.1, s = 0.5, n = 100. The 95% z-value is z* = 1.96.
 
-In a scale-free network, "average" robustness is a misleading metric. The right question is not "how many nodes can fail at random" but "how many of the RIGHT nodes can fail before the network shatters."
+Standard error:
+SE = s / √n = 0.5 / √100 = 0.5 / 10 = 0.05
 
-Why This Is a Model Essay:
-- Section 1 distinguishes small-world from scale-free precisely (they are independent properties).
-- The airline network is correctly identified as both small-world and scale-free, with concrete numbers.
-- The Eyjafjallajökull example anchors the topology in a real event.
-- Section 3 explains the robust-yet-fragile paradox correctly: both halves depend on the same fact.
-- The defensive recommendations are concrete and operational; "average robustness is misleading" is the takeaway.`,
+Margin of error:
+ME = z* · SE = 1.96 · 0.05 = 0.098
+
+Confidence interval:
+CI = x̄ ± ME = 3.1 ± 0.098 = (3.002, 3.198)
+
+Plain-language interpretation: based on this sample, our best estimate of the mean GPA at the university is 3.1, and the true population mean is plausibly somewhere between 3.00 and 3.20. If we had repeated the sampling procedure many times, about 95% of the resulting intervals would contain the true mean GPA. The narrow width of about 0.2 reflects the moderately large sample size; with only n = 100, we have decent — but not extremely tight — precision.
+
+Section 2: Effect of Sample Size and Confidence Level
+
+1. 99% interval with n = 100. The critical value at 99% is z* ≈ 2.58.
+ME_99 = 2.58 · 0.05 = 0.129
+CI_99 = 3.1 ± 0.129 = (2.971, 3.229)
+
+The 99% interval is wider than the 95% interval (width 0.258 vs. 0.196). This is intuitive: to be MORE confident that the interval contains the true mean, we have to include a wider range of plausible values. Higher confidence = wider interval, holding sample size fixed.
+
+2. 95% interval with n = 25. Standard error grows as the sample shrinks:
+SE = 0.5 / √25 = 0.5 / 5 = 0.10
+ME = 1.96 · 0.10 = 0.196
+CI = 3.1 ± 0.196 = (2.904, 3.296)
+
+This interval is roughly twice as wide as the original (width 0.392 vs. 0.196). With only n = 25, we have much less precise information about the population mean — the standard error is twice as large.
+
+3. 95% interval with n = 400.
+SE = 0.5 / √400 = 0.5 / 20 = 0.025
+ME = 1.96 · 0.025 = 0.049
+CI = 3.1 ± 0.049 = (3.051, 3.149)
+
+This interval is roughly half as wide as the original (width 0.098 vs. 0.196). The relationship: interval width is proportional to 1/√n. To halve the interval width, you need to QUADRUPLE the sample size. This is why studies aiming for high precision require so many participants — the diminishing returns kick in quickly.
+
+Section 3: Two Common Interpretation Errors
+
+ERROR 1: "There is a 95% probability that the true mean GPA is between 3.00 and 3.20."
+
+Why it is wrong: this interpretation treats the population mean as a random variable that has some probability of being in our specific interval. In frequentist statistics, the population mean is a fixed (though unknown) number — it is either in our interval or not. The "95%" describes the reliability of the PROCEDURE for generating intervals across many repetitions, not a probability about this particular interval.
+
+The correct interpretation: 95% of the intervals constructed by this procedure (over many samples) would contain the true mean. For our specific interval (3.00, 3.20), we cannot say more — either it contains the true mean or it does not.
+
+A bad-decision scenario: a researcher publishes a paper claiming "we are 95% certain that the mean tumor reduction is between 8% and 12%." A skeptic challenges that this is overconfident — "you cannot put a probability on a fixed parameter." The researcher dismisses this as pedantic. But a Bayesian re-analysis using a reasonable prior might give a credible interval of (5%, 15%), reflecting more genuine uncertainty than the confidence interval suggests. Conflating the two interval types can lead to overconfidence in published results.
+
+ERROR 2: "If I take another random sample of 100 students, 95% of the new GPA values will fall between 3.00 and 3.20."
+
+Why it is wrong: this confuses an interval for the POPULATION MEAN with an interval for FUTURE INDIVIDUAL OBSERVATIONS. The confidence interval is about the parameter, not future data points. Future GPAs in a sample of 100 will have spread close to the original sample SD (about 0.5), so most of them will fall well outside (3.00, 3.20).
+
+The correct interpretation: the interval (3.00, 3.20) is a range of plausible values for the AVERAGE GPA across all university students. Individual student GPAs will scatter much more widely.
+
+A bad-decision scenario: a university administrator looks at the confidence interval (3.00, 3.20) and concludes that almost no students at the school have GPAs below 3.0 or above 3.2. They proceed to set graduation honors thresholds based on this assumption. But the actual GPA distribution has SD = 0.5, so substantial fractions of students fall in the 2.5–3.0 range and the 3.2–3.7 range — exactly where the honors thresholds matter most. The administrator has confused the precision of the MEAN estimate with the spread of the actual data.
+
+Why This Is a Model Essay
+
+Section 1 shows the calculation step by step (sample SE, then ME, then CI), which is the format that scoring rubrics expect. The student does not skip steps even though the arithmetic is easy.
+
+Section 2 builds intuition about the trade-offs. The student names the key relationship: interval width is proportional to 1/√n. This is the relationship that explains why studies need so many participants for small effects.
+
+The point that "to halve the width, quadruple the sample" is exactly what study designers must internalize. It is the answer to "why is your sample so big?" in any consequential study.
+
+Section 3 distinguishes two genuinely different errors — one about the meaning of probability, one about confusing parameter intervals with prediction intervals. Both are common; both have real consequences.
+
+The bad-decision scenarios are concrete and plausible. The honors-threshold example shows that confusing parameter precision with data spread can lead to actively wrong policy choices, not just academic confusion.`,
   },
   {
     id: "d5",
     number: 9,
-    title: "Discussion 5: Self-Organization and the Edge of Chaos",
+    title: "Discussion 5: Hypothesis Testing",
     points: 50,
     type: "discussion",
     objectives: [
-      "Distinguish self-organization from emergence and identify the local rules that drive it.",
-      "Locate a self-organizing system on the order-chaos spectrum and justify the placement with evidence.",
+      "State a null and alternative hypothesis, choose a significance level, and describe what data would lead to rejecting the null.",
+      "Distinguish Type I from Type II errors and identify what evidence beyond the p-value matters before drawing a substantive conclusion.",
     ],
-    reading: `Self-organization is the appearance of large-scale order from the local interactions of many parts, without any central planner. Termite mounds are built by termites following simple local rules. Crystals form from molecular interactions. Convection cells in a heated fluid spontaneously arrange into honeycomb patterns.
+    reading: `Background
 
-Self-organization is closely related to emergence — both involve higher-level patterns arising from lower-level interactions — but the emphasis is different. Emergence focuses on the FACT of the higher-level property; self-organization focuses on the DYNAMICS that generate it.
+Hypothesis testing is the framework statisticians use to decide whether observed data provide evidence against a default assumption. It is the statistical foundation for almost every claim of "we found that..." or "this drug works..." or "this difference is statistically significant."
 
-Stuart Kauffman, in his work on Boolean networks, identified the EDGE OF CHAOS. Systems can be tuned across a spectrum from frozen order (every part in lock-step) to full chaos (every part responding randomly). Neither extreme produces interesting behavior. Frozen systems cannot adapt; chaotic systems cannot maintain any structure. Between them lies a narrow regime where the system is structured enough to maintain coherent patterns but flexible enough to change them in response to inputs.
+THE BASIC STRUCTURE. A hypothesis test proceeds in five steps:
 
-The implication is striking: complexity is not the OPPOSITE of order or chaos; it is the result of being at the boundary between them. Real systems gravitate toward this boundary because that is where useful information processing, adaptation, and evolution can occur.`,
-    assignment: `Assignment (50 points):
-Choose ONE example of a self-organizing process (e.g., bird flocking, ant trail formation, traffic patterns, neuronal synchronization, urban district formation, online community formation, the immune system's response to a pathogen, biofilm growth). Then:
-1. State the example
-2. Identify the parts and the local rules they follow
-3. Describe the global pattern that emerges
-4. Argue whether the system, in its self-organized state, lies in the ordered regime, the chaotic regime, or near the edge of chaos — and what evidence supports your judgment
-5. Explain what would happen if the system were pushed toward more order, and what would happen if it were pushed toward more chaos`,
-    modelResponse: `Model Response:
-Example: ant trail formation in foraging colonies.
+1. Specify the NULL HYPOTHESIS (H₀). This is the default, "nothing is happening" claim — typically that there is no effect, no difference, no relationship. Examples: "the new drug has no effect on blood pressure"; "the coin is fair"; "the two groups have the same mean."
 
-Parts and local rules: individual worker ants follow remarkably simple rules:
-- Wander semi-randomly until food is found
-- When food is found, return to the nest, depositing pheromone along the path
-- When traveling, with high probability follow the strongest pheromone gradient in the local vicinity
-- Pheromone evaporates over time, weakening older trails
+2. Specify the ALTERNATIVE HYPOTHESIS (H₁ or Hₐ). This is the claim we are testing FOR — typically that there IS an effect or difference. Examples: "the drug lowers blood pressure"; "the coin is biased toward heads"; "the two groups have different means."
 
-That is essentially the whole rule set. No ant is told where the food is. No ant has a map. Each ant follows local cues and returns the favor by leaving cues for the next ant.
+3. Choose a SIGNIFICANCE LEVEL (α). This is the probability of rejecting the null hypothesis when it is actually true — the false-alarm rate we are willing to tolerate. Conventional choices are α = 0.05 (5%) and α = 0.01 (1%).
 
-Global pattern: efficient, near-optimal foraging trails between the nest and food sources. Within hours of food being placed, the colony has typically established a strong, narrow trail along close to the shortest available path. When food is exhausted, the trail dissolves as pheromone evaporates. The colony as a whole behaves as if it had centralized planning, but no individual ant does the planning.
+4. Compute the relevant TEST STATISTIC and the corresponding P-VALUE. The p-value is the probability of observing data as extreme as ours, OR MORE EXTREME, IF the null hypothesis were true.
 
-Where on the order-chaos spectrum: near the edge of chaos. The evidence:
-- Strong order signature: when food is present, trails are narrow and stable; ants follow them in high concentration; the pattern persists for hours.
-- Chaotic signature: a substantial fraction of ants — typically 5%–15% — do NOT follow established trails. They wander randomly. This persistent random component allows the colony to discover new food sources. A colony of perfectly trail-following ants would lock onto the first food found and never find another.
+5. Compare p to α. If p ≤ α, we REJECT the null hypothesis (the data are too unusual to be explained by chance under H₀). If p > α, we FAIL TO REJECT H₀ (the data are consistent with the null and we have not gathered enough evidence to overturn it).
 
-The combination produces the edge-of-chaos signature: structured enough to exploit known resources, exploratory enough to discover new ones.
+TWO KINDS OF ERRORS. No statistical test is perfect; we always face two types of error:
 
-If pushed toward more order: imagine increasing the strength of pheromone-following so 100% of ants always follow the strongest trail. The colony would lock onto the first food source and never explore further. When that food was exhausted, the colony would have no trails to fall back on. Highly ordered ant colonies in laboratory experiments develop "ant mills" — circular trails where ants follow each other in endless loops until they die of exhaustion.
+TYPE I ERROR (false positive): rejecting H₀ when it is actually true. The probability of this is α.
 
-If pushed toward more chaos: imagine ants ignoring trails entirely. The colony reverts to pure random search. Even when food is found and trails are laid, no ants follow them. Foraging efficiency collapses. The colony is structurally unable to exploit information about resources.
+TYPE II ERROR (false negative): failing to reject H₀ when it is actually false (the alternative is real). The probability of this is denoted β. The complement, 1 − β, is called the POWER of the test — the probability of correctly detecting a real effect.
 
-The actual ant colony, sitting near the edge of chaos, gets the best of both: trails when trails are useful, random exploration when something new might be out there. Researchers studying colony optimization have developed Ant Colony Optimization algorithms that explicitly tune the ordering-versus-exploration parameter — and consistently find that the best-performing parameter values sit in the middle of the spectrum.
+Type I and Type II error rates trade off against each other for fixed sample size. Lowering α (being stricter about false alarms) raises β (we will miss more real effects). Increasing the sample size lets us reduce both at once.
 
-Why This Is a Model Response:
-- The local rules are stated specifically, including the small fraction of always-wandering ants.
-- The edge-of-chaos argument is supported with evidence from BOTH directions (ordered AND chaotic signatures).
-- The thought-experiment perturbations are concrete; the "ant mill" failure mode is a real biological phenomenon.
-- The connection to Ant Colony Optimization links biology to applied computational consequence.
-- The closing point is that evolution has TUNED the parameters to the edge of chaos.`,
+WHAT THE P-VALUE DOES NOT MEAN.
+- It is NOT the probability that the null hypothesis is true. The p-value assumes H₀ is true and asks how unusual the data are.
+- It is NOT the probability that the result is due to chance.
+- A p-value of 0.04 is NOT "weakly statistically significant"; the data either pass the threshold or they do not.
+- STATISTICAL significance is not the same as PRACTICAL significance. A study with a huge sample size can achieve p < 0.001 for an effect so small it has no real-world importance.
+
+The American Statistical Association issued a formal statement in 2016 cautioning researchers against over-reliance on p-values. Modern best practice supplements p-values with effect sizes, confidence intervals, and replication.`,
+    assignment: `Assignment (50 points)
+
+Construct an original hypothesis-testing scenario. (Examples: testing whether a new teaching method improves test scores; testing whether a coin is fair; testing whether men and women in a sample have different mean salaries; testing whether a drug reduces a symptom.) Then:
+
+1. State the null and alternative hypotheses clearly
+2. State your significance level α and explain why this choice is appropriate for your scenario
+3. Describe what the data would have to show to lead you to reject H₀
+4. Identify the consequences of a Type I error and a Type II error in your scenario, and discuss which is worse
+5. Discuss what additional information beyond the p-value you would want to know before drawing a substantive conclusion`,
+    modelResponse: `Model Response
+
+Scenario: a school district is considering adopting a new mathematics curriculum that the publisher claims improves student test scores. To evaluate this claim, the district randomly assigns 40 classrooms to the new curriculum and 40 classrooms to the existing curriculum, and compares the mean end-of-year test scores in the two groups.
+
+Hypotheses:
+
+H₀: the population mean test score is the same under both curricula. In symbols: μ_new = μ_old, or equivalently μ_new − μ_old = 0.
+
+H₁: the new curriculum produces a higher mean test score: μ_new > μ_old.
+
+This is a one-sided test, because the question of interest is specifically whether the new curriculum is BETTER (we would not adopt it if it were significantly worse, but the question being asked is whether it is an improvement). A two-sided test (μ_new ≠ μ_old) would also be defensible and more conservative.
+
+Significance level: α = 0.05. This is the conventional choice for educational research and matches what publishers and school boards expect to see. If the consequences of a wrong decision were more severe (a billion-dollar curriculum rollout, or a medical treatment), I would consider α = 0.01.
+
+What data would lead to rejecting H₀: I would compute the difference in mean scores between the two groups and the corresponding test statistic (a two-sample t-statistic, given the sample sizes are moderate). If the resulting p-value is ≤ 0.05, I would reject H₀ and conclude that the new curriculum produces a statistically significant improvement. Concretely: with 40 classrooms per group, a difference of 5 points or more (out of 100) on a test where within-group SD is around 12 would be likely to produce p < 0.05. Smaller differences would not.
+
+Type I and Type II error consequences:
+
+TYPE I ERROR (false positive): we conclude the new curriculum is better when it actually is not. The district adopts the new curriculum based on noise. Costs: training all teachers, buying new materials, disrupting classroom routines, with no actual improvement in student outcomes. Possibly some real harm if the new curriculum has unmeasured downsides.
+
+TYPE II ERROR (false negative): we fail to detect a real improvement and stick with the existing curriculum. Cost: students continue to learn from the inferior curriculum for at least another year, possibly indefinitely if the decision is not revisited.
+
+Which is worse: in this case, I think Type II is worse. The Type I cost is one cycle of disruption; the Type II cost is real educational harm to students that compounds over time. This argues for using a higher α (more willing to accept some false positives) or, better, a larger sample size (more classrooms, allowing both error rates to be lower at once). However, it depends on the magnitude of cost: a $10 million rollout cost is non-trivial, and Type I might be more politically damaging because the wasted spending is highly visible while the foregone improvement (Type II) is invisible.
+
+What additional information I would want beyond the p-value:
+
+EFFECT SIZE: not just whether p < 0.05, but how big the improvement actually is. A difference of 1 point in test scores is statistically detectable with a large enough sample but practically negligible. A difference of 10 points might warrant adoption.
+
+CONFIDENCE INTERVAL on the difference of means: a 95% CI gives a sense of the uncertainty in our point estimate. "5-point improvement (95% CI: 1 to 9)" tells me the effect is uncertainly small to moderate; "5-point improvement (95% CI: 4 to 6)" tells me the effect is precisely estimated and definitely meaningful.
+
+REPLICATION: has this curriculum been tested in other districts, with similar results? A single positive study at p = 0.04 in one district is much weaker evidence than three studies showing similar effects in different districts.
+
+SUBGROUP ANALYSIS: does the improvement hold equally across grade levels, demographic groups, prior-achievement quartiles? A curriculum that helps high-performing students but hurts struggling ones is not the same kind of "improvement" as one that helps everyone.
+
+IMPLEMENTATION FIDELITY: did teachers actually follow the new curriculum, or did some quietly stick with the old one? A statistically significant improvement under perfect implementation might disappear under realistic conditions.
+
+In short: p < 0.05 is necessary but far from sufficient for adopting a new curriculum. Effect size, uncertainty, replication, and real-world generalizability matter more than crossing the threshold.
+
+Why This Is a Model Response
+
+The student frames the test correctly: a one-sided test is justified by the substantive question (is the new curriculum BETTER), and the more conservative two-sided alternative is acknowledged.
+
+The choice of α is justified rather than copied. The student notes that α = 0.05 is conventional but discusses when stricter standards would be appropriate.
+
+The Type I vs. Type II discussion considers both kinds of cost (training spending vs. educational harm) and reaches a defensible judgment about which is worse, including political vs. substantive considerations.
+
+The "what beyond p-value" section is the heart of the response. The American Statistical Association's 2016 statement is reflected here: effect size, confidence intervals, replication, subgroup effects, and implementation fidelity all matter. A student who can list these has graduated from "p < 0.05 means it works."
+
+The closing line — "p < 0.05 is necessary but far from sufficient" — is the lesson the field is trying to teach since the replication crisis. Carrying it into school district decision-making is exactly how Statistics 101 is supposed to translate to applied judgment.`,
   },
   {
     id: "e5",
     number: 10,
-    title: "Essay 5: System Archetypes and Unintended Consequences",
+    title: "Essay 5: Correlation vs. Causation",
     points: 50,
     type: "essay",
     objectives: [
-      "Describe the five core system archetypes and recognize their diagnostic signatures.",
-      "Apply the archetype framework to a real case of unintended consequences.",
+      "Interpret the correlation coefficient r and explain why correlation alone does not establish causation.",
+      "Identify the four common alternative explanations for a correlation (chance, reverse causation, confounding, selection) and design studies that rule them out.",
     ],
-    reading: `Donella Meadows, Peter Senge, and other systems thinkers cataloged a set of recurring patterns — SYSTEM ARCHETYPES — that show up across domains. The same dysfunctional dynamics appear in companies, families, nations, and ecosystems.
+    reading: `Background
 
-Five archetypes are essential at the introductory level:
+Two variables are CORRELATED when they tend to move together. The CORRELATION COEFFICIENT, denoted r, measures the strength and direction of the linear relationship:
+- r ranges from −1 to +1
+- r = +1: perfect positive linear relationship (when X goes up, Y always goes up)
+- r = 0: no linear relationship
+- r = −1: perfect negative linear relationship (when X goes up, Y always goes down)
+- Values like 0.7 indicate strong correlations; 0.3 are moderate; 0.1 are weak
 
-1. SHIFTING THE BURDEN. A symptom is addressed by a quick fix that relieves it temporarily but makes the underlying problem worse over time. Examples: painkillers for chronic injury; deficit spending to avoid raising taxes; using consultants to write reports nobody internally can write.
+Correlation describes a pattern in observed data. CAUSATION, by contrast, claims that one variable INFLUENCES the other — that changing X would actually change Y. Correlation can be (and often is) observed without any causal relationship. The collapse from "X and Y are correlated" to "X causes Y" is one of the most common errors in data interpretation.
 
-2. LIMITS TO GROWTH. A reinforcing loop drives growth, but is eventually checked by a balancing loop that becomes dominant as some limit is approached. Examples: a startup's user growth slowing as the addressable market saturates; population reaching carrying capacity.
+There are at least four reasons two variables might be correlated even if neither causes the other:
 
-3. TRAGEDY OF THE COMMONS. Multiple actors share a resource. Each individually benefits from using more. The cost of overuse is shared and so invisible to any single actor. Examples: overfishing; antibiotic overuse; carbon emissions.
+1. CHANCE. With enough variables and enough observations, some pairs will be correlated purely by accident. A famous example: the per-capita consumption of mozzarella cheese in the US correlates strongly with the number of civil engineering doctorates awarded each year, over a period of about a decade. The correlation is real; the causation is nonexistent.
 
-4. ESCALATION. Two actors' actions reinforce each other in a destructive feedback loop. Each views their own action as a defensive response to the other. Examples: arms races; price wars; flame wars.
+2. REVERSE CAUSATION. The arrow runs the other way. People who exercise more tend to have better mental health (the correlation is real), but does exercise cause better mental health, or does better mental health enable people to exercise? Probably both, but observational correlation alone cannot tell you which direction is dominant.
 
-5. SUCCESS TO THE SUCCESSFUL. Two parties compete for a limited resource. The current winner gets disproportionate access, which lets them win again. Examples: students assigned to advanced classes get better teaching and perform better; established academics get grants that produce papers that get more grants.
+3. CONFOUNDING VARIABLE. A third variable causes both. Ice cream sales and drowning deaths are correlated. Eating ice cream does not cause drowning; rather, hot weather causes both — more ice cream is sold in summer, and more people swim and risk drowning in summer. The third variable (weather) confounds the apparent relationship.
 
-The value of the archetypes is diagnostic. Once the analyst sees the situation is, say, a Shifting the Burden, they know that the standard intervention — strengthen the fundamental solution while not eliminating the symptomatic relief — is likely to help.`,
-    assignment: `Section 1 (10 points) — The Archetypes
-In your own words, describe each of the five archetypes. For each, state the dynamic it captures and one example NOT mentioned in the background.
+4. SELECTION EFFECTS. The way the data were collected creates a spurious relationship. If you study only patients who showed up at a hospital, you may find that two diseases are negatively correlated — but in the broader population, they may be unrelated. The selection (showing up at the hospital) creates the apparent pattern.
 
-Section 2 (20 points) — One Archetype Analyzed in Depth
-Choose ONE archetype and analyze a real-world case in detail. Identify:
-- The actors and resources involved
-- The reinforcing and balancing loops at work
-- Why the situation is an instance of this archetype rather than another
-- The standard intervention prescribed for this archetype
-- Why interventions that ignore the archetype tend to fail or backfire
+Establishing CAUSATION rigorously requires more than correlation. The gold standard is the RANDOMIZED CONTROLLED TRIAL: randomly assign treatment vs. control, observe the difference. Random assignment breaks all the alternative explanations — random groups are equivalent in expectation, so any difference in outcomes can be attributed to the treatment.
 
-Section 3 (20 points) — A Case of Unintended Consequences
-Identify a real historical case where well-intentioned action produced unintended bad consequences because the actors did not see the system. Explain what archetype was at play, what the actors expected, what actually happened, and how systems thinking would have produced a different prediction.`,
-    modelResponse: `Model Response:
+When randomization is impossible (because of cost, time, or ethics), researchers use various techniques to approximate it: natural experiments, instrumental variables, regression discontinuity designs, propensity score matching, longitudinal data with careful confounder adjustment. None of these fully solves the problem; all of them attempt to rule out the four alternative explanations above.`,
+    assignment: `Assignment (50 points)
 
-Section 1: The Five Archetypes
-- Shifting the Burden: a symptom is suppressed by a quick fix that prevents the actor from addressing the root cause. Example: a manager who handles every difficult conversation themselves to "save time," with the result that nobody else on the team learns to handle them.
-- Limits to Growth: rapid growth slows and may stop as a balancing loop becomes dominant. Example: a viral video's share rate slows as everyone in the relevant audience has already seen it.
-- Tragedy of the Commons: shared resource overused because each individual benefits privately while costs disperse. Example: open-plan offices, where each person's loud phone call is convenient for them but degrades concentration for everyone.
-- Escalation: two actors' defensive responses reinforce each other into a destructive loop. Example: divorcing parents whose lawyers each demand more concessions in response to the other's demands until both spend more on legal fees than the assets are worth.
-- Success to the Successful: a current advantage compounds into greater advantage. Example: scientific journals' citation counts — papers in already-prestigious journals get cited more, which makes the journals more prestigious, which attracts the next round of high-quality submissions.
+Section 1 (10 points) — Definitions and the Correlation Coefficient
+In your own words, define correlation and the correlation coefficient r. Explain what r = +0.8, r = 0.0, and r = −0.5 each mean in plain terms. Then state in 2–3 sentences why correlation is not enough to establish causation.
 
-Section 2: A Tragedy of the Commons in Practice — Antibiotic Resistance
-Actors and resources: the resource is the EFFECTIVENESS of antibiotics. The actors are everyone who can prescribe or consume antibiotics: physicians, patients, livestock producers, hospital administrators.
+Section 2 (20 points) — A Spurious Correlation Analyzed
+Choose ONE famous spurious correlation (you can use one of the textbook examples — ice cream and drowning, divorce rates and margarine consumption, autism and organic food sales — or invent your own that is plausible). For your chosen correlation:
+- State the two variables and the apparent relationship
+- Identify which of the four explanations (chance, reverse causation, confounding, selection) accounts for the correlation
+- Explain how a researcher could investigate further to confirm that the relationship is non-causal
+- Describe how this kind of mistake plays out in real journalism or public discourse, with a concrete example if you can
 
-Reinforcing loop driving overuse: a physician faces a patient with a likely viral infection. Prescribing an antibiotic costs the physician nothing and gives the patient peace of mind. The cost of the prescription — a tiny contribution to the global pool of bacterial resistance — is shared across the entire human population over decades. So the physician's individual cost-benefit analysis favors prescribing. Each prescription is rational; the aggregate effect is destruction of the resource.
+Section 3 (20 points) — A Causal Question Designed Properly
+Choose ONE substantive causal question — does daily meditation reduce anxiety? does a minimum wage increase reduce employment? does a particular textbook improve learning? does eating breakfast improve job performance? Then describe:
+- Why a simple correlational study would be insufficient to answer it
+- What confounding variables are most likely to interfere
+- What study design would more credibly establish causation, and why
+- What practical or ethical obstacles might prevent the ideal design from being run`,
+    modelResponse: `Model Response
 
-Balancing loop too weak: as resistance grows, the antibiotics stop working, which should reduce future prescription. But the timescale is wrong — the cost of any individual prescription is paid years later by other people, while the benefit is immediate. The balancing loop cannot exert effective pressure until catastrophic damage has accumulated.
+Section 1: Definitions
 
-Why this is Tragedy of the Commons rather than another archetype: the defining feature is the asymmetry between privatized benefit and socialized cost across many actors. It is not Shifting the Burden — there is no underlying problem being masked by a quick fix. It is not Escalation — antibiotic prescribers are not retaliating. It is not Limits to Growth — the resource is being depleted by extraction, not approaching a natural ceiling.
+CORRELATION measures how two numerical variables move together. Two variables are positively correlated when high values of one tend to occur with high values of the other (and low with low); negatively correlated when high values of one occur with low values of the other; uncorrelated when there is no consistent pattern.
 
-Standard intervention: privatize the cost, regulate the use, OR raise consciousness of the collective stakes. For antibiotics: prescribing guidelines, hospital antibiotic stewardship programs, restrictions on agricultural use, surveillance reporting. The pattern is to internalize the externality so the individual decision-maker faces a cost commensurate with the systemic impact.
+THE CORRELATION COEFFICIENT r is a number between −1 and +1 that measures the strength and direction of the LINEAR relationship between two variables.
 
-Why interventions ignoring the archetype fail: appeals to individual virtue ("be more careful") fail because they do not change the cost-benefit calculation. Developing new antibiotics fails over the long run because new drugs face the same commons dynamics. Only interventions that change the structure can reverse the dynamic.
+r = +0.8 means a strong positive linear relationship — knowing one variable lets you predict the other reasonably well, and they generally move in the same direction.
 
-Section 3: A Case of Unintended Consequences — Cobra Effect in Colonial Delhi
-The case: in colonial India, British administrators offered a bounty for every dead cobra brought to authorities. The expectation was simple: residents would hunt cobras, the cobra population would decline, the streets would become safer.
+r = 0.0 means no linear relationship — the variables are linearly independent. (Note: they could still have a non-linear relationship that r misses entirely.)
 
-What happened: enterprising residents began breeding cobras in their homes, killing the captives, and collecting the bounty. When the British realized this and ended the program, the breeders — now stuck with worthless cobras — released them into the streets. The cobra population was higher after the program than before.
+r = −0.5 means a moderate negative linear relationship — when one goes up, the other tends to go down, but the relationship has noticeable scatter.
 
-What archetype: a hybrid of two. The primary one is Shifting the Burden — the bounty was symptomatic relief that masked the underlying problem (why Delhi had so many cobras was never addressed). It is also a case of GAMING — when a metric becomes the target of optimization, the metric stops correlating with the underlying goal. The British wanted dead cobras as a proxy for population reduction; residents optimized for the proxy.
+Why correlation is not enough for causation: a correlation is a statistical pattern in observed data. It tells you that two variables are associated. It does NOT tell you whether one influences the other, whether the relationship is reverse causal, or whether some third variable causes both. Without ruling out these alternatives, claiming causation from correlation is unjustified.
 
-What systems thinking would have predicted: a competent analyst would have asked, before launching the program, "what new feedback loops does it create? What incentive structure does it produce?" The answer would have been that paying for dead cobras creates a market for dead cobras, which creates a market for live cobras to convert. The reinforcing loop — bounty → breeding → more bounties — would have been visible immediately to anyone trained to look for it. The British did not see the loop because they thought of the policy as a one-step transaction rather than as the introduction of a new feedback structure into a complex system.
+Section 2: A Spurious Correlation — Ice Cream Sales and Drownings
 
-The general lesson, sometimes called Goodhart's Law: when a measure becomes a target, it ceases to be a good measure. Systems thinking generalizes further: any intervention into a system creates new loops, and the new loops may dominate the intended effect. The right question is never "what will my policy do directly?" but "what will the SYSTEM do once my policy is in place?"
+The two variables: monthly ice cream sales in a region and monthly drowning deaths in that region. The correlation is strongly positive — months with high ice cream sales tend to have high drowning rates.
 
-Why This Is a Model Essay:
-- Section 1 gives concise, original examples of each archetype.
-- The antibiotic-resistance case identifies the asymmetry between private benefit and dispersed cost — the diagnostic signature.
-- The intervention discussion notes WHY appeals to individual virtue fail in commons situations: structure trumps exhortation.
-- Section 3 introduces the Cobra Effect, names Goodhart's Law, and generalizes to the principle that interventions create new loops.
-- The closing line captures the entire shift in mindset that systems thinking is meant to produce.`,
+Which explanation accounts for the correlation: CONFOUNDING. The third variable is summer weather. Hot weather causes more ice cream sales (people seek cold treats) AND more drownings (more people go swimming, boating, and visiting beaches; rivers are full from spring runoff; pools are open). Neither variable causes the other; both are caused by the same underlying seasonal factor.
+
+How to investigate further: a researcher could control for the confounding variable. Methods:
+- Compute the correlation BY SEASON. Within winter months only, is there still a relationship? Within summer months only? If the correlation disappears when you condition on season, that is strong evidence the season was the confounder.
+- Compute the partial correlation, statistically adjusting for temperature. If the residual correlation after removing the temperature effect is near zero, the original correlation was driven by temperature.
+- Look at fine-grained time data. Within a single hot day, do hours of higher ice cream sales also have higher drownings? They should not — drownings are not generally happening during purchase hours.
+
+How this plays out in journalism: reports that conflate correlation with causation are everywhere. A 2009 example: a study found that children who ate breakfast had better grades. Headlines: "Breakfast boosts grades." The actual causal story is far more complicated — children who eat breakfast tend to come from families with more resources, more stable home schedules, and more parental involvement, all of which independently affect grades. A randomized intervention that just provides breakfast (as some school programs do) shows much smaller effects on grades than the observational correlation suggested. The correlation was real; the causal interpretation was wrong; the policy implication was overblown.
+
+Section 3: A Causal Question — Does Meditation Reduce Anxiety?
+
+Why a simple correlational study would be insufficient: many studies have found that people who meditate regularly report lower anxiety levels than people who do not. But this correlation is open to all four alternative explanations:
+- Reverse causation: people with low baseline anxiety might be more able to maintain a meditation practice; high-anxiety people might have started meditating but quit because their anxiety made it difficult
+- Confounding: people who meditate often also exercise, eat healthier, sleep better, have higher socioeconomic status, and have more leisure time — all of which independently reduce anxiety
+- Selection: meditation studies often recruit through ads in wellness magazines, so the participants are already pro-wellness; their experiences may not generalize
+- Chance is a smaller concern given the consistency across studies, but individual studies could still be flukes
+
+Most likely confounders: socioeconomic status (more leisure time, less work stress, better access to mental health resources), exercise, sleep quality, social connectedness, and prior mental health (people who already manage their mental health well are more likely to stick with meditation programs).
+
+A study design that would more credibly establish causation: a randomized controlled trial. Recruit a population of adults reporting moderate anxiety. Randomly assign half to a structured meditation program (eight weeks of mindfulness training) and half to a control activity matched in time and group structure (such as a journaling program or a stretching program). Measure anxiety at baseline and at follow-up using validated scales. Random assignment ensures the two groups are equivalent in expectation on all the confounders — those who would have meditated and those who would not, distributed evenly across both arms. Any post-treatment difference can plausibly be attributed to the meditation itself.
+
+Practical and ethical obstacles:
+- Blinding: participants know whether they are in the meditation group, so placebo effects could inflate the meditation arm. Ideally we would also have an "active control" condition that mimics meditation's structure without its specific content (like the journaling/stretching example), but designing a perfect placebo for meditation is hard.
+- Dropout: if anxious participants struggle to maintain the meditation practice, they may drop out, leaving a non-random subset in the analysis. Intent-to-treat analysis (analyzing all randomized participants regardless of compliance) helps but does not fully solve this.
+- Generalizability: the participants who consent to a meditation RCT are probably more open to meditation than the general population. Effects in the population at large may be smaller.
+- Cost and time: an eight-week trial with substantial follow-up is expensive. Long-term effects (does meditation still help two years later?) require longer follow-up.
+
+In practice, the field of meditation research has produced multiple RCTs, and the evidence does suggest a moderate causal effect of meditation on anxiety — smaller than the observational studies implied, but real. This is exactly the pattern we would expect: observational correlations tend to overstate effects because they include all the confounders; RCTs, by removing confounders, find the actual causal contribution alone.
+
+Why This Is a Model Essay
+
+The Section 1 distinction includes the important footnote about r and non-linear relationships: r = 0 does NOT mean "no relationship," only "no LINEAR relationship." Beginning students often miss this.
+
+In Section 2, the student does not just identify confounding but proposes specific ways to test the confounding hypothesis (within-season analysis, partial correlation, fine-grained time data). This is what real researchers do.
+
+The breakfast-and-grades journalism example is current and shows the corrosive effect of bad statistics on policy: school meal programs are real, expensive, and worth getting right.
+
+The Section 3 design names which confounders are likely (socioeconomic status, exercise, sleep) and the standard solution (RCT). It also notes specific obstacles to the ideal design — blinding, dropout, generalizability — which are exactly the issues that meditation researchers actually grapple with.
+
+The closing observation that "RCTs find smaller effects than observational studies, because they remove confounders" captures a deep regularity in applied research. Students who internalize this will not be surprised when "exciting observational finding" fails to replicate in RCT.`,
   },
   {
     id: "d6",
     number: 11,
-    title: "Discussion 6: Leverage Points — Where to Intervene in a System",
+    title: "Discussion 6: Common Misuses of Statistics",
     points: 50,
     type: "discussion",
     objectives: [
-      "Rank Meadows' five tiers of leverage points from least to most powerful.",
-      "Diagnose where existing interventions cluster and identify the deepest practical leverage point for a real problem.",
+      "Recognize common misuses of statistics — cherry-picking, p-hacking, Simpson's paradox, base-rate neglect, survivorship bias, and others.",
+      "Identify red flags that signal each misuse and explain what a correct analysis would conclude instead.",
     ],
-    reading: `In 1999, Donella Meadows wrote a short paper called "Leverage Points: Places to Intervene in a System." Her core observation: people intervene in systems all the time, but they almost always intervene at the WRONG points.
+    reading: `Background
 
-Meadows ranked twelve types of leverage points. We compress them into five tiers:
+Statistics is a powerful tool, and like any powerful tool it is regularly misused — sometimes deliberately to deceive, more often through honest carelessness. A statistically literate person should be able to recognize the standard misuses and explain why they are wrong.
 
-TIER 1 — PARAMETERS. Numbers, taxes, subsidies, standards. Where most policy intervention happens. Yet Meadows ranked them lowest because changing a parameter rarely changes the system's behavior pattern.
+CHERRY-PICKING. Selecting only the data that support a desired conclusion while ignoring data that do not. A company touts "customers love us!" by quoting only five-star reviews, ignoring the one-star reviews. A weight-loss program advertises "average customer loses 15 pounds" by averaging only the customers who completed the program, ignoring dropouts.
 
-TIER 2 — STOCK-AND-FLOW STRUCTURES. The buffers, delays, and physical infrastructure of the system. Adding a reservoir, building a road, expanding a warehouse.
+P-HACKING. Running many statistical tests on the same dataset until something turns up significant by chance, then reporting only that one. With α = 0.05, you expect 1 in 20 tests to be "significant" by chance alone even if there is no real effect. A researcher who runs 20 different analyses and reports only the one that crossed p < 0.05 is essentially guaranteed to find a "result," but it is meaningless. P-hacking is the leading cause of failed replications in psychology and biomedical research.
 
-TIER 3 — FEEDBACK LOOPS. Adding new feedback loops or changing the strength of existing ones. Adding a thermostat to a room is more transformative than changing the temperature setting.
+SIMPSON'S PARADOX. A trend that appears in several different groups REVERSES when the groups are combined. A famous example: in 1973, UC Berkeley's admissions data appeared to show that women were admitted at a lower rate than men. But within each individual department, women were admitted at the same rate or higher. The aggregate appearance of bias was caused by the fact that women were applying in larger numbers to more competitive departments. Aggregating across departments produced the misleading overall pattern.
 
-TIER 4 — INFORMATION FLOWS. What information is available, to whom, and how quickly. Many system failures come from missing information.
+BASE-RATE NEGLECT. Already covered in Discussion 3. Ignoring the prevalence of an event in the underlying population leads to over-reaction to test results, court cases, and screening data.
 
-TIER 5 — RULES, GOALS, AND PARADIGMS. The deepest leverage. The rules of the game, the goals the system is trying to achieve, and the underlying paradigm.
+CORRELATION MISTAKEN FOR CAUSATION. Already covered in Essay 5.
 
-Meadows' larger point: the easier it is to intervene at a leverage point, the less leverage it tends to provide. People work hard at the bottom of the list because that is where intervention feels concrete. Real change usually requires working at the top.`,
-    assignment: `Assignment (50 points):
-Choose ONE problem you genuinely care about. Then:
-1. State the problem and the system in which it occurs
-2. Identify ONE intervention at each of the five tiers (Parameter, Stock-and-Flow, Feedback Loop, Information, Rules/Goals/Paradigm)
-3. Predict for each tier what would change if the intervention were applied
-4. Identify which tier the existing approaches to this problem operate at, and explain why those approaches are likely to be insufficient
-5. Identify which tier you believe would provide the deepest leverage, and explain what makes it hard to implement`,
-    modelResponse: `Model Response:
-Problem chosen: chronic understaffing in U.S. public schools, particularly in low-income districts.
+SURVIVORSHIP BIAS. Drawing conclusions from a sample that systematically excludes failures. A famous historical example: Abraham Wald, a statistician working for the U.S. military in World War II, was asked where to add armor to bombers. The military had data on returning bombers showing where they had been hit most often — wings, tail, fuselage. The natural inference was to add armor in those places. Wald pointed out that this was exactly backwards: those were the places where a bomber could be hit and STILL RETURN. The places where returning bombers were rarely hit (engines, cockpit) were the places where bombers that were hit DID NOT RETURN. The armor should go where the data showed no damage.
 
-Intervention at each tier:
+MISLEADING AVERAGES. Reporting a mean when a median would be more representative (or vice versa). Already discussed in Essay 1.
 
-TIER 1 — PARAMETER. Raise teacher salaries by 10%. Increasing the salary number makes teaching marginally more attractive, drawing additional candidates and retaining some who would leave. Predicted effect: small reduction in vacancy rates over a few years; the underlying pattern of chronic understaffing persists.
+SMALL SAMPLE TROPHIES. Treating a single positive result from a small sample as definitive. With small samples, both Type I and Type II error rates are high, and reported effect sizes tend to be inflated (because small samples that did NOT show effects rarely get published).`,
+    assignment: `Assignment (50 points)
 
-TIER 2 — STOCK-AND-FLOW STRUCTURE. Build new teacher-training pipelines — alternative certification, residency models, expanded education schools. Adds capacity to the upstream pipeline, raising the rate at which trained teachers enter the system. Predicted effect: gradual increase in supply over five to ten years. But if attrition rates are high, more pipeline only feeds more attrition without raising the standing stock.
+Choose TWO of the misuses described above. (You may also use other well-documented misuses, such as misleading visualizations from Essay 2 or the Literary Digest sampling failure from Discussion 4.) For EACH misuse:
 
-TIER 3 — FEEDBACK LOOP. Tie school administrator compensation to teacher retention rates over multi-year windows. This creates a balancing loop: principals who lose teachers face direct compensation consequences and have an incentive to address conditions causing teachers to leave. Predicted effect: principals start investing in working conditions, mentorship, scheduling autonomy. The intervention works on a vector previous interventions ignored: not "supply more teachers" but "stop losing the teachers you have."
+1. Briefly explain the misuse
+2. Give a concrete example — real or constructed — that illustrates it. The example should be specific enough that a reader could follow the logic
+3. Explain what the misled reader's incorrect conclusion would be
+4. Explain what a correct analysis would conclude instead
+5. Explain how a reader could spot this misuse in the wild — what red flags should they watch for`,
+    modelResponse: `Model Response
 
-TIER 4 — INFORMATION FLOW. Require every district to publish, in real time, the working conditions in each school: average class size, hours of unpaid work per week, frequency of disciplinary incidents, teacher turnover rate per building. Make this information searchable and comparable across districts. Predicted effect: prospective teachers can match themselves to environments they can sustain; districts compete on conditions, not just salary; the worst working environments either reform or fail to recruit. Existing data are scattered, hard to find, and not standardized — invisibility protects bad systems.
+Misuse 1: P-Hacking
 
-TIER 5 — RULES, GOALS, AND PARADIGM. Reframe the goal of public education from "test score maximization within fixed budgets" to "creation of educated citizens with sustainable institutions." This requires changing accountability frameworks (replacing high-stakes testing as the dominant metric with multiple measures including teacher retention, student wellbeing, and long-term life outcomes), funding rules (equalizing per-student funding across districts), and the paradigm of public education as a market commodity vs. a civic enterprise. Predicted effect: large but slow. The dominant policy paradigm of the past 25 years would be gradually displaced.
+Brief explanation: p-hacking is the practice of running many analyses on the same dataset until a "statistically significant" result appears by chance, then reporting only that result. With a conventional α = 0.05, about 1 in 20 tests will show p < 0.05 even when there is no real effect. A researcher who runs 20 tests and reports the one that crossed the threshold is reporting noise as if it were signal.
 
-Where existing approaches operate: almost entirely at Tier 1 and Tier 2. Salary raises, signing bonuses, alternative certification programs. Occasionally Tier 3 (some performance-pay schemes have tried to build feedback loops, mostly the wrong kind). Almost never Tier 4 or Tier 5. The result is a system that has been intervened upon constantly for thirty years with very little change in the underlying pattern.
+Concrete example: a researcher has data on 50 patients in a clinical trial of a new antidepressant. The pre-registered primary outcome is depression scores at 12 weeks; the difference between the drug group and placebo group is non-significant (p = 0.18). Disappointed, the researcher then tests:
+- Sub-scores within the depression scale (5 sub-scales)
+- Different time points (4, 8, 12, 16 weeks)
+- Different patient subgroups (men, women, under 50, over 50)
+- Different outcome measures (anxiety, sleep, functional capacity)
 
-Where the deepest leverage lies: Tier 5, in particular the paradigm shift from treating teaching as a commodity occupation to treating it as a sustained civic institution. Why this is hard: paradigm change requires a coalition that does not currently exist. State legislatures and school boards are accountable to electorates that respond to short-term metrics. The actors who would benefit most (teachers, students in low-income districts) are the least politically organized. And the dominant intellectual framework — public education as a market — has institutional defenders that would resist any reframing. So the deepest leverage point is also the slowest. This is exactly the asymmetry Meadows identified.
+After running 30+ analyses, one combination — anxiety at 8 weeks in women under 50 — shows p = 0.04. The paper is written claiming the drug reduces anxiety in young women, with 0.04 as the headline statistic.
 
-Why This Is a Model Response:
-- All five tiers have concrete, district-realistic interventions.
-- Predicted effects are calibrated to the tier — small for parameters, large but slow for paradigm shifts.
-- The diagnosis that existing interventions cluster at Tiers 1–2 explains why so much intervention has produced so little change.
-- The acknowledgment that Tier 5 is HARD is honest; mature analysis identifies both leverage and obstacle.
-- The closing observation captures Meadows' essential point about the asymmetry between leverage and ease.`,
+Misled reader's conclusion: "This drug works for anxiety in young women — there is a statistically significant effect." A clinician might prescribe it to young anxious patients on this basis.
+
+Correct conclusion: with that many tests run, finding ONE result at p = 0.04 is exactly what we would expect by chance even if the drug does nothing. The "significance" of 0.04 should be corrected for multiple testing — under a Bonferroni correction with 30 tests, the threshold becomes 0.05 / 30 = 0.0017. p = 0.04 is far above that. The honest conclusion is: this trial did not provide evidence that the drug works, including for anxiety in young women.
+
+Red flags for spotting it:
+- A paper reports a positive finding in a SUBGROUP without reporting the primary pre-registered outcome, OR reports the primary outcome was negative and then "explores" subgroups
+- Many statistical tests are reported, but corrections for multiple comparisons are absent or hand-waved
+- The reported effect lacks a clear pre-specification — it appears to be discovered, not predicted
+- The effect is dramatic in the highlighted subgroup but absent in the broader sample, with no plausible biological reason for the specificity
+- Pre-registration of the analysis plan is the most reliable defense; readers should look for whether the study was pre-registered (e.g., on clinicaltrials.gov) and whether the reported analysis matches the registered one
+
+Misuse 2: Simpson's Paradox
+
+Brief explanation: an apparent trend in aggregated data reverses when the data are broken down by relevant subgroups. The aggregation conceals a confounding variable that drives the misleading overall pattern.
+
+Concrete example: a state is comparing the success rates of two surgical centers, A and B, for kidney stone treatment.
+
+Aggregate results: Center A succeeded in 73% of cases (273 of 350); Center B succeeded in 83% of cases (289 of 350). Center B looks clearly better.
+
+But the cases were not equivalent. Kidney stones come in two sizes: small (easier to treat) and large (harder to treat). Breaking the data down:
+- Small stones: Center A succeeded in 81 of 87 cases (93%); Center B succeeded in 234 of 270 cases (87%). Center A is better at small stones.
+- Large stones: Center A succeeded in 192 of 263 cases (73%); Center B succeeded in 55 of 80 cases (69%). Center A is also better at large stones.
+
+The paradox: Center A is better in EACH category, yet Center B has a higher overall success rate. The reason: Center A treats mostly large (hard) stones, while Center B treats mostly small (easy) stones. Center B's aggregate looks better only because it treats easier cases. This is a real example, drawn from a 1986 study in the British Medical Journal, often used to illustrate Simpson's Paradox.
+
+Misled reader's conclusion: "Center B is the better hospital for kidney stones." A patient choosing where to go for treatment would pick Center B based on the aggregate, possibly missing that Center A is better for whatever stone they actually have.
+
+Correct conclusion: Center A has higher success rates for both small and large stones; the appropriate measure depends on the patient's actual stone type. The aggregate is misleading because the case mixes are different.
+
+Red flags for spotting it:
+- A comparison between groups with no breakdown by relevant subgroups
+- The groups are known to differ in ways that affect the outcome (case mix, demographics, baseline conditions)
+- A small effect in the wrong direction is being announced as decisive
+- When you ask "what subgroups exist within this comparison?" and there are obvious answers, the absence of subgroup analysis is suspicious
+- Healthcare comparisons, school comparisons, and policy comparisons across heterogeneous populations are particularly prone to Simpson's — always check if the populations being compared are actually comparable
+
+Why This Is a Model Response
+
+The p-hacking example is detailed enough that the reader can follow exactly how the misuse was committed. The list of secondary analyses (sub-scales, time points, subgroups) makes the multiple-testing problem visceral.
+
+The Bonferroni correction is mentioned correctly. With 30 tests, the threshold falls to about 0.0017, which p = 0.04 does not meet. The student knows the standard fix.
+
+The Simpson's paradox example is taken from real medical literature, with realistic numbers that actually exhibit the paradox. Many textbook treatments use contrived examples; the kidney stone case is documented in the BMJ.
+
+The red flags for each misuse are concrete and actionable. "Look for pre-registration" and "ask what subgroups exist" are practical reading habits, not vague advice.
+
+Both misuses connect to current concerns in applied science. P-hacking is a major driver of the replication crisis; Simpson's paradox underlies a great deal of misleading public-policy discourse, from college admissions data to mortality comparisons across hospitals.`,
   },
   {
     id: "d7",
     number: 12,
-    title: "Discussion 7: Complex Adaptive Systems and Agent-Based Modeling",
+    title: "Discussion 7: Reading and Critiquing a Published Study",
     points: 50,
     type: "discussion",
     objectives: [
-      "Identify the defining features of a Complex Adaptive System (CAS).",
-      "Sketch an agent-based model and articulate one non-obvious prediction it would make.",
+      "Apply an eight-item checklist to evaluate a published quantitative study or news article reporting one.",
+      "Render a calibrated overall judgment of how much to trust a headline statistical claim, and identify what additional evidence would change that judgment.",
     ],
-    reading: `A COMPLEX ADAPTIVE SYSTEM (CAS) is a system in which:
-- Many heterogeneous agents interact with one another and with their environment
-- Each agent follows its own rules — no central controller dictates behavior
-- Agents adapt — they change their rules based on experience
-- System-level patterns emerge from local interactions
-- The system as a whole has no preset equilibrium and may continue evolving indefinitely
+    reading: `Background
 
-Examples: ecosystems, immune systems, markets, cities, scientific communities, the internet.
+A statistically literate person should be able to read a published study — or a news article reporting one — and form an informed judgment about how much to trust the findings. This is not the same as understanding every technical detail. It means being able to ask the right questions.
 
-CAS work has its institutional center at the Santa Fe Institute, founded in 1984. Where classical equilibrium economics modeled rational agents converging to a market-clearing price, CAS economics models heterogeneous agents with bounded rationality whose interactions produce price patterns the rational-equilibrium model cannot generate (bubbles, crashes, fat-tailed return distributions).
+A short checklist for evaluating any quantitative study:
 
-AGENT-BASED MODELING (ABM) is the principal computational tool for studying CAS. The analyst writes simple rules for each agent type, places many agents in a simulated environment, lets them interact for many time steps, and observes the system-level patterns that emerge. ABMs are useful when heterogeneity, interactions, adaptation, and out-of-equilibrium dynamics matter.
+1. WHAT IS THE QUESTION the study is trying to answer? Is it a descriptive question (how prevalent is X?), a comparative question (do people in group A differ from people in group B?), or a causal question (does X cause Y)? Causal questions require more rigorous designs than descriptive ones.
 
-Famous examples include Schelling's segregation model (mild individual preferences for same-type neighbors produce extreme spatial segregation), Sugarscape, and the Santa Fe artificial stock market.`,
-    assignment: `Assignment (50 points):
-Choose ONE real-world complex adaptive system (NOT a market). Then:
-1. Identify the agents, their heterogeneity, and the rules they appear to follow
-2. Identify the kinds of adaptation that occur — how do agents change their rules in response to experience?
-3. Identify a system-level pattern that emerges from the local interactions
-4. Sketch (in words) what an agent-based model of this system would look like — what variables would each agent track, what would the time-step look like, what outcome would you measure?
-5. Identify ONE prediction the model might make that would NOT be obvious from studying the agents in isolation`,
-    modelResponse: `Model Response:
-Complex adaptive system chosen: Wikipedia's editorial community.
+2. WHO WERE THE PARTICIPANTS, AND HOW WERE THEY RECRUITED? Random sample of the relevant population? Convenience sample of college students? Self-selected from an online forum? The recruitment determines what population the conclusions can validly apply to.
 
-Agents and heterogeneity: Wikipedia's editors. Roughly half a million accounts have made at least ten edits; a few thousand are highly active; perhaps 1000 administrators have additional permissions. Editors differ in expertise (specialists in particular domains), motivations (altruistic, ideological, professional), commitment level (one-edit anonymous IPs vs. lifetime contributors), and strictness about Wikipedia's norms (inclusionists vs. deletionists). Treating "the average editor" would obscure the most important dynamics.
+3. HOW WAS THE STUDY DESIGNED? Observational or experimental? If experimental, was random assignment used? Was there blinding? What was the comparison group? An observational study can describe associations; only a well-controlled experiment can identify causes.
 
-Rules each agent appears to follow:
-- Edit articles in domains they care about, adding information they believe is correct and properly sourced
-- Patrol watchlists of pages they have edited, reverting changes they believe are vandalism, original research, or unsourced
-- Engage in discussion on talk pages when content is disputed
-- Apply the Wikipedia policy framework — but with personal interpretation that varies considerably
+4. WHAT WAS MEASURED, AND HOW? Were the outcome measures validated and standardized, or ad hoc? Self-report or objective measurement? Single time point or longitudinal? Bad measurement produces noise that no fancy statistics can clean up.
 
-Adaptation: editors change behavior based on experience. New editors who are repeatedly reverted often leave; some adapt to learn the policies; some learn to engage in talk-page discussion; some develop expertise in particular procedural niches. At the system level, the editor population is constantly changing as new editors arrive and old ones leave.
+5. WHAT IS THE EFFECT SIZE? Not just whether p is below some threshold, but how big the effect is in real terms. A "statistically significant" 1-point improvement on a 100-point test may be detectable but unimportant.
 
-System-level emergent pattern: the article quality distribution. Wikipedia produces a corpus of millions of articles whose quality varies enormously — from comprehensive expert-edited masterpieces (often technical or scientific topics with active expert editors) to stub articles with minimal information (obscure topics with no committed editors) to articles in chronic dispute (political, religious, or contemporary topics where heterogeneous editors cannot reach consensus). The distribution is heavy-tailed, and the patterns of which topics get good coverage vs. bad emerge from the matching between topics and the editor population that finds them.
+6. WHAT ARE THE LIMITATIONS the authors themselves acknowledge? Honest authors discuss their study's weaknesses; cherry-picked or motivated studies often skip this section or treat it cursorily.
 
-Sketch of an ABM:
-- Agents: editor types — committed experts, casual contributors, vandals, deletionists, single-purpose accounts. Each agent has parameters for activity level, topical interests, policy strictness, and persistence (how many reversions before they quit).
-- Environment: a population of articles, each with topic tags, current quality level, and edit history.
-- Time step: agents become active probabilistically, choose articles to edit based on interests, propose edits that change article quality stochastically, and observe whether their edits stand or are reverted.
-- Variables tracked per agent: number of edits made, fraction reverted, frustration level, cumulative time in the system.
-- Outcome measured: long-run distribution of article quality across topics, size and composition of the active editor population, rate at which new editors are retained.
+7. HAVE THESE FINDINGS REPLICATED in other studies? A single study, especially with a small sample, is suggestive but not definitive. Replicated findings across multiple labs and populations are far more credible.
 
-Non-obvious prediction: the model would predict a SYSTEMIC TENSION between coverage breadth and coverage quality. Increasing inclusionist policies (welcoming more topics) increases the number of articles created but pulls limited editor effort across more pages, reducing average quality. Increasing strictness (more deletions, more reversions) raises average quality of remaining articles but drives away marginal editors and reduces breadth. A policy that adjusts strictness without considering editor-population effects could produce counterintuitive results — for instance, slightly LOOSER deletion policies might produce better quality if they retain more enthusiastic newcomers who then go on to do quality work elsewhere. This kind of cross-population tradeoff is not visible from studying individual editors and only appears when the population dynamics are simulated.
+8. WHO FUNDED THE STUDY, AND WHAT INCENTIVES MIGHT BIAS IT? A drug trial funded by the drug's manufacturer is not automatically wrong, but its findings should be viewed with extra scrutiny — and meta-analyses consistently show that industry-funded trials are more likely to find favorable results than independently funded trials of the same drug.
 
-Why This Is a Model Response:
-- The student picks a non-market CAS and takes the constraint seriously.
-- Heterogeneity is treated substantively, with named dimensions of difference (expertise, motivation, commitment, strictness).
-- Adaptation is identified at the level of individual editors AND the population.
-- The ABM sketch is concrete enough that someone could actually build it.
-- The non-obvious prediction is the payoff: "looser deletion might produce better quality" is exactly the kind of counterintuitive system-level result that ABMs surface and simpler models miss.`,
+A study can be flawed in any of these dimensions. The goal is not to find a perfect study (no study is perfect) but to weigh the credibility of the findings appropriately given the strengths and weaknesses.`,
+    assignment: `Assignment (50 points)
+
+Choose ONE published study or major news article reporting a statistical claim. (Real ones are best — pick something from a recent newspaper, magazine, or scientific journal you have read. If you cannot find one, you may invent a plausible scenario based on real research patterns.) Then:
+
+1. Briefly summarize the study's main claim
+2. Walk through at least FIVE of the eight checklist items above, addressing each as it applies to your chosen study
+3. Render an overall judgment: how much should a reader trust the headline claim, and what would change your level of trust?
+4. Suggest ONE follow-up study that would address a key weakness you identified`,
+    modelResponse: `Model Response
+
+Study chosen: a 2018 study that received substantial press coverage, claiming that "moderate alcohol consumption reduces the risk of cardiovascular disease."
+
+Main claim: people who drink small to moderate amounts of alcohol (one drink per day for women, two for men) have lower rates of heart disease than non-drinkers, suggesting that moderate drinking is protective.
+
+Walking through the checklist:
+
+1. WHAT IS THE QUESTION? This is a CAUSAL claim — moderate alcohol consumption REDUCES cardiovascular disease risk. The use of "protective" implies a causal mechanism. This kind of claim requires causal evidence, not just correlational evidence.
+
+2. WHO WERE THE PARTICIPANTS? The studies underlying this claim are typically observational cohort studies — large groups (tens of thousands of people) followed over time. Participants are recruited from sources like nurses' health registries, government workers' panels, or population samples in epidemiologic studies. They are not random samples of the general population — they are people willing and able to participate in long-term health research, who tend to be wealthier, healthier, and more health-conscious than the population at large.
+
+3. HOW WAS THE STUDY DESIGNED? OBSERVATIONAL, not experimental. Researchers measured alcohol consumption (typically by self-report) and tracked cardiovascular outcomes over years. There was NO random assignment to drinking groups, because that would be unethical and impractical. This is the central problem with the study.
+
+4. WHAT WAS MEASURED, AND HOW? Alcohol consumption was self-reported, often using food-frequency questionnaires asking participants to estimate their typical weekly intake. Self-report of alcohol is notoriously unreliable — people underreport their drinking, especially heavier drinkers. The "moderate" category includes people with very different actual consumption patterns. Cardiovascular outcomes (heart attack, stroke, cardiovascular death) are usually measured more reliably through medical records.
+
+5. WHAT IS THE EFFECT SIZE? In typical studies of this kind, moderate drinkers show about a 25–30% lower rate of cardiovascular events than non-drinkers. This is a meaningful effect IF causal, but a 25% reduction in a low-base-rate outcome is exactly the kind of effect that small confounding can produce.
+
+6. WHAT ARE THE LIMITATIONS? The most important one — usually buried in the discussion section — is the "abstainer bias" problem. The "non-drinkers" comparison group includes a heterogeneous mix: lifelong abstainers (often religious, healthy), former drinkers who quit because of health problems, people with conditions that prevent drinking. The last category is full of sick people. So when we compare drinkers to "non-drinkers," we are partly comparing healthy people to sick people, regardless of alcohol's actual effect.
+
+7. HAVE THESE FINDINGS REPLICATED? Across many cohort studies, yes — the J-shaped curve (low risk for moderate drinkers, higher risk for non-drinkers and heavy drinkers) is a consistent observational finding. But more recent studies that try to address the abstainer-bias problem and other confounders find substantially smaller protective effects, or none at all. A 2022 reanalysis using more sophisticated methods reduced the apparent benefit nearly to zero. The replication picture is therefore mixed: the surface pattern replicates, but the causal interpretation does not.
+
+8. WHO FUNDED IT? Many of the early alcohol-and-heart studies were funded with at least partial alcohol-industry money. The 2018 NIH-funded MACH study (Moderate Alcohol and Cardiovascular Health) — which would have been a randomized trial — was canceled in 2018 when an internal investigation revealed extensive industry involvement in study design and an apparent expectation among industry funders that the trial would produce favorable results.
+
+Overall judgment: a reader should NOT take "moderate alcohol is heart-healthy" as established fact. The pattern is real in observational data, but the most likely explanation involves abstainer bias and other confounding rather than a true causal benefit. The conclusion that should reach the public is: "moderate drinking is associated with lower heart disease rates, but this association largely or entirely reflects characteristics of the people who drink moderately rather than effects of the alcohol itself." The press coverage routinely overstates the strength of evidence and the implied policy advice.
+
+What would change my trust: a well-conducted RCT randomizing participants to moderate drinking vs. abstention, with adequate sample size and long follow-up. The MACH study would have been such a trial; its cancellation leaves us without strong causal evidence. Mendelian randomization studies — which use genetic variants associated with alcohol metabolism as natural experiments — have published in the past decade and generally find smaller protective effects than observational studies, supporting the abstainer-bias explanation.
+
+Follow-up study: an analysis using Mendelian randomization with a very large sample (UK Biobank, for example, has over 500,000 participants with genetic data and health outcomes). Compare cardiovascular disease rates across genetic variants associated with high vs. low alcohol consumption. Because genetic variants are randomly assigned at conception, this approximates an RCT for alcohol consumption without ethical or practical barriers. Several such studies have already been published, and they generally find that the apparent cardiovascular benefit of moderate drinking is reduced or eliminated when this method is used.
+
+Why This Is a Model Response
+
+The student picks a real, contested claim with substantial public-health implications. The alcohol-and-heart story has been a fixture of nutrition journalism for decades, and most Americans have heard it.
+
+Walking through the checklist surfaces the central methodological flaw (observational design) AND a specific confounder (abstainer bias) that is widely discussed in the relevant epidemiologic literature.
+
+The student updates the picture beyond the original 2018 framing, incorporating the 2022 reanalyses that found smaller or no benefit. This is what serious reading does: it tracks how a claim has held up.
+
+The funding observation is concrete and recent — the MACH study cancellation in 2018 is well-documented and shows that industry influence is not just a theoretical concern.
+
+The follow-up suggestion (Mendelian randomization) is technically sophisticated for a 101 student to mention, but it represents a real alternative methodology that has produced influential results in this exact debate. Even mentioning that such methods exist demonstrates above-average statistical literacy.`,
   },
   {
     id: "tp",
     number: 13,
-    title: "Term Paper (Outline + Final)",
+    title: "Term Paper: Outline + Final Paper",
     points: 200,
     type: "termpaper",
     objectives: [
-      "Outline systems analyses of five distinct real-world systems using the standard sequence (boundary, function, stocks/flows, loops, archetypes, leverage).",
-      "Write a complete systems analysis that uses the course vocabulary as a precision instrument and produces at least one non-obvious prediction per system.",
+      "Identify five real-world statistical claims spanning different domains, and outline a calibrated evaluation of each.",
+      "Write full evaluations of all five claims using the standard sequence (claim, source, course concepts, questions, judgment, what would change it) and the analytic vocabulary of the course.",
     ],
-    reading: ``,
-    assignment: `PART 1 — TERM PAPER OUTLINE (100 points)
+    reading: `Background — Term Paper Outline (100 points)
 
-You have now spent the term acquiring a vocabulary and a method: stocks and flows, feedback loops, requisite variety, homeostasis, emergence, networks, self-organization, archetypes, leverage points, and complex adaptive systems. The term paper asks you to apply these tools.
+You have spent the term acquiring a vocabulary and a habit of mind: distinguish data types, choose appropriate measures of center and spread, visualize before computing, watch for confounders, separate correlation from causation, mistrust unreplicated single studies. The term paper asks you to apply this toolkit to claims you encounter in the world.
 
-A systems analysis follows a standard sequence:
-- Define the system: name it, describe its boundary, identify its principal elements
-- Describe its function: what it does over time, what its purpose appears to be
-- Identify its key stocks and flows
-- Identify its principal feedback loops, classifying each as reinforcing or balancing
-- Identify any system archetypes at work
-- Identify the highest-leverage points for intervention
-- Predict the system's behavior under specified perturbations
+A statistical evaluation of a real-world claim follows a standard sequence:
+1. State the claim precisely
+2. Identify the source and what evidence is presented for the claim
+3. Identify the type of question (descriptive, comparative, causal) and what evidence would be needed to support it
+4. Apply the relevant concepts from the course (sampling, confidence, hypothesis testing, correlation vs. causation, common misuses)
+5. Render a calibrated judgment about how much to trust the claim
+6. Identify what additional evidence would change your judgment
 
-Your term paper will deliver short systems analyses (about 600 words each) of five distinct real-world systems. For this outline assignment, identify the five systems and produce a one-page outline for each, but do not yet write the full analyses.
+Background — Term Paper (100 points)
 
-The five systems are:
-1. A SOCIAL MEDIA PLATFORM (your choice — Twitter/X, TikTok, Instagram, etc.).
-2. A LOCAL ECOSYSTEM (your choice — a forest, a coral reef, a backyard garden, an urban park).
-3. A HOSPITAL EMERGENCY DEPARTMENT.
-4. A NATIONAL ELECTRICAL GRID.
-5. A LANGUAGE COMMUNITY (the speakers of any language you know).
+Now you write the full evaluations of the five claims you outlined. Each evaluation should be approximately 600 words and follow the standard sequence:
+1. State the claim precisely
+2. Identify the source and evidence base
+3. Apply the relevant concepts from the course
+4. Walk through the most important questions a literate reader would ask
+5. Render a calibrated judgment
+6. Identify what would change your judgment
 
-For EACH of the five systems, write an outline that contains:
-- A one-sentence statement of the system's boundary and function
-- Two or three principal stocks and the flows that fill or drain them
-- At least one reinforcing loop and one balancing loop
-- Whether one or more system archetypes apply, and which ones
-- A tentative identification of the leverage point you find most interesting
+The point is not to debunk every claim but to evaluate each one fairly. Some of the five claims will turn out to be reasonably well-supported; others will not. Statistical literacy is calibrated — not dismissive of evidence, not credulous of marketing.`,
+    assignment: `PHASE 1 — Term Paper Outline (100 points)
 
-Do NOT write the full analyses. Those are the term paper itself.
+Your term paper will deliver short statistical evaluations (about 600 words each) of five claims you might encounter in the news, in advertising, or in everyday discourse. For this outline assignment, you must identify the five claims and produce a one-page outline for each, but not yet write the full evaluations.
 
-PART 1 MODEL OUTLINE:
-Outline 1 — TikTok
-Boundary and function: a video-distribution platform whose function is to maximize watch-time across a population of users by matching short videos to viewers via an algorithmic recommendation system.
-Stocks and flows: stock of videos in the catalog (in: creator uploads; out: platform takedowns and creator deletions); stock of user attention per day (replenished by sleep and external life, drained by viewing); stock of advertiser ad-credits.
-Reinforcing loop: rich-get-richer engagement — videos with strong early engagement are surfaced to more viewers, gaining more engagement.
-Balancing loop: user attention saturation — past a certain daily watch-time, users feel diminishing returns, fatigue, and disengage.
-Archetypes: Success to the Successful (top creators capture disproportionate reach); Tragedy of the Commons (user attention is the commons being depleted); Limits to Growth.
-Most interesting leverage point: information flow — making algorithmic surfacing decisions visible to users (Tier 4) would change the user-platform relationship more than any parameter adjustment.
+You will evaluate the following five claims:
+1. A health-product advertisement: "Studies show that our supplement increases energy by 50%." (You will identify a real specific advertisement, or a closely-modeled fictional one, and evaluate the underlying claim.)
+2. A widely-reported correlation: "Children who eat breakfast perform better in school." (Real and widely covered. You will assess whether the causal interpretation is supported.)
+3. A criminal-justice statistic: "X% of crimes are committed by people in [demographic group]." (You will pick a specific real-world statistic of this form — there are many — and evaluate how the statistic is constructed and whether common interpretations are valid.)
+4. A polling claim: "Polls show [Candidate / policy position] has [percentage] support." (You will pick a real recent poll and assess its sampling, margin of error, and the limits of the inference.)
+5. A medical screening or diagnostic claim: "If you test positive on test X, your probability of having condition Y is Z%." (You will pick a real screening test — mammography, prostate-specific antigen, COVID rapid test, or similar — and evaluate the claim using base-rate reasoning.)
 
-Outline 2 — A Northern California Redwood Forest
-Boundary and function: a forest ecosystem whose function is the cycling of carbon, water, and nutrients through a community of organisms over centuries.
-Stocks and flows: stock of carbon in living biomass (in: photosynthesis; out: respiration, decomposition, fire, logging); stock of soil moisture (in: rainfall, fog drip; out: transpiration, runoff); stock of soil nutrients.
-Reinforcing loop: tree canopy creates microclimate (humidity, shade, fog interception) that favors the same tree species.
-Balancing loop: predator-prey dynamics among understory herbivores (deer) and predators (mountain lions).
-Archetypes: Limits to Growth; Tragedy of the Commons in the human-impact dimension (logging).
-Most interesting leverage point: the rules layer — protected-status designation (Tier 5) has been the most consequential intervention in California redwood survival.
+For EACH of the five claims, write an outline that contains:
+- The claim, restated precisely
+- The likely source and evidence base
+- Which concepts from the course are most relevant (correlation vs. causation, sampling bias, multiple testing, base rate, confidence interval, etc.)
+- Two to three specific questions you would want answered to evaluate the claim
+- A tentative judgment: how much should this claim be trusted, on a scale from "well-supported" to "very weak"?
 
-Outline 3 — A Hospital Emergency Department
-Boundary and function: a clinical service whose function is the triage, assessment, treatment, and disposition of patients arriving with acute medical complaints.
-Stocks and flows: patients in the department (in: arrivals; out: discharges, transfers, admissions); staff hours; beds and rooms.
-Reinforcing loop: long wait times → patients leave without being seen → return later sicker → longer wait times.
-Balancing loop: triage protocols actively rebalance prioritization as the patient mix changes.
-Archetypes: Shifting the Burden (using ED capacity as a substitute for primary care); Limits to Growth (physical bed count caps throughput).
-Most interesting leverage point: stock-and-flow layer (Tier 2) — adding observation units and inpatient flow improvements.
+Do NOT write the full evaluations in Phase 1. Those are Phase 2.
 
-Outline 4 — The U.S. Eastern Interconnection Power Grid
-Boundary and function: an integrated electrical network covering the eastern two-thirds of the continental U.S., whose function is to match instantaneous supply to instantaneous demand at millisecond timescales.
-Stocks and flows: electrical energy in transit (essentially zero — the grid stores almost nothing); fuel inventories at generators; installed generating capacity.
-Reinforcing loop: demand growth (population, electrification, AI data centers) drives capacity investment, which enables further demand growth.
-Balancing loop: millisecond-scale Automatic Generation Control (AGC) loop — frequency deviations from 60 Hz trigger compensating generator output adjustments.
-Archetypes: Tragedy of the Commons (transmission infrastructure under-invested in); Limits to Growth (capacity expansion runs into permitting and supply chain limits).
-Most interesting leverage point: information flows (Tier 4) — better real-time visibility into grid conditions across operators.
+PHASE 2 — Term Paper (100 points)
 
-Outline 5 — The English Language Community
-Boundary and function: the global community of English speakers (~1.5 billion as a first or second language), whose function is the ongoing transmission and gradual modification of a shared linguistic system.
-Stocks and flows: lexicon (in: neologisms, borrowings, semantic extensions; out: archaic decay, replacement); speakers; codified standards (dictionaries, style guides).
-Reinforcing loop: words used by high-prestige speakers and outlets diffuse to general use, becoming high-prestige themselves.
-Balancing loop: prescriptivist resistance — usage manuals, language teachers, copy editors apply pressure against innovations.
-Archetypes: Success to the Successful (high-prestige variants capture disproportionate diffusion); Network effects (small-world structure of conversation amplifies bottom-up changes).
-Most interesting leverage point: information flow (Tier 4) — what makes English change faster than ever is the dramatic increase in cross-community communication via internet platforms.
+Write full evaluations of all five claims from your outline. For each:
+- Follow the standard sequence above
+- Use the technical vocabulary of the course (confidence intervals, p-values, base rates, confounding, replication, etc.) appropriately
+- Reach a calibrated judgment, not a one-word verdict
+- Cite at least one specific real-world fact, study, or example for each claim
 
----
+Submit Phase 1 and Phase 2 together in a single submission, clearly labeled. Phase 1 outlines first, then Phase 2 full evaluations.`,
+    modelResponse: `Model Response — Phase 1: Outlines
 
-PART 2 — TERM PAPER (100 points)
+Outline 1 — A Supplement Advertisement
 
-Now write the full systems analyses outlined in Part 1. Each analysis should be approximately 600 words and follow the standard sequence:
-- System and boundary
-- Function over time
-- Key stocks and flows
-- Principal feedback loops
-- System archetypes
-- Leverage points
-- Predicted behavior under perturbation
+Claim: "Our supplement increases energy by 50% — verified in clinical studies." Specific reference: a fictional but realistic wellness brand selling a multi-ingredient herbal blend, with marketing on social media and a product page citing one or two studies.
 
-The point is not just to label parts but to use the labels to explain why the system behaves as it does, and to make at least one non-obvious prediction.
+Likely source and evidence base: typically these claims are supported by either (a) a single small unblinded study funded by the company, with self-reported outcomes, or (b) studies on individual ingredients (e.g., caffeine's well-established effects on alertness) extrapolated to the proprietary blend.
 
-Requirements:
-- Follow the standard sequence above for each of the five systems
-- Use the technical vocabulary of the course (stocks, flows, reinforcing, balancing, requisite variety, homeostasis, emergence, archetypes, leverage points)
-- Make at least one non-obvious prediction about each system's behavior
-- Cite at least one specific real-world event or data point that supports your analysis`,
-    modelResponse: `Model Response:
+Relevant course concepts: small sample sizes; lack of randomization or blinding; self-report measurement of vague outcomes ("energy"); selection of subjects (often paid product testers); the difference between effects on isolated ingredients vs. effects of a proprietary blend; the meaning of "energy" — is it a real construct or marketing language?
 
-Analysis 1 — TikTok
-TikTok is a video-distribution system whose boundary encloses its mobile and web applications, the video catalog, the recommendation algorithms, and the population of users actively engaged with the platform. Its function over time is to maximize aggregate user watch-time, monetized through advertising sold against that attention.
+Questions to ask: Was the study published in a peer-reviewed journal, or only on the company's website? Was it randomized and blinded? Was the comparison group given an inert placebo, or a different active ingredient? How was "energy" measured, and is the measurement validated?
 
-Three stocks dominate. The video catalog accumulates as creators upload; it drains slowly through takedowns and deletions. User attention is replenished daily by sleep and external life and drained by viewing. Advertiser revenue is replenished by ad sales against impressions and drained by the platform's operating expenses.
+Tentative judgment: very weak. Almost all "energy supplement" claims of this form fail to replicate under independent investigation, and the underlying construct ("energy") is so vague that almost any study can produce a positive-looking result with the right framing.
 
-The defining feedback loop is reinforcing: videos that show strong early engagement are surfaced to more viewers; more viewers produce more engagement; more engagement causes the algorithm to promote the video further. Combined with low barriers to entry, this loop generates winner-take-most creator dynamics. A balancing loop operates at the user level: past some daily watch-time, marginal viewing produces fatigue, dissatisfaction, and disengagement.
+Outline 2 — Breakfast and School Performance
 
-Three archetypes are visible. Success to the Successful describes the creator economy. Tragedy of the Commons applies to user attention: each individual recommendation feels valuable to the platform but the cumulative effect is attention exhaustion that no single recommendation pays for. Limits to Growth applies to the user base: domestic adolescent saturation, then international expansion, then regulatory pushback are the successive ceilings.
+Claim: children who eat breakfast perform better academically than children who do not. Often reported as supporting school breakfast programs.
 
-Leverage points: parameter changes (time-on-app warnings, minimum-age increases) operate at the lowest tier and have produced limited measurable effects. The most consequential interventions have been at higher tiers: Apple's App Tracking Transparency change in 2021 (an information-flow intervention) cost TikTok and similar platforms billions in ad revenue by changing what user data was visible to the recommendation engine. Future high-leverage interventions are likely at Tier 5 — for example, the EU's Digital Services Act.
+Likely source and evidence base: a body of observational studies finding correlations between self-reported breakfast eating and grades, test scores, or attendance. The correlation is real and replicates. The causal interpretation is what is contested.
 
-Non-obvious prediction: the platform's growth rate of new users in mature markets will continue to slow even with no specific external interventions, simply because the user-attention balancing loop is reaching its ceiling. The platform will respond by increasing time per session for existing users rather than adding users. The bubble metric to watch is creator earnings concentration: as the reinforcing loop intensifies, the share of total revenue captured by the top 0.1% of creators will rise, eventually triggering a creator-side revolt or migration to a competitor — the way YouTubers fled to Twitch and Patreon when YouTube's monetization changes hurt mid-tier creators in the late 2010s.
+Relevant course concepts: correlation vs. causation; confounding (parental income, parental involvement, household stability, sleep, general health); reverse causation (well-rested, well-supported children eat breakfast AND do well in school for the same underlying reasons); the gap between observational and experimental findings; effect sizes from RCT vs. observational studies.
 
-Analysis 2 — Northern California Redwood Forest
-The system is a coastal redwood forest ecosystem, bounded roughly by the watershed in which the trees grow, on the timescale of centuries. Its function is the cycling of carbon, water, and nutrients through a long-lived plant community.
+Questions to ask: have RCTs been done in which schools randomly assigned breakfast programs? What did those find compared to the observational studies? What demographic factors were controlled for? Are improvements consistent across socioeconomic groups, or concentrated in undernourished children specifically?
 
-Three stocks dominate. The carbon stock in living biomass — primarily in trunks, some weighing hundreds of tons — accumulates over centuries and is largely held until disturbance. Soil moisture is replenished by rainfall and, distinctively for coastal redwoods, by fog drip, and is drained by transpiration and runoff. Nutrient stocks in soil organic matter are replenished by leaf litter and root decay.
+Tentative judgment: partially supported but overstated. The correlation is real; the causal interpretation is more nuanced. RCTs of school breakfast programs find smaller effects than observational studies suggest, with the largest benefits among children who would otherwise be undernourished.
 
-A reinforcing loop maintains the forest in its dominant configuration: the dense canopy intercepts sunlight, holds humidity, and condenses fog into water, all favoring the same redwood species — the forest creates the microclimate it needs to exist. A balancing loop operates among understory herbivores (Roosevelt elk, deer) and the limited browse available.
+Outline 3 — A Criminal-Justice Demographic Statistic
 
-System archetypes: Limits to Growth dominates — biomass accumulation is bounded by nutrient and water availability. Tragedy of the Commons applies in the human-economic dimension: 19th- and 20th-century logging decisions, individually rational for each operator, cumulatively destroyed an estimated 95% of the original old-growth redwood forest.
+Claim: a frequently cited federal statistic about which demographic groups commit which fraction of various crimes, often presented in political contexts.
 
-Leverage points: parameter-level interventions (timber prices, replanting subsidies) have had measurable but modest effects. The transformative intervention has been at the rules-and-paradigm tier: the establishment of Redwood National Park in 1968 and successive state park additions designated certain land as off-limits to logging. This is a Tier 5 intervention and is responsible for the survival of every old-growth redwood standing today.
+Likely source and evidence base: FBI Uniform Crime Reporting (UCR) and Bureau of Justice Statistics data. The raw numbers are typically arithmetically accurate but require careful interpretation.
 
-Non-obvious prediction: climate change's primary threat to redwoods is not heat directly but disruption of the fog cycle. Coastal fog patterns depend on the temperature differential between cool ocean water and warm inland valleys; warming oceans reduce that differential, weakening fog, reducing fog-drip moisture, and shifting the soil-moisture stock toward stress thresholds. The standard climate-impact framing (heat plus fire) misses this loop. Long-term redwood survival depends on the OCEAN's temperature trajectory, not just the land's.
+Relevant course concepts: arrest data vs. offending data (arrests measure police activity, not crime); per-capita normalization; Simpson's paradox when populations differ in geography or socioeconomic status; selection effects in policing intensity; the difference between aggregate statistics and like-for-like comparisons; survey data alternatives like the National Crime Victimization Survey.
 
-Analysis 3 — Hospital Emergency Department
-The system is a hospital emergency department, bounded by the physical ED unit and the staff and patients within it. Its function is the triage, evaluation, treatment, and disposition of patients arriving with acute medical concerns.
+Questions to ask: is the statistic based on arrests, convictions, or victim-reported offenses? What controls have been applied for age, urbanicity, and socioeconomic status? When restricted to comparable populations, what is the size and direction of the difference?
 
-Three stocks: patients currently in the department; available staff hours; available rooms and beds.
+Tentative judgment: arithmetic usually correct; common interpretations usually wrong. The headline form supports many narratives depending on framing. A literate reader demands per-capita rates, controlled comparisons, and alternative data sources before accepting any inference.
 
-A reinforcing loop drives crowding: when wait times grow long, low-acuity patients leave without being seen, only to return later in worse condition requiring more resources. A central balancing loop is the triage system: incoming patients are continuously re-prioritized so that the sickest are seen first. This is a homeostatic regulation: the variable being regulated is "time-to-treatment for the sickest patient," and the regulator is the triage nurse.
+Outline 4 — A Recent Election Poll
 
-Two archetypes are at work. Shifting the Burden: U.S. emergency departments increasingly serve as the de facto safety net for primary care, which masks but worsens the underlying problem because ED treatment is more expensive and less continuous. Limits to Growth: the physical bed count of any ED imposes a hard ceiling on throughput.
+Claim: a poll three weeks before an election shows Candidate A leading Candidate B 51% to 47%, ±3% margin of error.
 
-Leverage points: most ED dysfunction lives outside the ED. The flow of admissions OUT of the ED into inpatient beds is governed by the inpatient hospital's discharge rate, which is governed by post-acute placement, which is governed by insurance authorization, which is governed by federal policy. A Tier 2 intervention — adding observation units that buffer between ED and inpatient — has been shown in studies to reduce ED boarding by 30–40% in well-implemented cases. A Tier 5 intervention — universal primary care access — would reduce ED non-emergent visits by an even larger fraction.
+Likely source and evidence base: a national poll of about 1,000 likely voters by phone and online, conducted by a reputable polling organization with weighting for demographics and likely-voter screens.
 
-Non-obvious prediction: an ED that increases its physical capacity (more beds, more rooms) without addressing inpatient discharge rates will see crowding REVERT to its original level within months, because the new beds will fill with admitted patients waiting for inpatient transfer. This is a classic leverage-point trap — the intervention feels right but the binding constraint lies elsewhere. EDs that have actually solved their crowding problems have done so by working on inpatient discharge planning and post-acute placement, not by enlarging the ED.
+Relevant course concepts: confidence intervals (the margin of error is roughly the half-width of a 95% CI); margin of error for differences (larger than for individual percentages); sampling and non-response bias; mode effects (phone vs. online); the difference between snapshot and prediction; historical polling errors in 2016 and 2020.
 
-Analysis 4 — U.S. Eastern Interconnection Power Grid
-The system is the synchronized AC electrical network covering the eastern two-thirds of the continental United States, including thousands of generating plants, hundreds of transmission utilities, and approximately two-thirds of U.S. electrical load. Its function is to deliver electricity from generators to loads while maintaining 60 Hz frequency stability and physical safety, on timescales from milliseconds to decades.
+Questions to ask: what was the response rate? What likely-voter screen was used? What weighting was applied? Are there other recent polls, and how do they compare? When was the field period?
 
-Three stocks: instantaneous electrical energy in transit (essentially zero); fuel inventories at generators; installed generating capacity. The fact that the energy stock is approximately zero is the system's most distinctive feature: supply must equal demand SECOND BY SECOND.
+Tentative judgment: moderately supported as a snapshot estimate of opinion at the time of the poll. The 4-point lead is at or near the edge of statistical significance — well within historical polling error in close races. A statistically literate reader treats the lead as suggestive of an advantage rather than a confident prediction. The 2016 and 2020 elections both produced polling results that proved further from the actual outcomes than the stated margins of error suggested.
 
-The fastest balancing loop in human engineering operates here: the Automatic Generation Control (AGC) loop runs every few seconds, sensing frequency deviations from 60 Hz and adjusting generator output to bring frequency back. A reinforcing loop drives long-term capacity expansion: load growth drives investment in new capacity, which enables further load growth.
+Outline 5 — A Medical Screening Test
 
-Archetypes: Tragedy of the Commons applies to transmission infrastructure, which crosses utility boundaries and is undermaintained because no single utility captures the full benefit of upgrading it. Limits to Growth is becoming acute: capacity expansion is throttled by permitting timelines (transmission lines now take 7–10 years), supply-chain bottlenecks (transformer lead times exceeding two years), and labor shortages.
+Claim: a friend forwarded an article saying that an at-home cancer screening test "detects cancer with 95% accuracy." If you test positive, what is the probability you actually have cancer?
 
-Leverage points: the August 2003 Northeast blackout affected 55 million people and was triggered by a single overgrown tree branch contacting a transmission line in Ohio combined with a software bug that prevented operators from seeing the cascading failure. The post-event reform — mandatory reliability standards under NERC, with audit and penalty teeth — was a Tier 5 intervention that has produced more reliability improvement in 20 years than equivalent infrastructure investment. Currently, the highest-leverage tier is Tier 4 (information flow).
+Likely source and evidence base: marketing copy for an actual at-home test. The 95% figure typically refers to either sensitivity or specificity (or both), without specifying.
 
-Non-obvious prediction: the grid's increasing renewable share is widely reported as creating reliability risk, but the binding constraint over the next decade will be transmission, not generation. Wind and solar are being built in regions far from load centers (West Texas wind, Sun Belt solar) and the transmission to deliver that power simply does not exist. The reliability events of the late 2020s and early 2030s will increasingly be congestion events — generation available but stranded — rather than capacity shortfalls. The leverage point is permitting reform for transmission (Tier 5).
+Relevant course concepts: base rates; sensitivity and specificity; positive predictive value and how it depends dramatically on the prevalence of the disease in the tested population; the asymmetry between screening (in low-risk populations, the PPV of positive tests is low) and diagnostic testing (in high-risk populations the PPV rises).
 
-Analysis 5 — The English Language Community
-The system is the global community of English speakers — roughly 1.5 billion people — bounded informally by mutual intelligibility. Its function over time is the transmission of a shared linguistic system across generations while gradually modifying it through innovation, borrowing, and contact with other languages.
+Questions to ask: what is the actual prevalence of this cancer in the population being marketed to (e.g., 50-year-olds vs. 20-year-olds)? What are sensitivity and specificity individually? What does the company recommend if a customer tests positive — biopsy, repeat testing, doctor visit?
 
-Three stocks: the lexicon (replenished by neologisms, semantic extensions, and borrowings, drained by archaic decay); the population of speakers (replenished by birth and second-language acquisition, drained by death and language abandonment); and codified standards (replenished by editorial decisions and drained by neglect).
+Tentative judgment: weakly supported as marketed. The "95% accuracy" framing obscures that, for rare cancers in low-risk populations, most positive results will be false positives. The test may have a role as one component of a screening strategy, but the marketing's implicit claim — "a positive test means you probably have cancer" — is statistically wrong. Apply the same Bayesian reasoning from Discussion 3 and the truth becomes clear.
 
-A central reinforcing loop: words used by high-prestige speakers and outlets (national news, popular media, prominent figures) diffuse rapidly to general use; their adoption further raises their prestige. The same loop operates in reverse: stigmatized variants spread little even when widely heard. A balancing loop comes from prescriptive institutions — copy editors, language teachers, dictionaries — that resist innovation. The balancing loop is weak relative to the reinforcing loop, which is why English changes despite institutional resistance.
+Why This Is a Model Outline
 
-Archetypes: Success to the Successful describes the propagation of high-prestige variants. Network effects are pervasive — the small-world structure of human communication, intensified by digital platforms, allows lexical innovations to spread faster than ever. The shift from print to digital networked text in the 21st century has accelerated change rates dramatically.
+The five claims span different domains (consumer products, education, criminal justice, politics, healthcare) so the term paper cannot be approached with a single rote critique.
 
-Leverage points: the most consequential interventions in English have been Tier 5 (rules and paradigms). The 18th-century lexicographic project (Johnson, then Webster, then Murray) standardized written English in ways that constrained variation for two centuries. The current Tier 4 intervention is digital communication infrastructure: every social media platform is, in effect, a vast lexical-diffusion experiment whose information-flow properties reshape the dynamics of the language. Within the timeframe of internet usage, English has acquired a vocabulary of digital-native words (selfie, doomscroll, cringe in its modern adjectival sense) that did not exist a generation ago and propagated globally in months rather than decades.
+Each outline correctly identifies the most relevant course concepts. Election polling triggers confidence intervals; medical screening triggers base rates; advertising claims trigger study design and replication.
 
-Non-obvious prediction: the rate of LEXICAL change in English will continue to accelerate, but the rate of GRAMMATICAL change will not, because lexical innovations propagate through individual word adoptions while grammatical innovations require systematic restructuring of speaker patterns and face much stronger network resistance. The Twitter/TikTok era will produce thousands of new words and almost no new grammar. Researchers studying linguistic change should track these two timescales separately rather than treating "change" as monolithic.
+The questions to ask are specific and actionable, not vague. "What was the response rate?" and "What is the actual prevalence?" are real questions a reader can pursue.
 
-Why This Is a Model Term Paper:
-- Each analysis follows the standard sequence (system, function, stocks, flows, loops, archetypes, leverage, prediction) without becoming formulaic.
-- Real numbers and real events appear throughout: the 2003 Northeast blackout, App Tracking Transparency, 95% reduction in old-growth redwood, observation-unit studies.
-- Each system has a NON-OBVIOUS prediction — the redwood-fog-temperature dependency, the ED-capacity trap, the lexical-vs-grammatical asymmetry.
-- The leverage-point analysis is consistently honest about which tier the highest-leverage interventions live at; the deepest leverage is consistently at Tier 4 or Tier 5.
-- The vocabulary of the course is used as a precision instrument, not ornamentation.`,
+The tentative judgments are calibrated. The student does not say "this is true" or "this is false" but ranks credibility on a spectrum and identifies what would shift the judgment.
+
+The choices reflect the genuine landscape of statistical claims a community-college or first-year college student will encounter. None of the five is a textbook puzzle; all are real.
+
+Model Response — Phase 2: Full Evaluations
+
+Evaluation 1 — A Supplement Advertisement
+
+The claim: a popular online wellness brand markets a multi-ingredient herbal supplement with the promise that "users report a 50% increase in energy" and references "clinical studies" as supporting evidence.
+
+Source and evidence base: the supporting study, when one can be located, is typically a small (n = 20 to 60) unblinded trial conducted by the manufacturer or an affiliated lab, with self-reported outcomes on a vague "energy scale" administered before and after a few weeks of use. The study is not registered, not peer-reviewed, and not published in any indexed medical journal — it appears only on the company's website.
+
+Applying course concepts: the methodological problems are textbook. With no blinding, both participants and researchers know who took the supplement, allowing placebo effects and observer bias to inflate apparent effects. With no randomization, there is no genuine control group. With self-reported outcomes on a vague construct ("energy"), the measurement noise alone could account for the reported 50% increase. The sample is small enough that even modest noise can produce a sizable apparent effect, and selective reporting (publishing the study only if it shows a positive result) means the published version may be one of several attempts.
+
+Important questions: was the study pre-registered? Is the study available in full, with raw data and analytic code? Was the comparison group given an inert placebo or no treatment at all? What is the sample size — is it large enough to detect anything below an enormous effect? What is the publication source? What are the credentials and independence of the researchers? What did peer review, if any, conclude?
+
+Calibrated judgment: this claim is very weakly supported. Energy supplement claims of this form rarely survive independent replication. The Cochrane Collaboration, which performs systematic reviews of medical evidence, has repeatedly concluded that proprietary "energy" supplement blends show no consistent benefit beyond what caffeine alone provides. The 50% improvement figure is almost certainly a combination of placebo effect, regression to the mean, and selective reporting. A literate reader should treat this claim as marketing language with the burden of proof on the manufacturer.
+
+What would change the judgment: a randomized double-blind placebo-controlled trial published in a reputable peer-reviewed journal, with pre-registered analysis, validated outcome measures, and replication in independent labs. Failing that, a systematic review showing a consistent effect across multiple smaller studies would be moderately persuasive. Neither exists for the typical proprietary energy blend.
+
+Evaluation 2 — Breakfast and School Performance
+
+The claim: eating breakfast improves children's school performance.
+
+Source and evidence base: dozens of observational studies, conducted across multiple decades and countries, consistently find that children who report eating breakfast have higher grades, higher test scores, and lower absenteeism than children who report skipping breakfast. The correlation is robust. The causal interpretation is the contested part.
+
+Applying course concepts: this is a textbook correlation-vs-causation case. Several confounders are obvious. Children who eat breakfast tend to come from families with more financial resources, more stable home routines, more parental involvement, and better overall health. All of these independently contribute to academic performance. Children skipping breakfast may be doing so because they are overwhelmed in the morning, food-insecure, or in households with chaotic routines — and any of these factors could affect grades for reasons unrelated to breakfast. There is also a reverse-causation concern: well-rested, less anxious children both eat breakfast AND perform well, with the same underlying cause (a stable home environment) producing both.
+
+Important questions: have randomized controlled trials been done? What did those find compared to observational results? Are improvements concentrated in particular subgroups (food-insecure children) or distributed across all children? What is the effect size in RCTs vs. observational studies?
+
+Calibrated judgment: the breakfast-and-performance correlation is real. The causal claim is partially supported but overstated in popular media. RCTs of school breakfast programs have generally found smaller effects than the observational studies suggested, with the largest benefits concentrated among children who would otherwise be food-insecure or undernourished. A 2014 systematic review by Adolphus, Lawton, and Dye found modest effects on attention and cognition for children who were undernourished, with weaker and inconsistent effects for already-fed children. The honest summary: providing breakfast to children who would otherwise go hungry plausibly improves their performance; the broader claim that "everyone should eat breakfast for academic reasons" is not well-supported.
+
+What would change the judgment: more high-quality RCTs would help, especially ones examining whether universal breakfast programs (rather than targeted ones) produce population-level improvements. The Mendelian randomization approach is harder here because there are no obvious genetic instruments for breakfast eating, but natural experiments (sudden policy changes that create exposed and unexposed cohorts) could supply additional causal evidence.
+
+Evaluation 3 — A Criminal-Justice Demographic Statistic
+
+The claim: a frequently cited federal statistic about which demographic groups commit which fraction of various crimes, often presented in political contexts as evidence of group-level criminality.
+
+Source and evidence base: FBI Uniform Crime Reporting (UCR) and Bureau of Justice Statistics data. The raw numbers — drawn from arrest reports submitted by local jurisdictions — are typically arithmetically accurate but require careful interpretation.
+
+Applying course concepts: several issues. First, arrest data measure ARRESTS, not OFFENSES; police presence and policing intensity vary substantially by neighborhood, and over-policed areas produce more arrests for the same underlying offending behavior. This is a selection effect in the data collection. Second, raw counts must be normalized by population size — saying "X% of arrests are from group Y" without per-capita normalization invites Simpson's paradox, especially when group Y is concentrated in different geographic and economic conditions than other groups. Third, the proper comparison is across like populations: comparing urban-to-urban or socioeconomic-stratum-to-stratum reveals smaller and sometimes reversed differences than aggregate national statistics. Fourth, charge severity, prosecutorial discretion, and conviction rates introduce additional layers of selection.
+
+Important questions: are these arrest counts, conviction counts, or self-reported offending rates from victimization surveys (which avoid policing-intensity bias)? What controls have been applied for age, urbanicity, and socioeconomic status? When restricted to comparable populations, what is the size and direction of the differences? What does the National Crime Victimization Survey — which asks victims to report perpetrator characteristics, independent of police arrest decisions — show?
+
+Calibrated judgment: the raw statistics are usually arithmetically correct but routinely misused. The headline form ("X% of crimes are committed by Y group") collapses several different things — arrest rates, offending rates, demographic distributions, geographic distributions — into a single number that supports almost any narrative depending on framing. A statistically literate reader recognizes that the claim, even if numerically true, does not support most of the inferences typically drawn from it. The Bureau of Justice Statistics itself publishes more sophisticated analyses, and these tell a more nuanced story than the soundbite version. The appropriate response to such claims is not to accept or reject them, but to demand the next level of detail (per-capita rates, controlled comparisons, alternative data sources like victimization surveys).
+
+What would change the judgment: the context determines the trust level. A claim that has been carefully analyzed by criminologists, with appropriate controls and acknowledgment of limitations, is more credible than a soundbite. Multiple data sources (arrest data plus victimization surveys plus self-report studies) converging on a similar picture would be more credible than any one source alone.
+
+Evaluation 4 — A Recent Election Poll
+
+The claim: a national poll conducted three weeks before an election shows Candidate A leading Candidate B 51% to 47%, with margin of error ±3%.
+
+Source and evidence base: the poll surveyed approximately 1,000 likely voters by phone and online, conducted by a reputable polling organization. Response rate, weighting methodology, and full crosstabs are typically available on the polling firm's website.
+
+Applying course concepts: the ±3% margin of error is roughly the half-width of a 95% confidence interval for an individual percentage. So the 51% support for A is best interpreted as "between 48% and 54%," and the 47% for B as "between 44% and 50%." The 4-point LEAD has a larger margin of error — typically about ±4% to ±5% — because the difference of two estimates accumulates the uncertainty of both. A 4-point lead with a 4% margin of error is at the edge of statistical significance: it suggests a real lead, but barely. Beyond the margin of error, polling errors include non-response bias (people willing to answer pollsters may differ from non-responders), likely-voter screens (the poll tries to predict who will actually vote, which is itself an estimation problem), and mode effects (phone vs. online responses differ).
+
+Important questions: what was the response rate (lower is more concerning)? What likely-voter screen was used? What weighting was applied (some weighting can correct for known sampling problems; over-aggressive weighting can create new ones)? When was the field period — has anything happened since the poll was completed? Are there other recent polls, and how do they compare?
+
+Calibrated judgment: a single 4-point lead is suggestive but not decisive. Historical polling errors, even from the best firms, have exceeded the stated margin of error in close races — most notably in 2016 (where state-level polls underestimated Trump support) and 2020 (where polls overestimated Biden support in several states). A reader should interpret "Candidate A leads by 4 points" as "Candidate A is probably ahead, but by an uncertain amount that could plausibly be anywhere from a tie to a 7-or-8 point lead." Polling aggregators (FiveThirtyEight, RealClearPolitics) attempt to combine multiple polls to reduce variance, and aggregate leads of 4 points historically translate into actual margins anywhere from a tie to 6 or 7 points.
+
+What would change the judgment: multiple polls from independent organizations all showing similar leads would substantially increase confidence. A single outlier poll, even with low margin of error, should not be taken as definitive. The closer to election day, the smaller the time-decay of the snapshot. And state-level polls (rather than national popular vote) matter more for the actual electoral outcome in U.S. presidential races.
+
+Evaluation 5 — A Medical Screening Test
+
+The claim: an at-home cancer screening test detects cancer "with 95% accuracy." A user testing positive concludes they probably have cancer.
+
+Source and evidence base: the test's marketing materials cite a 95% sensitivity (correctly identifies people with the cancer) and 95% specificity (correctly identifies people without it). These are reasonable for some screening tests but vary across cancers and tests.
+
+Applying course concepts: this is the base-rate problem from Discussion 3. The "95% accuracy" framing conceals that the meaningful question — given a positive result, how likely is cancer? — depends on the prevalence of the cancer in the population taking the test. Suppose the cancer affects 1% of the screening population. Imagine 10,000 people taking the test. We expect 100 actual cancer cases (1%). With 95% sensitivity, 95 of these 100 will test positive (true positives). With 95% specificity, 95% of the 9,900 healthy people will correctly test negative — but 5% will test positive, that is 495 false positives. Total positives: 95 + 495 = 590. Of these, only 95 actually have cancer. Probability of cancer given positive test: 95 / 590 ≈ 16%. The "95% accurate" test gives a positive result that is only about 16% likely to be a true cancer detection. The other 84% are false positives.
+
+Important questions: what is the actual prevalence of this cancer in the marketed population? What are sensitivity and specificity individually (not just an "accuracy" number)? What does the company recommend after a positive result — repeat testing, biopsy, doctor visit, or treatment? Is the test FDA-approved, and if so, for what indications?
+
+Calibrated judgment: the headline marketing claim is statistically weak as typically presented. The "95% accuracy" number, even if accurate as a property of the test, does not support the implied conclusion that a positive result means probable cancer. For most cancers in average-risk populations, a positive screening result is a strong reason to follow up with a confirmatory test (often a biopsy or a more specific imaging test) — but it is NOT a diagnosis. Direct-to-consumer cancer screening tests have repeatedly run into trouble for marketing implying that positive results are diagnoses, leading to anxiety, unnecessary procedures, and sometimes treatment of cancers that were never there. A statistically literate consumer should: (a) understand the base-rate adjustment that converts test accuracy to predictive value, (b) treat a positive result as a reason for follow-up rather than a verdict, and (c) ask the manufacturer about positive predictive value in the relevant population, not just sensitivity and specificity.
+
+What would change the judgment: a test with very high specificity (much higher than 95%) used in a higher-risk population (where prevalence is 10%–30% rather than 1%) can have meaningful positive predictive value. The base rate is the lever. Tests targeting high-risk populations (women with strong family history of breast cancer, smokers screened for lung cancer) have much better PPV than the same tests applied to average-risk populations. Always ask: what is the test for, and who is it for?
+
+Why This Is a Model Term Paper
+
+Each evaluation follows the standard sequence (claim, source, course concepts, questions, judgment, what would change it) without becoming formulaic. The student varies emphasis based on what is most informative for each claim.
+
+Real evidence appears throughout. The Adolphus systematic review on breakfast, the 2016 and 2020 polling surprises, the Bureau of Justice Statistics, the Cochrane systematic reviews — these are real institutions producing real findings, anchoring the evaluations to verifiable facts.
+
+The judgments are calibrated, not binary. The supplement claim is "very weakly supported." The breakfast claim is "partially supported but overstated." The poll lead is "suggestive but not decisive." The screening test marketing is "statistically weak as typically presented." Each judgment names the level of trust appropriate to the evidence.
+
+The "what would change the judgment" sections turn evaluation into prescription. The student does not just dismiss claims; they describe what evidence would shift their assessment. This is the disposition of a serious analyst.
+
+The vocabulary of the course (sensitivity, specificity, confounding, base rate, confidence interval, replication, p-hacking) is used appropriately throughout — not as ornament, but as the analytic instruments that make the evaluations possible. A student who can produce work like this has achieved the kind of statistical literacy that a 101 course is meant to build.`,
   },
 ];
 
 export function moduleById(id: string): Module | undefined {
   return modules.find((m) => m.id === id);
-}
-
-export function moduleIndexById(id: string): number {
-  return modules.findIndex((m) => m.id === id);
 }

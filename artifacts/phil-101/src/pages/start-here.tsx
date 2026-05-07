@@ -32,7 +32,7 @@ export default function StartHere() {
   const login = useLogin({
     mutation: {
       onSuccess: async () => {
-        toast.success("Welcome to Systems Science 101!");
+        toast.success("Welcome to Statistics 101!");
         await qc.invalidateQueries({ queryKey: getGetCurrentStudentQueryKey() });
       },
       onError: (e) => toast.error(e.message),
@@ -59,8 +59,8 @@ export default function StartHere() {
 
   return (
     <PageShell
-      title="Welcome to Systems Science 101"
-      intro="An introduction to the science of systems — how interacting parts produce behavior that no single part exhibits on its own."
+      title="Welcome to Statistics 101"
+      intro="A first college course in statistics — how to summarize data, reason about uncertainty, and tell a real result from noise."
     >
       <Card>
         <CardHeader>
@@ -68,15 +68,15 @@ export default function StartHere() {
         </CardHeader>
         <CardContent className="prose prose-stone max-w-none">
           <p>
-            <strong>Systems Science 101: Introduction to Systems Thinking</strong>{" "}
+            <strong>Statistics 101: Introduction to Statistical Reasoning</strong>{" "}
             is a fully online, asynchronous college-level course. Over 13
-            modules you will encounter the foundational vocabulary of the
-            field — stocks and flows, feedback loops, requisite variety,
-            homeostasis, emergence, networks, self-organization, system
-            archetypes, leverage points, and complex adaptive systems — and
-            learn to apply it as a precision instrument for analyzing real
-            systems. The course culminates in a term paper that delivers
-            short systems analyses of five distinct real-world systems.
+            modules you will work through data types, measures of center and
+            spread, visualization, probability, the normal distribution and
+            z-scores, sampling and the central limit theorem, confidence
+            intervals, hypothesis testing, correlation vs. causation, the
+            common misuses of statistics, and how to read and critique a
+            published study. The course culminates in a term paper that
+            delivers short statistical evaluations of five real-world claims.
           </p>
           <p>
             Your <strong>instructor of record</strong> is Dr. Lawrence Dodge,
@@ -142,7 +142,7 @@ export default function StartHere() {
         </CardHeader>
         <CardContent className="prose prose-stone max-w-none">
           <p>
-            Dr. Lawrence Dodge has taught introductory systems science at the
+            Dr. Lawrence Dodge has taught introductory statistics at the
             college level for over two decades. His teaching emphasises the
             Socratic method: progress comes not from being told the right
             answer but from being asked the right questions. The AI Tutor on

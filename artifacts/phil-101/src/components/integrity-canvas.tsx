@@ -35,6 +35,41 @@ interface SentenceResult {
 
 type Bucket = "green" | "yellow" | "red" | "neutral";
 
+const STAT_SYMBOLS = [
+  "μ", "σ", "x̄", "s", "Σ", "α", "β", "π", "±", "≤", "≥", "≠", "√", "²",
+];
+
+function SymbolPalette({ onInsert }: { onInsert: (s: string) => void }) {
+  return (
+    <div
+      className="flex flex-wrap gap-1 rounded-md border border-stone-200 bg-stone-50 p-2"
+      role="toolbar"
+      aria-label="Statistics symbol palette"
+      data-testid="symbol-palette"
+    >
+      <span className="mr-1 self-center text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+        Symbols
+      </span>
+      {STAT_SYMBOLS.map((sym) => (
+        <button
+          key={sym}
+          type="button"
+          // Prevent the editor from losing focus/selection before insertion.
+          onMouseDown={(e) => {
+            e.preventDefault();
+            onInsert(sym);
+          }}
+          className="min-w-[28px] rounded border border-stone-300 bg-white px-2 py-1 font-serif text-[15px] text-stone-800 hover:bg-stone-100 active:bg-stone-200"
+          data-testid={`symbol-${sym}`}
+          aria-label={`Insert symbol ${sym}`}
+        >
+          {sym}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function bucketOf(score: number | null): Bucket {
   if (score == null) return "neutral";
   if (score >= 0.7) return "red";
@@ -72,6 +107,34 @@ export function IntegrityCanvas({
 }: IntegrityCanvasProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const accommodatedRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const insertSymbolIntoEditor = useCallback((sym: string) => {
+    const el = editorRef.current;
+    if (!el) return;
+    el.focus();
+    const sel = window.getSelection();
+    let inserted = false;
+    if (sel && sel.rangeCount > 0 && el.contains(sel.anchorNode)) {
+      try {
+        // execCommand fires an `input` event so the existing onInput
+        // handler picks the change up — keystroke logging stays consistent.
+        inserted = document.execCommand("insertText", false, sym);
+      } catch {
+        inserted = false;
+      }
+      if (!inserted) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(sym));
+        range.collapse(false);
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    } else {
+      el.appendChild(document.createTextNode(sym));
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  }, []);
 
   // Mutable refs (no re-render on each keystroke)
   const startRef = useRef<number>(Date.now());
@@ -335,7 +398,28 @@ export function IntegrityCanvas({
             and AI monitoring are disabled. Your submission is recorded
             normally.
           </div>
+          <SymbolPalette
+            onInsert={(sym) => {
+              const ta = accommodatedRef.current;
+              if (!ta) {
+                setText((t) => t + sym);
+                logKey({ k: "i", d: sym });
+                return;
+              }
+              const start = ta.selectionStart ?? text.length;
+              const end = ta.selectionEnd ?? text.length;
+              const next = text.slice(0, start) + sym + text.slice(end);
+              setText(next);
+              logKey({ k: "i", d: sym });
+              requestAnimationFrame(() => {
+                ta.focus();
+                const pos = start + sym.length;
+                ta.setSelectionRange(pos, pos);
+              });
+            }}
+          />
           <textarea
+            ref={accommodatedRef}
             className="min-h-[300px] w-full resize-y rounded-md border border-stone-300 bg-white p-3 font-sans text-[15px] leading-relaxed text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-400"
             value={text}
             onChange={(e) => {
@@ -465,6 +549,8 @@ export function IntegrityCanvas({
             </span>
           </div>
         </div>
+
+        <SymbolPalette onInsert={insertSymbolIntoEditor} />
 
         {/* Editor stack: highlight overlay behind transparent contentEditable */}
         <div className="relative">

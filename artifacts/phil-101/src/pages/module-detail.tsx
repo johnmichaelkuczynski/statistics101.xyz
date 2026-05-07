@@ -23,6 +23,7 @@ import { AIScoreBadge } from "@/components/ai-score-badge";
 import { DraftWorkshop } from "@/components/draft-workshop";
 import { IntegrityCanvas } from "@/components/integrity-canvas";
 import { IntegrityDisclosureGate } from "@/components/integrity-disclosure";
+import { MathContent } from "@/components/math-content";
 import {
   ArrowRight,
   Bot,
@@ -126,9 +127,7 @@ export default function ModuleDetail() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-stone-800">
-                  {m.reading}
-                </pre>
+                <MathContent text={m.reading} />
 
                 <div className="space-y-2 border-t border-stone-200 pt-4">
                   <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
@@ -173,11 +172,29 @@ export default function ModuleDetail() {
               <CardTitle className="font-serif text-lg">Assignment</CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-stone-800">
-                {m.assignment}
-              </pre>
+              <MathContent text={m.assignment} />
             </CardContent>
           </Card>
+
+          {m.modelResponse?.trim() && existing && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-serif text-lg">
+                  Model Response
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <details className="rounded-md border border-stone-200 p-3">
+                  <summary className="cursor-pointer text-sm font-medium text-stone-800">
+                    Reveal the model response (now that you have submitted)
+                  </summary>
+                  <div className="mt-3">
+                    <MathContent text={m.modelResponse} />
+                  </div>
+                </details>
+              </CardContent>
+            </Card>
+          )}
 
           {existing && (
             <Card>

@@ -23,7 +23,7 @@ export default function Modules() {
   return (
     <PageShell
       title="Modules"
-      intro="The 13 modules of Systems Science 101, in order. Each unlocks once you submit the previous one."
+      intro="The 13 modules of Statistics 101, in order. Each unlocks once you submit the previous one."
     >
       {admin && (
         <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">

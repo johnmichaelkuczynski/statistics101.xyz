@@ -10,7 +10,7 @@ export default function Syllabus() {
   return (
     <PageShell
       title="Syllabus"
-      intro="Everything you need to know about how Systems Science 101 is taught, graded, and supported."
+      intro="Everything you need to know about how Statistics 101 is taught, graded, and supported."
     >
       <div className="flex justify-end print:hidden">
         <Button
@@ -26,7 +26,7 @@ export default function Syllabus() {
       <Section title="Course information">
         <DefList
           items={[
-            ["Course", "SYSC 101 — Introduction to Systems Science"],
+            ["Course", "STAT 101 — Introduction to Statistical Reasoning"],
             ["Credits", "3 semester credits"],
             ["Format", "Fully online, asynchronous"],
             ["Term", "Open enrollment / self-paced"],
@@ -51,17 +51,18 @@ export default function Syllabus() {
 
       <Section title="Course description">
         <p className="text-stone-800">
-          Systems Science 101 introduces students to the scientific study of
-          systems — collections of interacting parts whose behavior cannot be
-          understood by studying the parts in isolation. The course covers
-          the foundational vocabulary developed by Bertalanffy, Wiener,
-          Ashby, Meadows, Senge, and the Santa Fe Institute: stocks and
-          flows, feedback loops, requisite variety, homeostasis, emergence,
-          networks, self-organization, archetypes, leverage points, and
-          complex adaptive systems. Through close readings, Socratic
-          discussion, and short writing assignments, students learn to
-          diagnose system structure, predict dynamic behavior, and identify
-          where intervention will actually matter.
+          Statistics 101 introduces students to the practice of statistical
+          reasoning — how to summarize data, reason carefully about
+          uncertainty, design and critique studies, and tell a real result
+          from noise. The course covers the standard 101 sequence: levels
+          of measurement, measures of center and spread, data visualization,
+          probability and conditional probability, the normal distribution
+          and z-scores, sampling and the Central Limit Theorem, confidence
+          intervals, hypothesis testing, correlation vs. causation, the
+          common misuses of statistics, and reading published research.
+          Through worked examples, Socratic discussion, and short writing
+          assignments, students learn to apply statistical concepts to
+          real-world claims they will encounter every day.
         </p>
       </Section>
 
@@ -69,36 +70,38 @@ export default function Syllabus() {
         <p className="mb-2 text-stone-800">By the end of this course, students will be able to:</p>
         <ol className="list-decimal space-y-2 pl-5 text-stone-800">
           <li>
-            Identify the four defining features of a system (elements,
-            interconnections, boundary, purpose) and distinguish open from
-            closed systems using the Second Law of Thermodynamics.
+            Distinguish the four levels of measurement (categorical,
+            ordinal, interval, ratio) and choose summary statistics
+            appropriate to each.
           </li>
           <li>
-            Diagram and analyze stocks, flows, and feedback loops
-            (reinforcing and balancing), and explain the dynamic behavior
-            (growth, decay, oscillation, S-curves, collapse) they produce.
+            Compute and interpret measures of center (mean, median, mode)
+            and measures of spread (range, variance, standard deviation,
+            IQR), and choose visualizations (histogram, boxplot,
+            scatterplot, bar chart) appropriate to a dataset.
           </li>
           <li>
-            Apply Ashby's Law of Requisite Variety, distinguish static
-            equilibrium from dynamic equilibrium and homeostasis, and
-            distinguish resistance, resilience, and robustness as competing
-            design objectives.
+            Apply probability rules — independence, conditional probability,
+            and base rates — and use the normal distribution and z-scores
+            to compare values across distributions.
           </li>
           <li>
-            Recognize emergence, self-organization, and the edge of chaos,
-            and read scale-free and small-world network topologies.
+            Explain the Central Limit Theorem and use it to construct and
+            interpret confidence intervals for a population mean, including
+            the effects of sample size and confidence level on interval
+            width.
           </li>
           <li>
-            Diagnose the five core system archetypes (Shifting the Burden,
-            Limits to Growth, Tragedy of the Commons, Escalation, Success
-            to the Successful) and apply Meadows' five-tier leverage-point
-            framework to identify where interventions will and will not
-            work.
+            Conduct a hypothesis test, distinguish Type I from Type II
+            errors, and identify what evidence beyond a p-value (effect
+            size, confidence interval, replication) is needed to support a
+            substantive claim.
           </li>
           <li>
-            Apply the full systems-analysis vocabulary in a term paper that
-            analyzes five distinct real-world systems and produces at least
-            one non-obvious prediction for each.
+            Recognize correlation-vs-causation errors and the common
+            misuses of statistics (cherry-picking, p-hacking, Simpson's
+            paradox, base-rate neglect, survivorship bias), and write
+            calibrated evaluations of real-world statistical claims.
           </li>
         </ol>
       </Section>
