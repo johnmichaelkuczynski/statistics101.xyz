@@ -1,41 +1,43 @@
-# 🧠 SYSTEMS SCIENCE 101
+# 📊 STATISTICS 101
 
-A Fully Online Course in Systems Thinking for Undergraduates
+https://statistics-101.replit.app
+
+Course Shell for Introductory Statistics with AI-Aware Academic Integrity
 
 ## 🧩 Overview
 
-Systems Science 101 is a fully online, asynchronous college-level course that teaches the foundational vocabulary of systems thinking — stocks and flows, feedback loops, requisite variety, homeostasis, emergence, networks, self-organization, archetypes, leverage points, and complex adaptive systems — and trains students to apply it as a precision instrument for analyzing real systems.
+Statistics 101 is a fully online, asynchronous college course delivered as a self-contained web app. Thirteen modules cover the standard 101 sequence — levels of measurement, center and spread, visualization, probability, the normal distribution, sampling and the Central Limit Theorem, confidence intervals, hypothesis testing, correlation vs. causation, common misuses of statistics, and reading published research — culminating in a five-claim term paper.
 
-Unlike survey courses that present systems thinking as a vague metaphor, this one is built around a strict operating principle: vocabulary is for diagnosis, not decoration. Every term has to do work. Students do not just label parts; they use the labels to explain why systems behave as they do, and to make at least one non-obvious prediction per analysis.
+Unlike a generic LMS shell, the app is built around a strict operating principle: students should learn to write, not learn to launder AI output. Every assignment runs through a two-box workflow that pairs a single-shot AI feedback drafting station with an integrity-monitored submission canvas. Real-time AI-detection scoring, sentence-level highlighting, paste blocking, and a full keystroke audit trail give instructors evidence — not guesses — about how a piece of writing was actually produced.
 
 ## 👥 Who It's For
 
-- **Undergraduates in any major** -- who need a single integrative course that connects biology, economics, ecology, sociology, and engineering through a shared analytical language
-- **Pre-policy and pre-management students** -- who will spend their careers intervening in systems and need to know which interventions actually move the needle
-- **STEM students** -- who want the conceptual scaffolding (cybernetics, dynamics, networks, complexity) that ties their technical training together
-- **Working professionals** -- who keep encountering "the system" at work and want a vocabulary to name what they are seeing
-- **Anyone** -- who has ever watched a well-intentioned policy produce the opposite of its intended effect and wanted to know why
+- **Community-college and first-year undergraduates** -- need a clean, calm, jargon-free first encounter with statistics
+- **Returning adult learners** -- need an asynchronous, self-paced format with embedded tutoring
+- **Instructors of record** -- need a course shell that enforces academic-integrity policy without manually policing every paragraph
+- **Departments piloting AI policy** -- need real keystroke and AI-detection data on student submissions, not vibes
+- **Anyone** -- who has ever wondered what "p < 0.05" actually means and wanted to find out properly
 
 ## ⚙️ Core Capabilities
 
-- **13-Module Asynchronous Curriculum** -- Seven Socratic discussions, five argumentative essays, and a five-system term paper, each building on the previous module. Modules unlock sequentially as students submit work.
-- **AI Tutor Per Module** -- An Anthropic Claude Sonnet 4.5 tutor speaks in the instructor's voice, asks Socratic questions, and gives formative feedback on each module's reading. The tutor will refuse to write the assignment for the student.
-- **Integrity Canvas Authoring Environment** -- A two-box workflow for every assignment: a one-shot draft-feedback step that locks the draft, then a paste-blocked editor with real-time AI-detection scoring, sentence-level highlighting, and full keystroke logging.
-- **Real-Time GPTZero Scoring** -- Every keystroke burst is scored against AI-detection models. A traffic-light bar gives students immediate feedback; a 30-second cumulative-red warning fires before submission.
-- **Verbatim Course Text** -- Open educational reading material authored by the instructor, embedded directly in each module. No textbook to purchase, no external paywall.
-- **Model Responses for Every Module** -- Each assignment ships with a fully-worked model response and a "why this is a model" rubric, so students see what the criteria look like in practice.
-- **Quality Matters Course Shell** -- Built to the Quality Matters Higher Ed Rubric (7th ed.). Syllabus, modules, assessments, support, and accessibility pages are all wired in.
-- **Admin Submission Dashboard** -- Per-student replay, sparkline of AI-score history, full activity report, and accommodation toggle for students who need a plain-textarea editor.
-- **Sequential Progress Tracking** -- Students see their place in the 13-module sequence; instructors see who is stuck where.
-- **Instructor-of-Record Workflow** -- Submissions are reviewed by the human instructor, with formative feedback delivered through the AI Tutor.
+- **Verbatim Course Content** -- 13 modules totaling 800 points, ingested verbatim from the open-source course book. Each module ships with reading, assignment, and a model response unlocked after submission.
+- **Two-Box Submission Workflow** -- Box 1 is a draft workshop with single-shot AI feedback in 5 sections; once feedback is fetched the draft is locked. Box 2 is the live submission canvas where the actual graded work is typed.
+- **Real-Time AI Detection** -- Every burst of typing is scored by GPTZero with sentence-level highlighting, a green-yellow-red traffic-light bar, and a 30-second cumulative-red warning. Submissions ship with the final score and flag.
+- **Full Keystroke Audit Trail** -- Insertions, deletions, paste attempts (allowed and blocked), and highlighting toggles are recorded with timestamps and replayed in the admin dashboard.
+- **Paste-Blocked Editor** -- ContentEditable surface with overlay highlighting. External paste is intercepted; internal copy/cut is allowed. Drag-and-drop is rejected.
+- **KaTeX Math Rendering** -- Inline `$…$` and display `$$…$$` formulas render natively in readings, assignments, and model responses. Plain Unicode notation falls through unchanged.
+- **Statistics Symbol Palette** -- A 14-button toolbar (μ σ x̄ s Σ α β π ± ≤ ≥ ≠ √ ²) inserts at the caret in both standard and accommodated editors without breaking the keystroke pipeline.
+- **Socratic AI Tutor** -- Anthropic Claude Sonnet, configured to teach in the instructor's voice. Asks questions before giving answers; refuses to write the assignment for the student.
+- **Accommodated Mode** -- Admin-toggled per student. Replaces the monitored canvas with a plain textarea and skips AI scoring while still recording submissions normally.
+- **Admin Dashboard** -- List, filter, replay, sparkline, and activity report for every submission. Per-student accommodation toggles. First authenticated user can claim admin; subsequent admin status is granted only by an existing admin.
+- **One-Time Integrity Disclosure** -- A modal on first module load explains exactly what is monitored, what is recorded, and what flagging means for grades. Acknowledgment is recorded server-side.
 
-## 🚀 What Makes It Different
+## 🎯 What Makes It Different
 
-- **It teaches a method, not a survey** -- The course's job is to make students competent in a specific analytical practice, not to expose them to a wide field of facts.
-- **Every assignment ends in a non-obvious prediction** -- Students are required to say something about each system that someone without systems training would not have seen. The vocabulary is graded on whether it produces insight.
-- **The AI Tutor refuses to do the work** -- The tutor is system-prompted to pivot back to questions whenever asked to write the assignment. Discussion, clarification, counter-argument, and formative critique only.
-- **Submissions are integrity-monitored end to end** -- Real-time AI-detection scoring, paste blocking, keystroke logging, and an automatic activity report on every submission. Accommodated students get a plain editor and skip monitoring.
-- **Model responses are detailed and rubric-keyed** -- Students see not just what an A-grade answer looks like, but why each part of it is graded that way.
-- **Term paper analyzes five real-world systems at once** -- A social-media platform, a forest ecosystem, a hospital ED, a national power grid, and a language community. The vocabulary has to bridge all five domains.
-- **Self-paced with no late penalties** -- Students may resubmit any module; the most recent submission counts. The AI Tutor helps identify what to improve.
-- **Built to the Quality Matters rubric out of the box** -- Course information, instructor information, learning outcomes, accessibility, support, and academic-integrity policy are all in place from day one.
+- **It treats AI honestly** -- Students are told upfront what is detected and what is not. Nothing is hidden, nothing is theater.
+- **It evaluates writing as a process, not a product** -- A red AI-detection score on a paragraph that was typed character by character over 40 minutes tells a different story than the same score on text that appeared in one keystroke. The replay shows the difference.
+- **The model responses are real essays, not rubric bullets** -- Each module ships with a 600-to-2,500-word example response demonstrating what an A submission actually looks like, including the analytic moves that earn the grade.
+- **The curriculum is verbatim** -- No paraphrasing, no AI summarization of the source text. Students read what the instructor wrote.
+- **The math notation is correct** -- Unicode symbols and KaTeX-rendered formulas, not images or ASCII approximations.
+- **The integrity tooling supports accommodation** -- Students with documented needs get a plain editor and full credit, with no second-class workflow.
+- **Every design decision is documented** -- Architecture notes, data-flow contracts, and the model-response unlock rule live in `replit.md`, not in someone's head.
