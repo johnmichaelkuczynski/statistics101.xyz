@@ -9,6 +9,7 @@ import draftsRouter from "./drafts";
 import canvasRouter from "./canvas";
 import integrityRouter from "./integrity";
 import adminRouter from "./admin";
+import diagnosticRouter from "./diagnostic";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(draftsRouter);
 router.use(canvasRouter);
 router.use(integrityRouter);
 router.use(adminRouter);
+router.use(diagnosticRouter);
 
 export default router;
