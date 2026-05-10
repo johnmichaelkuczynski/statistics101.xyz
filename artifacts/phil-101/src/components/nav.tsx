@@ -7,7 +7,7 @@ import {
 } from "@workspace/api-client-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, ShieldCheck, X } from "lucide-react";
+import { FlaskConical, LogOut, Menu, ShieldCheck, X } from "lucide-react";
 
 const links = [
   { href: "/", label: "Start Here" },
@@ -17,6 +17,7 @@ const links = [
   { href: "/assessments", label: "Assessments" },
   { href: "/support", label: "Support" },
   { href: "/accessibility", label: "Accessibility" },
+  { href: "/diagnostic", label: "Diagnostic" },
 ];
 
 export function Nav() {

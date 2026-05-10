@@ -15,6 +15,7 @@ import Support from "@/pages/support";
 import Accessibility from "@/pages/accessibility";
 import AdminSubmissions from "@/pages/admin-submissions";
 import AdminSubmissionDetail from "@/pages/admin-submission-detail";
+import Diagnostic from "@/pages/diagnostic";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -57,6 +58,7 @@ function Routes() {
       </Route>
       <Route path="/support" component={Support} />
       <Route path="/accessibility" component={Accessibility} />
+      <Route path="/diagnostic" component={Diagnostic} />
       <Route path="/admin/submissions">
         <RequireAuth>
           <AdminSubmissions />
