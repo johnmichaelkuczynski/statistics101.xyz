@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { and, desc, eq } from "drizzle-orm";
-import { db, submissionsTable } from "@workspace/db";
+import { and, desc, eq, sql } from "drizzle-orm";
+import { db, studentsTable, submissionsTable } from "@workspace/db";
 import {
   ListSubmissionsResponseItem as SubmissionZ,
   GetSubmissionForModuleResponse as SubmissionOrNullZ,
@@ -9,10 +9,20 @@ import { attachSession, requireStudent } from "../middlewares/session";
 import { moduleById, modules } from "../lib/curriculum";
 import { checkWithGPTZero } from "../lib/gptzero";
 import { computeActivityReport } from "../lib/activityReport";
+import {
+  analyzeProcessWithBaseline,
+  foldIntoBaseline,
+  type ProcessBaseline,
+  type ProcessEvent,
+} from "../lib/processForensics";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 router.use(attachSession);
+
+const MIN_EVENTS_FOR_PROCESS = 20;
+const MIN_CHARS_FOR_PROCESS = 80;
+const BASELINE_FREEZE_AT = 2;
 
 router.get(
   "/submissions",
@@ -24,6 +34,8 @@ router.get(
       .from(submissionsTable)
       .where(eq(submissionsTable.studentId, studentId))
       .orderBy(desc(submissionsTable.createdAt));
+    // SubmissionZ.parse() strips unknown keys (zod default), so the new
+    // process* columns are not exposed to the student.
     res.json(rows.map((r) => SubmissionZ.parse(r)));
   },
 );
@@ -80,15 +92,57 @@ router.post(
     const scoreHistory = Array.isArray(body.scoreHistory)
       ? body.scoreHistory
       : null;
-    // `flaggedOnSubmit` is advisory only — what the live client believed at
-    // submit time. The server always re-runs GPTZero and is the source of
-    // truth for the persisted aiScore/aiClass/aiStatus.
     const flaggedOnSubmit = !!body.flaggedOnSubmit;
 
     const activityReport =
       keystrokes && scoreHistory
         ? computeActivityReport(keystrokes, scoreHistory)
         : null;
+
+    // ---- Process forensics (2nd-layer detection) -----------------------
+    // Sparse-data guard: <20 events OR <80 chars → skip entirely. Otherwise
+    // small/empty streams score as likelyAI (no human signals = robotic).
+    let processScore: number | null = null;
+    let processClass: string | null = null;
+    let processFeatures: Record<string, unknown> | null = null;
+    let processFlags: string[] | null = null;
+    let nextBaseline: ProcessBaseline | null = null;
+    const baselineFrozenAfterThisSubmission =
+      (await loadBaseline(studentId)) ?? null;
+
+    if (
+      keystrokes &&
+      keystrokes.length >= MIN_EVENTS_FOR_PROCESS &&
+      content.length >= MIN_CHARS_FOR_PROCESS
+    ) {
+      try {
+        const baseline = baselineFrozenAfterThisSubmission;
+        const analysis = analyzeProcessWithBaseline(
+          keystrokes as ProcessEvent[],
+          content,
+          baseline,
+        );
+        processScore = analysis.processScore;
+        processClass = analysis.processClass;
+        processFlags = analysis.flags;
+        // Stash baseline-adjusted info under `__` keys so the admin feature
+        // loop can ignore them — avoids a second migration.
+        processFeatures = {
+          ...(analysis.features as unknown as Record<string, unknown>),
+          __baselineAdjustedScore: analysis.baselineAdjustedScore ?? null,
+          __baselineDeviation: analysis.baselineDeviation ?? null,
+          __baselineSnapshot: baseline?.features ?? null,
+          __baselineN: baseline?.n ?? 0,
+        };
+        // Fold into baseline only if n<2 — frozen after that, deliberately,
+        // to prevent slow-drift attacks where a cheater trains the baseline.
+        if ((baseline?.n ?? 0) < BASELINE_FREEZE_AT) {
+          nextBaseline = foldIntoBaseline(baseline, analysis.features);
+        }
+      } catch (err) {
+        logger.error({ err, studentId }, "processForensics analysis failed");
+      }
+    }
 
     const inserted = await db
       .insert(submissionsTable)
@@ -104,14 +158,51 @@ router.post(
         scoreHistory: scoreHistory ?? undefined,
         activityReport: activityReport ?? undefined,
         flaggedOnSubmit,
+        processScore,
+        processClass,
+        processFeatures: processFeatures ?? undefined,
+        processFlags: processFlags ?? undefined,
       })
       .returning();
 
+    if (nextBaseline) {
+      // Optimistic concurrency: only persist if the row's current
+      // baseline.n still matches what we read. Two simultaneous submissions
+      // both seeing n=0 would otherwise both write n=1; the second would
+      // win and we'd "lose" an increment, delaying the n=2 freeze and
+      // weakening baseline integrity.
+      const expectedN = baselineFrozenAfterThisSubmission?.n ?? 0;
+      const updated = await db
+        .update(studentsTable)
+        .set({ processBaseline: nextBaseline })
+        .where(
+          and(
+            eq(studentsTable.id, studentId),
+            // Drizzle jsonb path equality. If `processBaseline` is null and
+            // expectedN is 0, the path returns null which won't equal '0',
+            // so fall back to checking for null in that case.
+            expectedN === 0
+              ? sql`(${studentsTable.processBaseline} IS NULL OR (${studentsTable.processBaseline}->>'n')::int = 0)`
+              : sql`(${studentsTable.processBaseline}->>'n')::int = ${expectedN}`,
+          ),
+        )
+        .returning({ id: studentsTable.id })
+        .catch((err) => {
+          logger.error({ err, studentId }, "failed to update processBaseline");
+          return [] as { id: number }[];
+        });
+      if (updated.length === 0) {
+        logger.warn(
+          { studentId, expectedN },
+          "processBaseline update skipped: concurrent submission won the race",
+        );
+      }
+    }
+
     const row = inserted[0];
+    // SubmissionZ.parse() strips unknown keys → process* not leaked.
     res.status(201).json(SubmissionZ.parse(row));
 
-    // Authoritative server-side AI check, regardless of any client-side
-    // pre-scoring. Runs in the background so the POST returns immediately.
     void runAICheck(row.id, content);
   },
 );
@@ -135,6 +226,19 @@ router.get(
     res.json(SubmissionOrNullZ.parse({ submission: rows[0] ?? null }));
   },
 );
+
+async function loadBaseline(
+  studentId: number,
+): Promise<ProcessBaseline | null> {
+  const rows = await db
+    .select({ baseline: studentsTable.processBaseline })
+    .from(studentsTable)
+    .where(eq(studentsTable.id, studentId))
+    .limit(1);
+  const b = rows[0]?.baseline as ProcessBaseline | null | undefined;
+  if (!b || typeof b !== "object" || typeof b.n !== "number") return null;
+  return b;
+}
 
 async function runAICheck(submissionId: number, content: string): Promise<void> {
   try {

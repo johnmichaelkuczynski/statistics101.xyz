@@ -13,6 +13,57 @@ interface KEvent {
   t: number;
   k: "i" | "d" | "m" | "p_blocked" | "p_allowed" | "h_off" | "h_on";
   d?: string;
+  // Newer rich fields (optional — legacy events may lack them)
+  type?: "insert" | "delete" | "caretJump" | "focus" | "blur";
+  pos?: number;
+  len?: number;
+  charCount?: number;
+  caretBefore?: number;
+  caretAfter?: number;
+  text?: string;
+}
+
+const FEATURE_NOTES: Record<string, string> = {
+  burstUniformity:
+    "Lower = more robotic. Stdev of intra-burst keystroke gaps in ms. Humans vary; transcribers don't.",
+  pauseBeforeNewSentence:
+    "Median ms between sentence-end (./?/!) and the next non-whitespace char. Composers pause to think.",
+  pauseBeforeNewParagraph:
+    "Same as above, but only when the gap contains a paragraph break.",
+  deletionRatio:
+    "Deleted chars / inserted chars. Healthy human range ~15–40%. Transcription has near-zero deletions.",
+  structuralEditCount:
+    "Large (≥30 chars) or far-back (caret < docLen/2) deletes. Composers restructure; transcribers don't.",
+  caretBacktrackCount:
+    "Backward caret jumps > 100 chars — going back to revise a prior section.",
+  abandonedStartCount:
+    "Bursts of ≥30 chars where ≥80% gets deleted within 60s and the next insert lands within 10 chars of the original start. Classic 'try, scrap, retry' human pattern.",
+  burstLengthCV:
+    "Coefficient of variation of burst lengths. Low = uniform = transcription-like.",
+  frontToBackLinearity:
+    "Fraction of inserts at end-of-doc. High = text grew straight through with no revisions.",
+  totalActiveSeconds:
+    "Sum of inter-event gaps capped at 30s/gap — context only, not scored.",
+  charsPerSecond:
+    "Final length / total active seconds. Sustained >5 cps over a long session is transcription-grade.",
+};
+
+function fmtFeature(key: string, v: number | undefined): string {
+  if (v == null || !Number.isFinite(v)) return "—";
+  if (
+    key === "burstUniformity" ||
+    key === "pauseBeforeNewSentence" ||
+    key === "pauseBeforeNewParagraph"
+  ) {
+    return `${Math.round(v)} ms`;
+  }
+  if (key === "deletionRatio" || key === "frontToBackLinearity") {
+    return `${(v * 100).toFixed(1)}%`;
+  }
+  if (key === "totalActiveSeconds") return `${v.toFixed(1)} s`;
+  if (key === "charsPerSecond") return `${v.toFixed(2)} cps`;
+  if (key === "burstLengthCV") return v.toFixed(2);
+  return String(Math.round(v));
 }
 
 export default function AdminSubmissionDetail() {
@@ -146,6 +197,25 @@ export default function AdminSubmissionDetail() {
       <Card>
         <CardHeader>
           <CardTitle className="font-serif text-lg">
+            Writing-process forensics{" "}
+            <span className="ml-1 text-xs font-normal text-stone-500">
+              (2nd-layer detector — process shape, not text)
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProcessForensicsView
+            processScore={sub.processScore}
+            processClass={sub.processClass}
+            processFeatures={sub.processFeatures}
+            processFlags={sub.processFlags}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-serif text-lg">
             Keystroke replay
           </CardTitle>
         </CardHeader>
@@ -237,6 +307,171 @@ function ActivityReportView({
         ))}
       </tbody>
     </table>
+  );
+}
+
+function ProcessForensicsView({
+  processScore,
+  processClass,
+  processFeatures,
+  processFlags,
+}: {
+  processScore: number | null;
+  processClass: "human" | "mixed" | "likelyAI" | null;
+  processFeatures: Record<string, unknown> | null;
+  processFlags: string[] | null;
+}) {
+  if (processScore == null || !processFeatures) {
+    return (
+      <p className="text-sm text-stone-500" data-testid="process-no-data">
+        No writing-process analysis available (legacy submission, accommodated
+        student, or fewer than 20 keystroke events / 80 chars).
+      </p>
+    );
+  }
+  const adjusted = processFeatures.__baselineAdjustedScore as
+    | number
+    | null
+    | undefined;
+  const baselineN = (processFeatures.__baselineN as number | undefined) ?? 0;
+  const baselineSnap =
+    (processFeatures.__baselineSnapshot as Record<string, number> | null) ??
+    null;
+  const flags = Array.isArray(processFlags) ? processFlags : [];
+
+  const classColor =
+    processClass === "likelyAI"
+      ? "destructive"
+      : processClass === "mixed"
+        ? "default"
+        : "secondary";
+
+  const featureKeys = Object.keys(processFeatures).filter(
+    (k) => !k.startsWith("__") && k !== "_hasData",
+  );
+
+  // Burst length timeline — pulled from features._hasData? No — recompute
+  // from displayed keys. Burst chart shown only if we can derive a sequence
+  // (we don't persist per-burst lengths separately).
+  return (
+    <div className="space-y-4" data-testid="process-forensics">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge variant={classColor === "destructive" ? "destructive" : "outline"}>
+          process score: {processScore}
+        </Badge>
+        <Badge variant="outline">class: {processClass ?? "—"}</Badge>
+        {baselineN > 0 ? (
+          <Badge variant="outline">
+            vs. this student's baseline (n={baselineN}):{" "}
+            {adjusted != null ? adjusted : "—"}
+          </Badge>
+        ) : (
+          <Badge variant="outline">No baseline yet (1st submission)</Badge>
+        )}
+      </div>
+
+      {flags.length > 0 ? (
+        <div>
+          <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">
+            Findings
+          </div>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-stone-800">
+            {flags.map((f, i) => (
+              <li key={i}>{f}</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="text-sm text-stone-500">
+          No individual features crossed the suspicion threshold.
+        </p>
+      )}
+
+      <div>
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">
+          Feature breakdown
+        </div>
+        <table className="w-full text-sm" data-testid="process-feature-table">
+          <thead>
+            <tr className="border-b border-stone-200 text-left text-xs text-stone-500">
+              <th className="py-1.5 pr-3 font-normal">Feature</th>
+              <th className="py-1.5 pr-3 font-normal">This submission</th>
+              <th className="py-1.5 pr-3 font-normal">Student baseline</th>
+              <th className="py-1.5 font-normal">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {featureKeys.map((k) => {
+              const v = processFeatures[k];
+              const baseV = baselineSnap?.[k];
+              return (
+                <tr key={k} className="border-t border-stone-100 align-top">
+                  <td className="py-1.5 pr-3 font-mono text-xs text-stone-700">
+                    {k}
+                  </td>
+                  <td className="py-1.5 pr-3 font-medium text-stone-900">
+                    {fmtFeature(
+                      k,
+                      typeof v === "number" ? v : undefined,
+                    )}
+                  </td>
+                  <td className="py-1.5 pr-3 text-stone-600">
+                    {baselineN > 0
+                      ? fmtFeature(k, baseV)
+                      : <span className="text-stone-400">—</span>}
+                  </td>
+                  <td className="py-1.5 text-xs text-stone-500">
+                    {FEATURE_NOTES[k] ?? ""}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <BurstLengthChart features={processFeatures} />
+    </div>
+  );
+}
+
+function BurstLengthChart({
+  features,
+}: {
+  features: Record<string, unknown>;
+}) {
+  // We don't persist per-burst lengths — show the summary stats we do have.
+  const cv = features.burstLengthCV as number | undefined;
+  if (cv == null) return null;
+  // Synthesize a representative band so admin sees uniformity at a glance.
+  const w = 600;
+  const h = 60;
+  // Visual: solid stripe whose variation height = CV.
+  const stripeH = Math.max(2, Math.min(h - 4, cv * h));
+  return (
+    <div>
+      <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">
+        Burst-length variation
+      </div>
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        className="h-14 w-full"
+        data-testid="burst-chart"
+      >
+        <rect x={0} y={0} width={w} height={h} fill="#fafaf9" />
+        <rect
+          x={0}
+          y={(h - stripeH) / 2}
+          width={w}
+          height={stripeH}
+          fill={cv < 0.2 ? "#fecaca" : cv < 0.5 ? "#fde68a" : "#bbf7d0"}
+        />
+      </svg>
+      <p className="mt-1 text-xs text-stone-500">
+        CV = {cv.toFixed(2)} — narrow red stripe = transcription-uniform; wide
+        green stripe = varied human bursts.
+      </p>
+    </div>
   );
 }
 

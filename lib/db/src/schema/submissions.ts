@@ -38,6 +38,18 @@ export const submissionsTable = pgTable("submissions", {
   flaggedOnSubmit: boolean("flagged_on_submit").notNull().default(false),
   /** "pending" | "reviewed" | "flagged" — instructor workflow */
   reviewStatus: text("review_status").notNull().default("pending"),
+  /** Process-forensics score 0–100 (null if sparse data). */
+  processScore: integer("process_score"),
+  /** "human" | "mixed" | "likelyAI" (null if sparse data). */
+  processClass: text("process_class"),
+  /**
+   * 11 raw features + double-underscore stash:
+   *   __baselineAdjustedScore, __baselineDeviation, __baselineSnapshot, __baselineN.
+   * Stashed under `__` so the admin renderer can ignore them in the feature loop.
+   */
+  processFeatures: jsonb("process_features"),
+  /** Human-readable findings (string[]). */
+  processFlags: jsonb("process_flags"),
 });
 
 export const insertSubmissionSchema = createInsertSchema(submissionsTable).omit(

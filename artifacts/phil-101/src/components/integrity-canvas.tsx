@@ -17,10 +17,33 @@ import { integrityApi } from "@/lib/integrity-api";
 
 interface KeystrokeEvent {
   t: number;
+  // Legacy fields (kept for back-compat with existing replays)
   k: "i" | "d" | "m" | "p_blocked" | "p_allowed" | "h_off" | "h_on";
   d?: string;
   p?: number;
+  // Rich process-forensics fields
+  type?: "insert" | "delete" | "caretJump" | "focus" | "blur";
+  pos?: number;
+  len?: number;
+  charCount?: number;
+  caretBefore?: number;
+  caretAfter?: number;
+  text?: string;
 }
+
+type ProcBucket = "human" | "mixed" | "likelyAI" | "neutral";
+const PROC_BUCKET_COLORS: Record<ProcBucket, string> = {
+  human: "bg-emerald-500",
+  mixed: "bg-amber-400",
+  likelyAI: "bg-red-500",
+  neutral: "bg-stone-300",
+};
+const PROC_BUCKET_LABEL: Record<ProcBucket, string> = {
+  human: "Process: looks human",
+  mixed: "Process: questionable",
+  likelyAI: "Process: transcription-like",
+  neutral: "Process: not enough activity yet",
+};
 
 interface ScoreSample {
   t: number;
@@ -158,6 +181,9 @@ export function IntegrityCanvas({
   const [sentences, setSentences] = useState<SentenceResult[]>([]);
   const [aiScore, setAiScore] = useState<number | null>(null);
   const [aiClass, setAiClass] = useState<string | null>(null);
+  const [procScore, setProcScore] = useState<number | null>(null);
+  const [procClass, setProcClass] = useState<ProcBucket>("neutral");
+  const lastProcAtRef = useRef<number>(0);
   const [highlightingOn, setHighlightingOn] = useState<boolean>(true);
   const [pasteFlash, setPasteFlash] = useState<string | null>(null);
   const [showRedNotice, setShowRedNotice] = useState<boolean>(false);
@@ -279,13 +305,117 @@ export function IntegrityCanvas({
     [accommodated, requestScore],
   );
 
+  // ---- Caret + rich-event helpers --------------------------------------
+  const lastCaretRef = useRef<number>(0);
+
+  function getCaret(): number | null {
+    const ta = accommodatedRef.current;
+    if (ta) return ta.selectionStart ?? null;
+    const el = editorRef.current;
+    if (!el) return null;
+    const sel = window.getSelection?.();
+    if (!sel || sel.rangeCount === 0) return null;
+    const range = sel.getRangeAt(0).cloneRange();
+    if (!el.contains(range.endContainer)) return null;
+    const pre = range.cloneRange();
+    pre.selectNodeContents(el);
+    pre.setEnd(range.endContainer, range.endOffset);
+    return pre.toString().length;
+  }
+
   // ---- Editor event handlers -------------------------------------------
   function logKey(e: Omit<KeystrokeEvent, "t">) {
-    keystrokesRef.current.push({
-      t: Date.now() - startRef.current,
-      ...e,
-    });
+    const t = Date.now() - startRef.current;
+    const evt: KeystrokeEvent = { t, ...e };
+    // Coalesce single-char inserts within 200 ms at adjacent caret.
+    const last = keystrokesRef.current[keystrokesRef.current.length - 1];
+    if (
+      last &&
+      (last.type === "insert" || last.k === "i") &&
+      (evt.type === "insert" || evt.k === "i") &&
+      typeof evt.charCount === "number" &&
+      typeof last.charCount === "number" &&
+      evt.charCount === 1 &&
+      last.charCount <= 8 && // don't coalesce indefinitely
+      t - last.t <= 200 &&
+      typeof last.caretAfter === "number" &&
+      typeof evt.caretBefore === "number" &&
+      Math.abs(evt.caretBefore - last.caretAfter) <= 1
+    ) {
+      last.charCount += 1;
+      last.len = last.charCount;
+      last.caretAfter = evt.caretAfter;
+      if (last.text != null && evt.text != null) last.text = (last.text + evt.text).slice(0, 64);
+      if (last.d != null && evt.d != null) last.d = (last.d + evt.d).slice(0, 64);
+      return;
+    }
+    keystrokesRef.current.push(evt);
   }
+
+  function emitCaretJumpIfNeeded(): void {
+    const c = getCaret();
+    if (c == null) return;
+    if (Math.abs(c - lastCaretRef.current) > 1) {
+      keystrokesRef.current.push({
+        t: Date.now() - startRef.current,
+        k: "m",
+        type: "caretJump",
+        len: 0,
+        caretBefore: lastCaretRef.current,
+        caretAfter: c,
+        pos: c,
+      });
+    }
+    lastCaretRef.current = c;
+  }
+
+  // Listen for selection changes globally — fires on click/arrow navigation.
+  useEffect(() => {
+    function onSel() {
+      const el = editorRef.current ?? accommodatedRef.current;
+      if (!el) return;
+      const sel = window.getSelection?.();
+      if (!sel) return;
+      // Only count if selection is inside our editor.
+      if (
+        !accommodatedRef.current &&
+        editorRef.current &&
+        sel.anchorNode &&
+        !editorRef.current.contains(sel.anchorNode)
+      ) {
+        return;
+      }
+      emitCaretJumpIfNeeded();
+    }
+    document.addEventListener("selectionchange", onSel);
+    return () => document.removeEventListener("selectionchange", onSel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ---- Throttled live process score (≥60s between calls) --------------
+  const requestProcScore = useCallback(() => {
+    if (accommodated) return;
+    const now = Date.now();
+    if (now - lastProcAtRef.current < 60_000) return;
+    if (keystrokesRef.current.length < 20) return;
+    if (textRef.current.length < 80) return;
+    lastProcAtRef.current = now;
+    integrityApi
+      .processScore(moduleId, {
+        events: keystrokesRef.current,
+        content: textRef.current,
+      })
+      .then((r) => {
+        if (r.score == null || !r.class) {
+          setProcScore(null);
+          setProcClass("neutral");
+          return;
+        }
+        setProcScore(r.score);
+        setProcClass(r.class);
+      })
+      .catch(() => {});
+  }, [accommodated, moduleId]);
 
   function handleInput() {
     if (composingRef.current) return; // wait for compositionend
@@ -293,23 +423,42 @@ export function IntegrityCanvas({
     if (!el) return;
     const newText = el.innerText.replace(/\u00A0/g, " ");
     const prev = textRef.current;
+    const caretBefore = lastCaretRef.current;
+    const caretAfter = getCaret() ?? caretBefore;
     if (newText.length > prev.length) {
-      // Detect simple end-append vs middle insertion (selection replace etc).
+      const delta = newText.length - prev.length;
       const appended = newText.slice(prev.length);
-      if (newText.startsWith(prev)) {
-        logKey({ k: "i", d: appended });
-      } else {
-        logKey({ k: "m", d: `+${newText.length - prev.length}` });
-      }
+      const isEndAppend = newText.startsWith(prev);
+      logKey({
+        k: "i",
+        d: isEndAppend ? appended : `+${delta}`,
+        type: "insert",
+        len: delta,
+        charCount: delta,
+        pos: caretBefore,
+        caretBefore,
+        caretAfter,
+        text: isEndAppend ? appended.slice(0, 64) : undefined,
+      });
     } else if (newText.length < prev.length) {
       const removed = prev.length - newText.length;
-      logKey({ k: "d", d: String(removed) });
+      logKey({
+        k: "d",
+        d: String(removed),
+        type: "delete",
+        len: removed,
+        pos: caretAfter,
+        caretBefore,
+        caretAfter,
+      });
     } else if (newText !== prev) {
-      logKey({ k: "m" });
+      logKey({ k: "m", type: "caretJump", len: 0, caretBefore, caretAfter });
     }
+    lastCaretRef.current = caretAfter;
     textRef.current = newText;
     setText(newText);
     scheduleScore(newText);
+    requestProcScore();
   }
 
   function handleCompositionStart() {
@@ -422,14 +571,57 @@ export function IntegrityCanvas({
             ref={accommodatedRef}
             className="min-h-[300px] w-full resize-y rounded-md border border-stone-300 bg-white p-3 font-sans text-[15px] leading-relaxed text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-400"
             value={text}
+            onFocus={() =>
+              keystrokesRef.current.push({
+                t: Date.now() - startRef.current,
+                k: "m",
+                type: "focus",
+                len: 0,
+              })
+            }
+            onBlur={() =>
+              keystrokesRef.current.push({
+                t: Date.now() - startRef.current,
+                k: "m",
+                type: "blur",
+                len: 0,
+              })
+            }
             onChange={(e) => {
               const v = e.target.value;
+              const ta = e.target;
+              const caretAfter = ta.selectionStart ?? v.length;
+              const caretBefore = lastCaretRef.current;
+              if (v.length > text.length) {
+                const delta = v.length - text.length;
+                const inserted = v.slice(caretAfter - delta, caretAfter);
+                logKey({
+                  k: "i",
+                  d: inserted,
+                  type: "insert",
+                  len: delta,
+                  charCount: delta,
+                  pos: caretBefore,
+                  caretBefore,
+                  caretAfter,
+                  text: inserted.slice(0, 64),
+                });
+              } else if (v.length < text.length) {
+                logKey({
+                  k: "d",
+                  d: String(text.length - v.length),
+                  type: "delete",
+                  len: text.length - v.length,
+                  pos: caretAfter,
+                  caretBefore,
+                  caretAfter,
+                });
+              }
+              lastCaretRef.current = caretAfter;
+              textRef.current = v;
               setText(v);
-              logKey(
-                v.length > text.length
-                  ? { k: "i", d: v.slice(text.length) }
-                  : { k: "d" },
-              );
+              // Accommodation removes the live UI signal, but server-side
+              // logging continues — same data is still captured for review.
             }}
             placeholder="Type your final answer here…"
             data-testid="input-canvas-accommodated"
@@ -493,7 +685,7 @@ export function IntegrityCanvas({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Traffic light bar */}
+        {/* Traffic light bars (text + process) */}
         <div className="space-y-1.5">
           <div
             className="relative h-3 w-full overflow-hidden rounded-full bg-stone-200"
@@ -511,8 +703,27 @@ export function IntegrityCanvas({
               }}
             />
           </div>
+          {/* Second-layer process bar */}
+          <div
+            className="relative h-3 w-full overflow-hidden rounded-full bg-stone-200"
+            data-testid="process-bar"
+            data-bucket={procClass}
+            aria-label={PROC_BUCKET_LABEL[procClass]}
+          >
+            <div
+              className={`absolute inset-y-0 left-0 transition-all ${PROC_BUCKET_COLORS[procClass]}`}
+              style={{
+                width:
+                  procScore == null
+                    ? "12%"
+                    : `${Math.max(8, Math.min(100, procScore))}%`,
+              }}
+            />
+          </div>
           <div className="flex items-center justify-between text-xs text-stone-600">
-            <span data-testid="bucket-label">{BUCKET_LABEL[bucket]}</span>
+            <span data-testid="bucket-label">
+              {BUCKET_LABEL[bucket]} · {PROC_BUCKET_LABEL[procClass]}
+            </span>
             <span className="flex items-center gap-2">
               {scoring && (
                 <Loader2 className="h-3 w-3 animate-spin text-stone-400" />
@@ -575,6 +786,22 @@ export function IntegrityCanvas({
             onCut={handleCopyOrCut}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
+            onFocus={() =>
+              keystrokesRef.current.push({
+                t: Date.now() - startRef.current,
+                k: "m",
+                type: "focus",
+                len: 0,
+              })
+            }
+            onBlur={() =>
+              keystrokesRef.current.push({
+                t: Date.now() - startRef.current,
+                k: "m",
+                type: "blur",
+                len: 0,
+              })
+            }
             className={`relative min-h-[300px] w-full whitespace-pre-wrap break-words rounded-md border border-stone-300 bg-white p-3 font-sans text-[15px] leading-relaxed caret-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-400 ${
               highlightingOn ? "text-transparent" : "text-stone-900"
             }`}

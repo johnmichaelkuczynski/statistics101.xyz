@@ -3,6 +3,11 @@ import { and, eq, sql } from "drizzle-orm";
 import { db, canvasSessionsTable, studentsTable } from "@workspace/db";
 import { attachSession, requireStudent } from "../middlewares/session";
 import { checkWithGPTZero } from "../lib/gptzero";
+import {
+  analyzeProcessWithBaseline,
+  type ProcessBaseline,
+  type ProcessEvent,
+} from "../lib/processForensics";
 
 const router: IRouter = Router();
 router.use(attachSession);
@@ -114,6 +119,46 @@ router.post(
       aiScore: result.aiScore,
       aiClass: result.aiClass,
       sentences: result.sentences,
+      accommodated: false,
+    });
+  },
+);
+
+/**
+ * Live process-forensics signal. Returns ONLY {score, class}. No features,
+ * no flags — leaking those names would give sophisticated cheaters a tuning
+ * oracle. Throttled by the client (≥60s between calls).
+ */
+router.post(
+  "/canvas/:moduleId/processScore",
+  requireStudent,
+  async (req: Request<{ moduleId: string }>, res: Response) => {
+    const studentId = req.studentId as number;
+    if (await isAccommodated(studentId)) {
+      // Accommodation removes the live UI signal — server-side logging still
+      // happens elsewhere; we just don't surface anything to the student.
+      res.json({ score: null, class: null, accommodated: true });
+      return;
+    }
+    const body = req.body as { events?: unknown; content?: unknown };
+    const events = Array.isArray(body.events) ? (body.events as ProcessEvent[]) : [];
+    const content = typeof body.content === "string" ? body.content : "";
+    if (events.length < 20 || content.length < 80) {
+      res.json({ score: null, class: null, accommodated: false });
+      return;
+    }
+    const baselineRows = await db
+      .select({ baseline: studentsTable.processBaseline })
+      .from(studentsTable)
+      .where(eq(studentsTable.id, studentId))
+      .limit(1);
+    const b = baselineRows[0]?.baseline as ProcessBaseline | null | undefined;
+    const baseline =
+      b && typeof b === "object" && typeof b.n === "number" ? b : null;
+    const analysis = analyzeProcessWithBaseline(events, content, baseline);
+    res.json({
+      score: analysis.processScore,
+      class: analysis.processClass,
       accommodated: false,
     });
   },

@@ -9,6 +9,10 @@ import {
 } from "@workspace/db";
 import { anthropic } from "@workspace/integrations-anthropic-ai";
 import { modules as curriculum } from "../lib/curriculum";
+import {
+  analyzeProcess,
+  type ProcessEvent,
+} from "../lib/processForensics";
 
 const router: IRouter = Router();
 
@@ -307,6 +311,80 @@ router.post("/diagnostic/run", async (_req, res) => {
     checks: flowChecks,
   });
 
+  // ---- 5. Process Forensics (synthetic streams) ----
+  const procChecks: Check[] = [];
+  procChecks.push(
+    await timed("Synthetic transcription → likelyAI (≥70)", async () => {
+      const events = buildTranscriptionStream();
+      const finalText = events
+        .filter((e) => e.type === "insert")
+        .map((e) => e.text ?? "")
+        .join("");
+      const a = analyzeProcess(events, finalText);
+      const ok = a.processScore >= 70 && a.processClass === "likelyAI";
+      return {
+        status: ok ? "pass" : "fail",
+        detail: `score=${a.processScore} class=${a.processClass}`,
+      };
+    }),
+  );
+  procChecks.push(
+    await timed(
+      "Non-text events (focus/blur/caretJump) do not inflate insert counts",
+      async () => {
+        // Same composition stream, but with 200 extra k:"m" focus/blur/jump
+        // events sprinkled in. The classification must not flip — these
+        // are non-text and used to leak through as inserts (k:"m" → insert,
+        // default charCount=1).
+        const { events: base, finalText } = buildCompositionStream();
+        const noisy: ProcessEvent[] = [...base];
+        for (let i = 0; i < 200; i++) {
+          noisy.splice(
+            Math.min(noisy.length, 5 + i * 2),
+            0,
+            {
+              t: 100 + i * 50,
+              type: i % 3 === 0 ? "focus" : i % 3 === 1 ? "blur" : "caretJump",
+              k: "m",
+              len: 0,
+              caretBefore: 0,
+              caretAfter: 0,
+            } as ProcessEvent,
+          );
+        }
+        const cleanScore = analyzeProcess(base, finalText).processScore;
+        const noisyScore = analyzeProcess(noisy, finalText).processScore;
+        const drift = Math.abs(noisyScore - cleanScore);
+        const noisyClass = analyzeProcess(noisy, finalText).processClass;
+        // The class must remain `human` and the noisy score must not have
+        // jumped UPWARD (toward AI) — real caret/focus events legitimately
+        // pull the score further into the human range, which is fine.
+        const ok = noisyClass === "human" && noisyScore <= cleanScore + 5;
+        return {
+          status: ok ? "pass" : "fail",
+          detail: `clean=${cleanScore} noisy=${noisyScore} drift=${drift} class=${noisyClass}`,
+        };
+      },
+    ),
+  );
+  procChecks.push(
+    await timed("Synthetic composition → human (<35)", async () => {
+      const { events, finalText } = buildCompositionStream();
+      const a = analyzeProcess(events, finalText);
+      const ok = a.processScore < 35 && a.processClass === "human";
+      return {
+        status: ok ? "pass" : "fail",
+        detail: `score=${a.processScore} class=${a.processClass}`,
+      };
+    }),
+  );
+  sections.push({
+    title: "Process Forensics",
+    description:
+      "Runs the writing-process analyzer over two synthetic event streams: a perfectly uniform transcription pattern (must classify as likelyAI) and a varied human-composition pattern with abandoned starts and backtracks (must classify as human).",
+    checks: procChecks,
+  });
+
   const allChecks = sections.flatMap((s) => s.checks);
   const failed = allChecks.filter((c) => c.status === "fail").length;
   const warned = allChecks.filter((c) => c.status === "warn").length;
@@ -327,5 +405,155 @@ router.post("/diagnostic/run", async (_req, res) => {
     sections,
   });
 });
+
+// ---------------------------------------------------------------------------
+// Synthetic event streams for process-forensics tests
+// ---------------------------------------------------------------------------
+
+/**
+ * Perfect transcription: uniform 4-char insert events at 180 ms intervals,
+ * caret always at end-of-doc, no deletes, no caret jumps, no abandoned
+ * starts. Must score ≥70 and classify as likelyAI.
+ */
+function buildTranscriptionStream(): ProcessEvent[] {
+  const events: ProcessEvent[] = [];
+  const chars = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+  let pos = 0;
+  let t = 0;
+  for (let i = 0; i < 60; i++) {
+    const text = chars.substring((i * 4) % 48, (i * 4) % 48 + 4);
+    events.push({
+      t,
+      type: "insert",
+      pos,
+      len: 4,
+      charCount: 4,
+      caretBefore: pos,
+      caretAfter: pos + 4,
+      text,
+    });
+    pos += 4;
+    t += 180;
+  }
+  return events;
+}
+
+/**
+ * Realistic composition: varied burst lengths, an abandoned-and-restarted
+ * start (write 60 chars, delete 55, restart near same caret), 3 caret
+ * backtracks > 100 chars, 2 large/structural deletes, generous pauses
+ * between sentences and paragraphs. Must score <35 and classify as human.
+ */
+function buildCompositionStream(): {
+  events: ProcessEvent[];
+  finalText: string;
+} {
+  const events: ProcessEvent[] = [];
+  let t = 0;
+  let pos = 0;
+
+  function ins(text: string, gapMs: number) {
+    t += gapMs;
+    events.push({
+      t,
+      type: "insert",
+      pos,
+      len: text.length,
+      charCount: text.length,
+      caretBefore: pos,
+      caretAfter: pos + text.length,
+      text,
+    });
+    pos += text.length;
+  }
+  function del(n: number, gapMs: number) {
+    t += gapMs;
+    const before = pos;
+    events.push({
+      t,
+      type: "delete",
+      pos: pos - n,
+      len: n,
+      caretBefore: before,
+      caretAfter: pos - n,
+    });
+    pos -= n;
+  }
+  function jumpTo(newPos: number, gapMs: number) {
+    t += gapMs;
+    const before = pos;
+    events.push({
+      t,
+      type: "caretJump",
+      len: 0,
+      caretBefore: before,
+      caretAfter: newPos,
+      pos: newPos,
+    });
+    pos = newPos;
+  }
+
+  // Abandoned start: write 60 chars, delete 55 in one structural delete.
+  ins("The first thing I want to argue is that nothing actually w", 800); // 58 chars
+  del(55, 4_000); // structural delete, big
+
+  // Restart near same caret (within 10 chars of original start = 0).
+  ins("Let me try this differently. ", 5_000);
+  ins("Statistics is fundamentally about uncertainty", 600);
+  ins(", and I think most students miss that.", 400);
+  ins(" The mean alone tells you very little.", 350);
+
+  // Long pause + new sentence + new paragraph.
+  ins("\n\n", 6_000);
+  ins("Consider variance: a class with average 75 and stdev 5 is wildly different from one with average 75 and stdev 25.", 1_200);
+
+  // Backtrack #1: jump back 200 chars to revise.
+  jumpTo(40, 3_500);
+  ins(" really", 600);
+  pos = 40 + 7;
+
+  // Jump to end and continue (this restores the linear flow but not at end-of-doc).
+  jumpTo(220, 1_200);
+  ins(". The variance is what tells you whether the average means anything.", 800);
+
+  // Backtrack #2.
+  jumpTo(80, 3_000);
+  ins(" subtle but important", 700);
+  pos = 80 + 21;
+
+  // Jump back to end.
+  jumpTo(330, 900);
+
+  // Another big structural delete.
+  ins("\n\nI used to think averages were enough, but the more examples I see, the less I trust them on their own.", 5_500);
+  del(40, 4_000); // structural
+
+  // Backtrack #3 + revision.
+  jumpTo(50, 2_500);
+  ins(" actually", 500);
+  pos = 50 + 9;
+
+  jumpTo(events.reduce((s, e) => s + (e.type === "insert" ? (e.charCount ?? 0) : e.type === "delete" ? -(e.len) : 0), 0), 800);
+  ins(" Statistical reasoning takes time and care; you can't shortcut it with a formula alone.", 1_500);
+
+  // Reconstruct final text by replaying inserts + deletes + jumps.
+  let text = "";
+  let cursor = 0;
+  for (const e of events) {
+    if (e.type === "insert" && e.text) {
+      text = text.slice(0, cursor) + e.text + text.slice(cursor);
+      cursor += e.text.length;
+    } else if (e.type === "delete") {
+      const n = e.len;
+      const start = Math.max(0, cursor - n);
+      text = text.slice(0, start) + text.slice(cursor);
+      cursor = start;
+    } else if (e.type === "caretJump") {
+      cursor = Math.max(0, Math.min(text.length, e.caretAfter ?? cursor));
+    }
+  }
+
+  return { events, finalText: text };
+}
 
 export default router;
